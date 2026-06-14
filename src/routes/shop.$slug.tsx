@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Bookmark, ChevronDown, ChevronLeft, ChevronRight, Share2, X } from "lucide-react";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import {
   getProduct,
@@ -190,7 +190,7 @@ function SizeGuideDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-background"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-background safe-bottom"
           >
             <div className="flex items-center justify-between border-b border-foreground px-5 py-4">
               <h2 className="text-sm lowercase">size guide</h2>
@@ -216,7 +216,7 @@ function SizeGuideDrawer({
 function GalleryFrame({ shot, productName }: { shot: ProductImage; productName: string }) {
   if (shot.fit === "model") {
     return (
-      <div className="absolute inset-0 flex items-end justify-center px-4 pt-8">
+      <div className="absolute inset-0 flex items-end justify-center px-0 pb-1 pt-2 md:px-4 md:pb-0 md:pt-8">
         <img src={shot.src} alt={productName} className={productImageClass(shot.fit)} />
       </div>
     );
@@ -237,9 +237,24 @@ function ProductGallery({ product, activeIndex, onSelect }: {
   onSelect: (index: number) => void;
 }) {
   const shots = useMemo(() => getProductImages(product), [product]);
+  const touchStartX = useRef<number | null>(null);
 
   const goPrev = () => onSelect(activeIndex === 0 ? shots.length - 1 : activeIndex - 1);
   const goNext = () => onSelect(activeIndex === shots.length - 1 ? 0 : activeIndex + 1);
+
+  const handleTouchStart = (clientX: number) => {
+    touchStartX.current = clientX;
+  };
+
+  const handleTouchEnd = (clientX: number) => {
+    if (touchStartX.current === null) return;
+    const delta = clientX - touchStartX.current;
+    if (Math.abs(delta) > 48) {
+      if (delta > 0) goPrev();
+      else goNext();
+    }
+    touchStartX.current = null;
+  };
 
   return (
     <div className="md:flex md:gap-3">
@@ -270,7 +285,11 @@ function ProductGallery({ product, activeIndex, onSelect }: {
 
       <div className="flex-1">
         <div className="relative md:hidden">
-          <div className="relative aspect-[3/4] overflow-hidden border border-foreground/30 bg-background">
+          <div
+            className="relative min-h-[62svh] overflow-hidden border border-foreground/30 bg-background sm:aspect-[3/4] sm:min-h-0"
+            onTouchStart={(e) => handleTouchStart(e.touches[0]?.clientX ?? 0)}
+            onTouchEnd={(e) => handleTouchEnd(e.changedTouches[0]?.clientX ?? 0)}
+          >
             <p className="absolute left-3 top-3 z-10 text-[10px] lowercase text-foreground/45">
               {shots[activeIndex]?.label}
             </p>
@@ -286,7 +305,7 @@ function ProductGallery({ product, activeIndex, onSelect }: {
                   type="button"
                   aria-label="Previous image"
                   onClick={goPrev}
-                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 border border-foreground/15 bg-background/90 p-2"
+                  className="touch-target absolute left-1 top-1/2 z-10 -translate-y-1/2 border border-foreground/15 bg-background/90"
                 >
                   <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
                 </button>
@@ -294,14 +313,39 @@ function ProductGallery({ product, activeIndex, onSelect }: {
                   type="button"
                   aria-label="Next image"
                   onClick={goNext}
-                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 border border-foreground/15 bg-background/90 p-2"
+                  className="touch-target absolute right-1 top-1/2 z-10 -translate-y-1/2 border border-foreground/15 bg-background/90"
                 >
                   <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
                 </button>
               </>
             )}
           </div>
-          <div className="mt-3 flex justify-center gap-1.5">
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {shots.map((shot, index) => (
+              <button
+                key={`${shot.src}-thumb-${index}`}
+                type="button"
+                aria-label={`View image ${index + 1}`}
+                onClick={() => onSelect(index)}
+                className={`relative h-16 w-14 shrink-0 overflow-hidden border bg-background ${
+                  activeIndex === index ? "border-foreground" : "border-foreground/15 opacity-70"
+                }`}
+              >
+                {shot.fit === "model" ? (
+                  <div className="absolute inset-0 flex items-end justify-center px-0.5 pt-1">
+                    <img src={shot.src} alt="" className={productFitImageClass} />
+                  </div>
+                ) : (
+                  <img
+                    src={shot.src}
+                    alt=""
+                    className={`absolute inset-0 ${productImageClass(shot.fit)}`}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+          <div className="mt-2 flex justify-center gap-1.5">
             {shots.map((shot, index) => (
               <button
                 key={`${shot.src}-dot-${index}`}
@@ -532,7 +576,7 @@ function ProductPage() {
   ];
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-background pb-24 text-foreground md:pb-32">
+    <main className="min-h-screen overflow-x-clip bg-background pb-[calc(9.5rem+env(safe-area-inset-bottom))] text-foreground md:pb-32">
       <SiteNav />
 
       <div className="flex items-center justify-between px-4 pt-24 md:px-6 md:pt-28">
@@ -609,13 +653,13 @@ function ProductPage() {
                 size guide
               </button>
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <div className="flex flex-wrap gap-2">
               {product.sizes.map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => setSize(s)}
-                  className={`min-w-[2rem] text-sm lowercase transition-opacity ${
+                  className={`touch-target inline-flex min-w-[2.75rem] items-center justify-center px-2 text-sm lowercase transition-opacity ${
                     size === s ? "text-foreground underline underline-offset-4" : "text-foreground/35 hover:text-foreground/70"
                   }`}
                 >
@@ -683,7 +727,7 @@ function ProductPage() {
       {/* Shop the look — about:blank */}
       <section className="mx-auto max-w-[1600px] px-4 pt-12 md:px-6 md:pt-14">
         <p className="mb-6 text-[11px] lowercase text-foreground/45">shop the look</p>
-        <div className="grid grid-cols-2 border-l border-t border-foreground md:grid-cols-3">
+        <div className="grid grid-cols-1 border-l border-t border-foreground sm:grid-cols-2 md:grid-cols-3">
           {shopTheLook.map((p) => (
             <Link
               key={p.slug}
@@ -718,7 +762,7 @@ function ProductPage() {
       {/* Complete your look — Zara */}
       <section className="mx-auto max-w-[1600px] px-4 pt-12 pb-8 md:px-6 md:pt-14">
         <p className="mb-6 text-[11px] lowercase text-foreground/45">complete your look</p>
-        <div className="grid grid-cols-2 border-l border-t border-foreground md:grid-cols-4">
+        <div className="grid grid-cols-1 border-l border-t border-foreground sm:grid-cols-2 md:grid-cols-4">
           {related.map((p) => (
             <Link
               key={p.slug}
@@ -778,28 +822,31 @@ function ProductPage() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground bg-background p-4 md:hidden">
-        <div className="space-y-2">
-          <div className="flex items-center gap-4">
-            <p className="shrink-0 text-base">{formatPrice(product.price)}</p>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground bg-background px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
+        <div className="grid grid-cols-[auto_1fr] gap-3">
+          <p className="col-span-2 text-center text-[10px] lowercase text-foreground/45">
+            {size ? `${size.toLowerCase()} selected` : "select a size above"}
+          </p>
+          <p className="self-center text-base">{formatPrice(product.price)}</p>
+          <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={handleAdd}
               disabled={!size}
-              className={`flex-1 py-3.5 text-[11px] lowercase ${
+              className={`py-3 text-[11px] lowercase ${
                 size
                   ? "bg-foreground text-background"
                   : "cursor-not-allowed bg-foreground/10 text-foreground/40"
               }`}
             >
-              {added ? "added to bag" : "add to bag"}
+              {added ? "added" : "add to bag"}
             </button>
+            <BuyWithShopButton
+              onClick={handleBuyWithShop}
+              disabled={!size}
+              className="mt-0 py-3 text-[12px]"
+            />
           </div>
-          <BuyWithShopButton
-            onClick={handleBuyWithShop}
-            disabled={!size}
-            className="mt-0 py-3.5"
-          />
         </div>
       </div>
 

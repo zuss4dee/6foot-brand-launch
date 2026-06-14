@@ -154,10 +154,34 @@
     overscroll-behavior: none;
   }
 
+  @media (max-width: 767px) {
+    input[type="email"],
+    input[type="text"],
+    input[type="search"],
+    input[type="tel"],
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+
   ::selection {
     background: var(--color-foreground);
     color: var(--color-background);
   }
+}
+
+@utility safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility touch-target {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
 }
 
 @theme inline {

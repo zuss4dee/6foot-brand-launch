@@ -7,7 +7,7 @@ import { useCart } from "@/lib/cart";
 import {
   formatPrice,
   products,
-  productFitImageClass,
+  productGridImageClass,
   type Product,
   type ProductCategory,
 } from "@/lib/products";
@@ -65,7 +65,7 @@ function ProductCell({ product }: { product: Product }) {
 
   return (
     <article className="group border-b border-r border-foreground bg-background">
-      <div className="relative aspect-[3/4] overflow-hidden bg-background">
+      <div className="relative min-h-[62svh] overflow-hidden bg-background sm:aspect-[3/4] sm:min-h-0">
         <span className="absolute left-3 top-3 z-10 text-[10px] lowercase tracking-wide text-foreground">
           {product.badge ?? "new:in"}
         </span>
@@ -81,24 +81,35 @@ function ProductCell({ product }: { product: Product }) {
         <Link
           to="/shop/$slug"
           params={{ slug: product.slug }}
-          className="absolute inset-0 flex items-end justify-center px-2 pt-8"
+          className="absolute inset-0 flex items-end justify-center px-1 pb-1 pt-6 md:px-2 md:pt-8"
         >
           <img
             src={product.model}
             alt={product.name}
             loading="lazy"
-            className={productFitImageClass}
+            className={productGridImageClass}
           />
         </Link>
       </div>
 
       <div className="border-t border-foreground">
-        <div className="flex items-center justify-between px-3 py-2 group-hover:hidden">
+        <div className="flex items-center justify-between gap-2 px-3 py-2.5 md:hidden">
+          <Link
+            to="/shop/$slug"
+            params={{ slug: product.slug }}
+            className="min-w-0 truncate text-[11px] lowercase text-foreground"
+          >
+            {product.name.toLowerCase()}
+          </Link>
+          <span className="shrink-0 text-[11px]">{formatPrice(product.price)}</span>
+        </div>
+
+        <div className="hidden items-center justify-between px-3 py-2 md:flex md:group-hover:hidden">
           <span className="text-xs text-foreground/35">—</span>
           <span className="text-xs lowercase text-foreground">{product.color.toLowerCase()}</span>
         </div>
 
-        <div className="hidden p-3 group-hover:block">
+        <div className="hidden p-3 md:group-hover:block">
           <Link
             to="/shop/$slug"
             params={{ slug: product.slug }}
@@ -193,7 +204,7 @@ function FilterDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-background"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-background safe-bottom"
           >
             <div className="flex items-center justify-between border-b border-foreground px-5 py-4">
               <h2 className="text-sm lowercase text-foreground">filter and sort</h2>
@@ -243,7 +254,7 @@ function FilterDrawer({
               </div>
             </div>
 
-            <div className="flex gap-3 border-t border-foreground px-5 py-4">
+            <div className="flex gap-3 border-t border-foreground px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <button
                 type="button"
                 onClick={() => {
@@ -304,7 +315,7 @@ function ShopIndex() {
       </header>
 
       <section className="mx-auto max-w-[1600px] border-l border-t border-foreground">
-        <div className="grid grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
           {visible.map((product) => (
             <ProductCell key={product.slug} product={product} />
           ))}

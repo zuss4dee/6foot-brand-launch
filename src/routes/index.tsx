@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { useCart } from "@/lib/cart";
 import launchLeft from "@/assets/launch-left-model.png";
@@ -73,7 +73,7 @@ function LaunchHeroCenterLine() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 bottom-0 top-[4.75rem] z-0 md:top-[5.25rem]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 top-[4.75rem] z-0 hidden md:block md:top-[5.25rem]"
     >
       <motion.div
         initial={{ scaleX: 0 }}
@@ -98,9 +98,9 @@ function LaunchHeroWatermark() {
       initial={{ opacity: 0, scale: 1.06 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: heroEntrance.watermark.duration, ease: [0.22, 1, 0.36, 1], delay: heroEntrance.watermark.delay }}
-      className="pointer-events-none absolute inset-x-0 bottom-0 top-[4.75rem] z-[8] flex items-center justify-center overflow-hidden md:top-[5.25rem]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 top-[4.75rem] z-[8] hidden items-center justify-center overflow-hidden md:top-[5.25rem] md:flex"
     >
-      <p className="display select-none text-[clamp(7rem,26vw,20rem)] leading-none tracking-tighter text-foreground/[0.035]">
+      <p className="display select-none text-[clamp(4.5rem,22vw,20rem)] leading-none tracking-tighter text-foreground/[0.035] md:text-[clamp(7rem,26vw,20rem)]">
         6foot
       </p>
     </motion.div>
@@ -117,13 +117,13 @@ function LaunchHeroMeta() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-      className="pointer-events-none absolute inset-x-0 top-[4.75rem] z-30 px-6 md:top-[5.25rem] md:px-10"
+      className="pointer-events-none absolute inset-x-0 top-[4.75rem] z-30 hidden px-4 md:block md:top-[5.25rem] md:px-10"
     >
-      <div className="grid grid-cols-2 items-start gap-4 pb-4 md:pb-5">
+      <div className="grid grid-cols-1 items-start gap-2 pb-3 sm:grid-cols-2 sm:gap-4 md:pb-5">
         <p className="label max-w-[14ch] text-foreground/50">
           Chapter 01 — Proportioned essentials
         </p>
-        <p className="label justify-self-end text-right text-foreground/50">
+        <p className="label text-foreground/50 sm:justify-self-end sm:text-right">
           Drop 001 / SS26
           <br />
           Amsterdam studio
@@ -219,7 +219,7 @@ function LaunchBrandDropLane() {
   }, []);
 
   return (
-    <div ref={laneRef} className="pointer-events-none absolute inset-0 z-[25] overflow-hidden">
+    <div ref={laneRef} className="pointer-events-none absolute inset-0 z-[25] hidden overflow-hidden md:block">
       {dropPath
         ? brandDrop.streams.map((stream) => (
             <LaunchBrandDrop
@@ -248,7 +248,7 @@ function LaunchShopButton() {
 
 function LaunchHeroHeadline() {
   return (
-    <div className="absolute inset-x-0 top-[30%] z-[15] px-6 text-center md:top-[28%] md:px-10">
+    <div className="pointer-events-none absolute inset-x-0 top-[22%] z-[15] hidden px-6 text-center md:block md:top-[28%] md:px-10">
       <motion.p
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -279,6 +279,7 @@ function LaunchHeroHeadline() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: heroEntrance.shopCta.duration, ease: [0.22, 1, 0.36, 1], delay: heroEntrance.shopCta.delay }}
+        className="pointer-events-auto"
       >
         <LaunchShopButton />
       </motion.div>
@@ -319,7 +320,7 @@ function LaunchHeroScrollCue() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ opacity: { duration: 0.8, delay: heroEntrance.scrollCue.delay } }}
-      onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+      onClick={() => document.getElementById("launch-trust")?.scrollIntoView({ behavior: "smooth" })}
       className="label absolute bottom-[5.75rem] left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 text-foreground/40 transition-colors hover:text-foreground/70 md:flex"
     >
       <motion.span
@@ -344,9 +345,9 @@ function LaunchHeader({ count, onOpenCart }: { count: number; onOpenCart: () => 
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-      className="absolute inset-x-0 top-0 z-40 bg-background"
+      className="absolute inset-x-0 top-0 z-40 bg-background text-foreground safe-top"
     >
-      <div className="relative flex items-center justify-between px-6 py-5 text-foreground md:px-10 md:py-6">
+      <div className="relative flex items-center justify-between px-4 py-4 md:px-10 md:py-6">
         <span className="label text-foreground/50">SS26</span>
         <Link
           to="/"
@@ -371,14 +372,167 @@ function LaunchHeader({ count, onOpenCart }: { count: number; onOpenCart: () => 
   );
 }
 
+const launchSlides = [
+  {
+    side: "left" as const,
+    ctaTo: "/shop" as const,
+    image: launchRight,
+    imageAlt: "Young Black man in black proportioned essentials",
+    chapter: "Drop 001 / SS26",
+    title: "The Capsule",
+    subtitle: 'Four proportioned essentials. Engineered +2" through the body.',
+    cta: "Shop Now",
+  },
+  {
+    side: "right" as const,
+    image: launchLeft,
+    imageAlt: "Model in black proportioned essentials",
+    chapter: "Drop 002 / AW26",
+    title: "Coming Soon",
+    subtitle: "Next chapter of the tall block. Join the list for first access.",
+    cta: "Join Waitlist",
+  },
+];
+
+type LaunchSlide = (typeof launchSlides)[number];
+
+function LaunchPanelCopy({
+  slide,
+  alignRight = false,
+}: {
+  slide: LaunchSlide;
+  alignRight?: boolean;
+}) {
+  return (
+    <>
+      <p className="label mb-2 text-foreground/60">{slide.chapter}</p>
+      <h2 className="display text-2xl text-foreground md:text-[1.75rem]">{slide.title}</h2>
+      <p
+        className={`mt-2 max-w-[32ch] text-sm leading-relaxed text-foreground/70 ${
+          alignRight ? "md:ml-auto" : ""
+        }`}
+      >
+        {slide.subtitle}
+      </p>
+      {slide.ctaTo ? (
+        <Link
+          to={slide.ctaTo}
+          className={`group mt-5 inline-flex min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground transition-all duration-300 hover:gap-4 ${
+            alignRight ? "md:ml-auto" : ""
+          }`}
+        >
+          <span className="label">{slide.cta}</span>
+          <span className="display text-sm">→</span>
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}
+          className={`group mt-5 inline-flex min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-left text-foreground transition-all duration-300 hover:gap-4 ${
+            alignRight ? "md:ml-auto" : ""
+          }`}
+        >
+          <span className="label">{slide.cta}</span>
+          <span className="display text-sm">→</span>
+        </button>
+      )}
+    </>
+  );
+}
+
+const MOBILE_CAROUSEL_INTERVAL_MS = 5000;
+
+function LaunchMobileCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (launchSlides.length <= 1) return;
+
+    const tick = () => {
+      setActiveIndex((index) => (index + 1) % launchSlides.length);
+    };
+
+    const interval = window.setInterval(tick, MOBILE_CAROUSEL_INTERVAL_MS);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative z-[12] overflow-hidden md:hidden">
+      <div className="overflow-hidden">
+        <motion.div
+          className="flex"
+          animate={{ x: `-${activeIndex * 100}%` }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {launchSlides.map((slide) => (
+            <section
+              key={slide.title}
+              className="w-full shrink-0 border-b border-foreground/10 bg-background"
+            >
+              <div className="relative flex min-h-[62svh] items-end justify-center px-1 pt-2">
+                <img
+                  src={slide.image}
+                  alt={slide.imageAlt}
+                  decoding="async"
+                  draggable={false}
+                  className="h-[min(60svh,760px)] w-auto max-w-full object-contain object-bottom"
+                />
+              </div>
+              <div className="px-4 py-6">
+                <LaunchPanelCopy slide={slide} />
+              </div>
+            </section>
+          ))}
+        </motion.div>
+      </div>
+
+      {launchSlides.length > 1 && (
+        <div
+          className="flex items-center justify-center gap-3 border-t border-foreground/10 py-3"
+          aria-live="polite"
+          aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
+        >
+          <p className="text-[10px] lowercase text-foreground/45">
+            {activeIndex + 1} / {launchSlides.length}
+          </p>
+          <div className="flex gap-1.5">
+            {launchSlides.map((slide, index) => (
+              <span
+                key={slide.title}
+                aria-hidden
+                className={`h-1.5 rounded-full transition-all ${
+                  activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Launch() {
   const { count, setOpen } = useCart();
 
   return (
     <>
-      <main className="relative flex h-svh flex-col overflow-hidden bg-background text-foreground">
+      <main className="relative flex min-h-dvh flex-col bg-background text-foreground md:h-svh md:overflow-hidden">
         <LaunchBrandDropLane />
         <LaunchHeader count={count} onOpenCart={() => setOpen(true)} />
+
+        <div className="px-4 pt-[4.75rem] md:hidden">
+          <p className="label text-foreground/50">Chapter 01 — Drop 001 / SS26</p>
+          <h1 className="display mt-3 max-w-[12ch] text-[clamp(2rem,10vw,2.75rem)] leading-[0.9] tracking-tighter">
+            Built for the tall frame.
+          </h1>
+          <Link
+            to="/shop"
+            className="label mt-5 inline-flex items-center gap-3 border border-foreground px-5 py-3"
+          >
+            Shop Now
+          </Link>
+        </div>
 
         <LaunchHeroStage>
           <LaunchHeroCenterLine />
@@ -387,26 +541,12 @@ function Launch() {
           <LaunchHeroHeadline />
           <LaunchHeroScrollCue />
 
-          <div className="relative z-[12] flex min-h-0 flex-1 flex-col md:flex-row">
-          <LaunchPanel
-            side="left"
-            ctaTo="/shop"
-            image={launchRight}
-            imageAlt="Young Black man in black proportioned essentials"
-            chapter="Drop 001 / SS26"
-            title="The Capsule"
-            subtitle='Four proportioned essentials. Engineered +2" through the body.'
-            cta="Shop Now"
-          />
-          <LaunchPanel
-            side="right"
-            image={launchLeft}
-            imageAlt="Model in black proportioned essentials"
-            chapter="Drop 002 / AW26"
-            title="Coming Soon"
-            subtitle="Next chapter of the tall block. Join the list for first access."
-            cta="Join Waitlist"
-          />
+          <LaunchMobileCarousel />
+
+          <div className="relative z-[12] hidden min-h-0 flex-1 md:flex md:flex-row">
+            {launchSlides.map((slide) => (
+              <LaunchPanel key={slide.title} slide={slide} />
+            ))}
           </div>
         </LaunchHeroStage>
 
@@ -436,7 +576,7 @@ function Launch() {
                 <button
                   id="launch-explore-mobile"
                   type="button"
-                  onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+                  onClick={() => document.getElementById("launch-trust")?.scrollIntoView({ behavior: "smooth" })}
                   className="label group inline-flex items-center gap-3 transition-opacity hover:opacity-60"
                 >
                   <motion.span
@@ -456,7 +596,7 @@ function Launch() {
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <button
                   type="button"
-                  onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+                  onClick={() => document.getElementById("launch-trust")?.scrollIntoView({ behavior: "smooth" })}
                   className="label group inline-flex items-center gap-3 text-foreground transition-opacity hover:opacity-60"
                 >
                   Explore the brand
@@ -477,80 +617,39 @@ function Launch() {
   );
 }
 
-function LaunchPanel({
-  side,
-  ctaTo,
-  image,
-  imageAlt,
-  chapter,
-  title,
-  subtitle,
-  cta,
-}: {
-  side: "left" | "right";
-  ctaTo?: string;
-  image: string;
-  imageAlt: string;
-  chapter: string;
-  title: string;
-  subtitle: string;
-  cta: string;
-}) {
+function LaunchPanel({ slide }: { slide: LaunchSlide }) {
+  const alignRight = slide.side === "right";
+
   return (
-    <div className="relative min-h-[42svh] flex-1 overflow-hidden bg-background md:min-h-0">
-      <div className="relative h-full">
+    <div className="relative min-h-0 flex-1 overflow-hidden bg-background">
+      <div className="relative h-full min-h-0">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 flex items-end justify-center pt-[4.75rem] md:pt-[5.25rem]"
+          className="pointer-events-none absolute inset-0 flex items-end justify-center pt-[5.25rem]"
         >
           <img
-            src={image}
-            alt={imageAlt}
+            src={slide.image}
+            alt={slide.imageAlt}
             decoding="async"
             className="max-h-full w-auto max-w-full object-contain object-bottom"
           />
         </div>
 
-        <div className="relative z-20 flex h-full flex-col justify-end px-6 pb-8 md:px-10 md:pb-10">
+        <div className="relative z-20 flex h-full flex-col justify-end px-10 pb-10">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: heroEntrance.panelCopy.duration,
               ease: [0.22, 1, 0.36, 1],
-              delay: side === "left" ? heroEntrance.panelCopy.leftDelay : heroEntrance.panelCopy.rightDelay,
+              delay:
+                slide.side === "left"
+                  ? heroEntrance.panelCopy.leftDelay
+                  : heroEntrance.panelCopy.rightDelay,
             }}
-            className={`max-w-[16rem] ${side === "right" ? "md:ml-auto md:text-right" : ""}`}
+            className={`max-w-[16rem] ${alignRight ? "ml-auto text-right" : ""}`}
           >
-            <p className="label mb-2 text-foreground/60">{chapter}</p>
-            <h2 className="display text-2xl text-foreground md:text-[1.75rem]">{title}</h2>
-            <p
-              className={`mt-2 max-w-[28ch] text-xs leading-relaxed text-foreground/70 md:text-sm ${
-                side === "right" ? "md:ml-auto" : ""
-              }`}
-            >
-              {subtitle}
-            </p>
-            {ctaTo ? (
-              <Link
-                to={ctaTo}
-                className={`group mt-5 inline-flex items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground transition-all duration-300 hover:gap-4 ${
-                  side === "right" ? "md:ml-auto" : ""
-                }`}
-              >
-                <span className="label">{cta}</span>
-                <span className="display text-sm">→</span>
-              </Link>
-            ) : (
-              <span
-                className={`mt-5 inline-flex items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground ${
-                  side === "right" ? "md:ml-auto" : ""
-                }`}
-              >
-                <span className="label">{cta}</span>
-                <span className="display text-sm">→</span>
-              </span>
-            )}
+            <LaunchPanelCopy slide={slide} alignRight={alignRight} />
           </motion.div>
         </div>
       </div>
@@ -560,7 +659,7 @@ function LaunchPanel({
 
 function TrustBar() {
   return (
-    <section className="border-y border-foreground/10 bg-secondary/20">
+    <section id="launch-trust" className="border-y border-foreground/10 bg-secondary/20">
       <div className="grid grid-cols-1 divide-y divide-foreground/10 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
         {trustItems.map((item) => (
           <p

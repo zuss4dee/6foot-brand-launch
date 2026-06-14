@@ -339,7 +339,10 @@ export function getProduct(slug: string): Product | undefined {
 }
 
 export const productFitImageClass =
-  "max-h-full w-auto max-w-full object-contain object-bottom";
+  "max-h-full w-auto max-w-full object-contain object-bottom max-md:mx-auto max-md:h-[min(58vh,640px)] max-md:max-w-[96%]";
+
+export const productGridImageClass =
+  "max-h-full w-auto max-w-full object-contain object-bottom max-md:mx-auto max-md:h-[min(52vh,560px)] max-md:max-w-[94%]";
 
 export function productImageClass(fit: ProductImageFit) {
   if (fit === "cover") return "h-full w-full object-cover object-center";
