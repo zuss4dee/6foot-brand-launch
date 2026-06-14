@@ -361,18 +361,18 @@ function ProductCard({
   product: Product;
   offset: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"]);
 
   return (
     <Reveal variant={shutter} className={offset ? "md:mt-32" : ""}>
-      <Link
-        to="/shop/$slug"
-        params={{ slug: product.slug }}
-        ref={ref}
-        className="group relative block"
-      >
+      <div ref={ref}>
+        <Link
+          to="/shop/$slug"
+          params={{ slug: product.slug }}
+          className="group relative block"
+        >
         <div className="relative aspect-[3/4] overflow-hidden">
           <motion.img
             src={product.flat}
@@ -402,7 +402,8 @@ function ProductCard({
             <p className="display text-2xl mt-1">€{product.price}</p>
           </div>
         </div>
-      </Link>
+        </Link>
+      </div>
     </Reveal>
   );
 }
