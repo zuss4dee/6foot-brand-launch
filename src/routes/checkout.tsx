@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { useCart } from "@/lib/cart";
+import { formatPrice, productFitImageClass } from "@/lib/products";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -22,7 +23,7 @@ function Checkout() {
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(false);
 
-  const shipping = subtotal > 200 ? 0 : subtotal > 0 ? 12 : 0;
+  const shipping = subtotal >= 150 ? 0 : subtotal > 0 ? 12 : 0;
   const total = subtotal + shipping;
 
   const next = () => {
@@ -54,7 +55,7 @@ function Checkout() {
               Continue browsing <span className="h-px w-10 bg-foreground" />
             </Link>
             <button
-              onClick={() => navigate({ to: "/home" })}
+              onClick={() => navigate({ to: "/" })}
               className="label inline-flex items-center gap-3 hover:opacity-60"
             >
               Back home
@@ -201,7 +202,7 @@ function Checkout() {
                   {placing
                     ? "Placing order…"
                     : step === "payment"
-                      ? `Pay €${total}`
+                      ? `Pay ${formatPrice(total)}`
                       : "Continue →"}
                 </motion.button>
               </div>
@@ -215,13 +216,19 @@ function Checkout() {
               <ul className="space-y-5">
                 {enriched.map(({ item, product }) => (
                   <li key={`${item.slug}-${item.size}`} className="grid grid-cols-[60px_1fr] gap-4">
-                    <div className="aspect-[3/4] overflow-hidden bg-muted">
-                      <img src={product.flat} alt={product.name} className="h-full w-full object-cover" />
+                    <div className="relative aspect-[3/4] overflow-hidden bg-background">
+                      <div className="absolute inset-0 flex items-end justify-center px-1 pt-1">
+                        <img
+                          src={product.model}
+                          alt={product.name}
+                          className={productFitImageClass}
+                        />
+                      </div>
                     </div>
                     <div>
                       <div className="flex items-start justify-between gap-3">
                         <p className="display text-base leading-tight">{product.name}</p>
-                        <p className="display text-base">€{product.price * item.qty}</p>
+                        <p className="display text-base">{formatPrice(product.price * item.qty)}</p>
                       </div>
                       <p className="label text-foreground/50 mt-1">Size {item.size}</p>
                       <div className="mt-2 flex items-center gap-3">
@@ -256,12 +263,12 @@ function Checkout() {
               </ul>
 
               <div className="border-t border-foreground/10 pt-5 space-y-2 text-sm">
-                <Row label="Subtotal" value={`€${subtotal}`} />
-                <Row label="Shipping" value={shipping === 0 ? "Free" : `€${shipping}`} />
+                <Row label="Subtotal" value={formatPrice(subtotal)} />
+                <Row label="Shipping" value={shipping === 0 ? "Free" : formatPrice(shipping)} />
               </div>
               <div className="border-t border-foreground/15 pt-5 flex items-baseline justify-between">
                 <span className="label">Total</span>
-                <span className="display text-2xl">€{total}</span>
+                <span className="display text-2xl">{formatPrice(total)}</span>
               </div>
             </div>
           </aside>

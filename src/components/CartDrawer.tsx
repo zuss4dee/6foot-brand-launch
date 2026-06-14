@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { useCart } from "@/lib/cart";
+import { productFitImageClass, formatPrice } from "@/lib/products";
 
 export function CartDrawer() {
   const { open, setOpen, enriched, setQty, remove, subtotal, count } = useCart();
@@ -55,9 +56,15 @@ export function CartDrawer() {
                         to="/shop/$slug"
                         params={{ slug: product.slug }}
                         onClick={() => setOpen(false)}
-                        className="block aspect-[3/4] overflow-hidden bg-muted"
+                        className="relative block aspect-[3/4] overflow-hidden bg-background"
                       >
-                        <img src={product.flat} alt={product.name} className="h-full w-full object-cover" />
+                        <div className="absolute inset-0 flex items-end justify-center px-1 pt-2">
+                          <img
+                            src={product.model}
+                            alt={product.name}
+                            className={productFitImageClass}
+                          />
+                        </div>
                       </Link>
                       <div className="flex flex-col">
                         <div className="flex items-start justify-between gap-3">
@@ -69,7 +76,7 @@ export function CartDrawer() {
                           >
                             {product.name}
                           </Link>
-                          <span className="display text-lg">€{product.price * item.qty}</span>
+                          <span className="display text-lg">{formatPrice(product.price * item.qty)}</span>
                         </div>
                         <p className="label text-foreground/50 mt-1">
                           Size {item.size} · {product.color}
@@ -110,7 +117,7 @@ export function CartDrawer() {
               <div className="border-t border-foreground/10 px-6 md:px-8 py-6 space-y-4">
                 <div className="flex items-baseline justify-between">
                   <span className="label text-foreground/60">Subtotal</span>
-                  <span className="display text-2xl">€{subtotal}</span>
+                  <span className="display text-2xl">{formatPrice(subtotal)}</span>
                 </div>
                 <p className="label text-foreground/50">Shipping and taxes calculated at checkout.</p>
                 <Link
