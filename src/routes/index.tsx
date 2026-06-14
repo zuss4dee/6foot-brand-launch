@@ -156,57 +156,31 @@ function Index() {
 
 function Nav() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
-      <div className="flex items-center justify-between px-6 md:px-10 py-6 text-[oklch(0.978_0.002_95)]">
-        <a href="#top" className="display text-2xl tracking-tighter">
-          6foot.
-        </a>
-        <nav className="hidden md:flex items-center gap-10">
-          {["Index", "Blueprint", "Capsule", "Waitlist"].map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="label hover:opacity-60 transition-opacity">
-              {l}
-            </a>
-          ))}
-        </nav>
-        <span className="label">EU / EN</span>
-      </div>
-    </header>
+    <SiteNav />
   );
 }
 
 function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const yImg = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const yTitle = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const yImg = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
+  const yTitle = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
 
   return (
-    <section id="top" ref={ref} className="relative min-h-screen flex flex-col justify-end pb-10">
-      {/* image floats centered behind type */}
-      <motion.div
-        style={{ y: yImg, scale }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-      >
-        <motion.img
-          src={hero}
-          alt="Garment drape on tall figure"
-          width={896}
-          height={1344}
-          variants={shutter}
-          initial="hidden"
-          animate="visible"
-          className="h-[78vh] w-auto object-contain"
-        />
-      </motion.div>
-
+    <section
+      id="top"
+      ref={ref}
+      className="relative min-h-[100svh] grid grid-rows-[auto_1fr_auto] pt-24 md:pt-28 pb-6 md:pb-10"
+    >
       {/* top meta */}
-      <div className="absolute top-28 left-6 md:left-10 right-6 md:right-10 flex justify-between">
+      <div className="px-6 md:px-10 grid grid-cols-2 gap-6">
         <Reveal delay={0.3}>
-          <p className="label max-w-[12ch]">Chapter 01 — Built for the tall frame</p>
+          <p className="label max-w-[14ch] text-foreground/60">
+            Chapter 01 — Built for the tall frame
+          </p>
         </Reveal>
-        <Reveal delay={0.4}>
-          <p className="label text-right max-w-[14ch]">
+        <Reveal delay={0.4} className="justify-self-end">
+          <p className="label text-right max-w-[16ch] text-foreground/60">
             Drop 001 / SS26
             <br />
             Releasing soon
@@ -214,46 +188,68 @@ function Hero() {
         </Reveal>
       </div>
 
-      {/* headline */}
-      <motion.h1
-        style={{ y: yTitle }}
-        className="display relative z-10 text-center text-[28vw] md:text-[22vw] leading-[0.8] select-none"
-      >
-        <motion.span
-          initial={{ opacity: 0, y: 80 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="inline-block"
-        >
-          6foot
-        </motion.span>
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.6 }}
-        >
-          .
-        </motion.span>
-      </motion.h1>
+      {/* middle: image centered with headline below */}
+      <div className="relative flex items-center justify-center mt-6 md:mt-10">
+        <motion.div style={{ y: yImg }} className="relative">
+          <motion.img
+            src={hero}
+            alt="Garment drape on tall figure"
+            width={896}
+            height={1344}
+            variants={shutter}
+            initial="hidden"
+            animate="visible"
+            className="h-[52svh] md:h-[58svh] w-auto object-contain"
+          />
+        </motion.div>
+      </div>
 
-      {/* bottom row */}
-      <div className="relative z-10 px-6 md:px-10 mt-6 grid grid-cols-2 md:grid-cols-3 gap-6 items-end">
-        <Reveal delay={0.6}>
-          <p className="label max-w-[22ch]">
-            Proportioned essentials.
-            <br />
-            +2&quot; through the body.
-          </p>
-        </Reveal>
-        <Reveal delay={0.7} className="hidden md:block">
-          <p className="label text-center">Scroll</p>
-        </Reveal>
-        <Reveal delay={0.8} className="text-right justify-self-end">
-          <a href="#waitlist" className="group inline-flex items-center gap-3">
-            <span className="label">Join waitlist</span>
-            <span className="h-px w-10 bg-foreground transition-all duration-500 group-hover:w-16" />
-          </a>
-        </Reveal>
+      {/* headline — sits below image, full bleed */}
+      <div className="relative px-6 md:px-10">
+        <motion.h1
+          style={{ y: yTitle }}
+          className="display text-center text-[26vw] md:text-[22vw] leading-[0.8] select-none -mb-[2vw]"
+        >
+          <motion.span
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="inline-block"
+          >
+            6foot
+          </motion.span>
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="inline-block text-foreground"
+          >
+            .
+          </motion.span>
+        </motion.h1>
+
+        {/* bottom row */}
+        <div className="mt-8 md:mt-10 grid grid-cols-2 md:grid-cols-3 gap-6 items-end">
+          <Reveal delay={0.6}>
+            <p className="label max-w-[22ch] text-foreground/60">
+              Proportioned essentials.
+              <br />
+              +2&quot; through the body.
+            </p>
+          </Reveal>
+          <Reveal delay={0.7} className="hidden md:flex justify-center">
+            <span className="label text-foreground/60 inline-flex items-center gap-2">
+              <span className="h-3 w-px bg-foreground/40" />
+              Scroll
+            </span>
+          </Reveal>
+          <Reveal delay={0.8} className="justify-self-end">
+            <a href="#waitlist" className="group inline-flex items-center gap-3">
+              <span className="label">Join waitlist</span>
+              <span className="h-px w-10 bg-foreground transition-all duration-500 group-hover:w-16" />
+            </a>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
