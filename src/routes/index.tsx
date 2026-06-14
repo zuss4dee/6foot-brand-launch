@@ -543,4 +543,3 @@ function Footer() {
     </footer>
   );
 }
-}
