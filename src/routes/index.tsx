@@ -125,13 +125,6 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   );
 }
 
-const products = [
-  { n: "01", name: "The Long Tee", price: "€85", flat: p1Flat, model: p1Model, len: "78cm" },
-  { n: "02", name: "Heavy Hoodie", price: "€185", flat: p2Flat, model: p2Model, len: "82cm" },
-  { n: "03", name: "Wide Trouser", price: "€165", flat: p3Flat, model: p3Model, len: "118cm" },
-  { n: "04", name: "Long Sleeve", price: "€95", flat: p4Flat, model: p4Model, len: "80cm" },
-];
-
 function Index() {
   useLenis();
 
