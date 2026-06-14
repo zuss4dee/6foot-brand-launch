@@ -144,7 +144,7 @@ function Index() {
 
   return (
     <main className="bg-background text-foreground min-h-screen overflow-x-clip">
-      <Nav />
+      <SiteNav />
       <Hero />
       <Marquee />
       <Blueprint />
