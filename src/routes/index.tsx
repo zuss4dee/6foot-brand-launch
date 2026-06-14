@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
@@ -14,14 +14,7 @@ import Lenis from "lenis";
 import { SiteNav } from "@/components/SiteNav";
 import hero from "@/assets/hero.jpg";
 import fabric from "@/assets/fabric.jpg";
-import p1Flat from "@/assets/p1-flat.jpg";
-import p1Model from "@/assets/p1-model.jpg";
-import p2Flat from "@/assets/p2-flat.jpg";
-import p2Model from "@/assets/p2-model.jpg";
-import p3Flat from "@/assets/p3-flat.jpg";
-import p3Model from "@/assets/p3-model.jpg";
-import p4Flat from "@/assets/p4-flat.jpg";
-import p4Model from "@/assets/p4-model.jpg";
+import { products, type Product } from "@/lib/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
