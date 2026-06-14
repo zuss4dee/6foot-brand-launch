@@ -1,0 +1,130 @@
+import { Link } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
+import { useCart } from "@/lib/cart";
+
+export function CartDrawer() {
+  const { open, setOpen, enriched, setQty, remove, subtotal, count } = useCart();
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-[60] bg-foreground/30 backdrop-blur-sm"
+          />
+          <motion.aside
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[28rem] bg-background flex flex-col"
+          >
+            <div className="flex items-center justify-between px-6 md:px-8 py-6 border-b border-foreground/10">
+              <p className="label">Your bag — {count}</p>
+              <button onClick={() => setOpen(false)} className="label hover:opacity-60">
+                Close ✕
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6">
+              {enriched.length === 0 ? (
+                <div className="flex flex-col items-start gap-6 py-10">
+                  <p className="display text-3xl leading-tight">Your bag is empty.</p>
+                  <Link
+                    to="/shop"
+                    onClick={() => setOpen(false)}
+                    className="label inline-flex items-center gap-3"
+                  >
+                    Browse the capsule
+                    <span className="h-px w-10 bg-foreground" />
+                  </Link>
+                </div>
+              ) : (
+                <ul className="space-y-8">
+                  {enriched.map(({ item, product }) => (
+                    <li
+                      key={`${item.slug}-${item.size}`}
+                      className="grid grid-cols-[80px_1fr] gap-5"
+                    >
+                      <Link
+                        to="/shop/$slug"
+                        params={{ slug: product.slug }}
+                        onClick={() => setOpen(false)}
+                        className="block aspect-[3/4] overflow-hidden bg-muted"
+                      >
+                        <img src={product.flat} alt={product.name} className="h-full w-full object-cover" />
+                      </Link>
+                      <div className="flex flex-col">
+                        <div className="flex items-start justify-between gap-3">
+                          <Link
+                            to="/shop/$slug"
+                            params={{ slug: product.slug }}
+                            onClick={() => setOpen(false)}
+                            className="display text-lg leading-tight hover:opacity-60"
+                          >
+                            {product.name}
+                          </Link>
+                          <span className="display text-lg">€{product.price * item.qty}</span>
+                        </div>
+                        <p className="label text-foreground/50 mt-1">
+                          Size {item.size} · {product.color}
+                        </p>
+                        <div className="mt-auto flex items-center justify-between pt-4">
+                          <div className="inline-flex items-center border border-foreground/20">
+                            <button
+                              onClick={() => setQty(item.slug, item.size, item.qty - 1)}
+                              className="px-3 py-1 label hover:bg-foreground hover:text-background transition-colors"
+                              aria-label="Decrease"
+                            >
+                              −
+                            </button>
+                            <span className="label px-3 min-w-[2ch] text-center">{item.qty}</span>
+                            <button
+                              onClick={() => setQty(item.slug, item.size, item.qty + 1)}
+                              className="px-3 py-1 label hover:bg-foreground hover:text-background transition-colors"
+                              aria-label="Increase"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <button
+                            onClick={() => remove(item.slug, item.size)}
+                            className="label text-foreground/50 hover:text-foreground"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {enriched.length > 0 && (
+              <div className="border-t border-foreground/10 px-6 md:px-8 py-6 space-y-4">
+                <div className="flex items-baseline justify-between">
+                  <span className="label text-foreground/60">Subtotal</span>
+                  <span className="display text-2xl">€{subtotal}</span>
+                </div>
+                <p className="label text-foreground/50">Shipping and taxes calculated at checkout.</p>
+                <Link
+                  to="/checkout"
+                  onClick={() => setOpen(false)}
+                  className="block w-full bg-foreground text-background text-center px-6 py-5 label hover:opacity-90 transition-opacity"
+                >
+                  Checkout →
+                </Link>
+              </div>
+            )}
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
