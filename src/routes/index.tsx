@@ -11,6 +11,7 @@ import {
 } from "motion/react";
 import Lenis from "lenis";
 
+import { SiteNav } from "@/components/SiteNav";
 import hero from "@/assets/hero.jpg";
 import fabric from "@/assets/fabric.jpg";
 import p1Flat from "@/assets/p1-flat.jpg";
@@ -151,12 +152,6 @@ function Index() {
       <Waitlist />
       <Footer />
     </main>
-  );
-}
-
-function Nav() {
-  return (
-    <SiteNav />
   );
 }
 
