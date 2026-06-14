@@ -24,7 +24,7 @@ export function SiteNav() {
       }`}
     >
       <div className="grid grid-cols-[1fr_auto_1fr] items-center px-6 md:px-10 py-5">
-        <Link to="/" className="display text-2xl tracking-tighter">
+        <Link to="/home" className="display text-2xl tracking-tighter">
           6foot.
         </Link>
 
@@ -32,13 +32,13 @@ export function SiteNav() {
           <Link to="/shop" className="label hover:opacity-60 transition-opacity" activeProps={{ className: "label opacity-100" }}>
             Shop
           </Link>
-          <Link to="/" hash="blueprint" className="label hover:opacity-60 transition-opacity">
+          <Link to="/home" hash="blueprint" className="label hover:opacity-60 transition-opacity">
             Blueprint
           </Link>
           <Link to="/coming-soon" className="label hover:opacity-60 transition-opacity">
             Drop 002
           </Link>
-          <Link to="/" hash="waitlist" className="label hover:opacity-60 transition-opacity">
+          <Link to="/home" hash="waitlist" className="label hover:opacity-60 transition-opacity">
             Waitlist
           </Link>
         </nav>

@@ -78,18 +78,18 @@ function ShopIndex() {
 
       {/* Grid */}
       <section className="px-6 md:px-10 pt-16 pb-40">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-24">
-          {visible.map((p, i) => (
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:items-start lg:gap-6">
+          {visible.map((p) => (
             <motion.div
               key={p.slug}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10% 0px" }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className={i % 2 === 1 ? "md:mt-24" : ""}
+              className="h-full"
             >
-              <Link to="/shop/$slug" params={{ slug: p.slug }} className="group block">
-                <div className="relative aspect-[3/4] overflow-hidden">
+              <Link to="/shop/$slug" params={{ slug: p.slug }} className="group flex h-full flex-col">
+                <div className="relative aspect-[3/4] w-full overflow-hidden">
                   <img
                     src={p.flat}
                     alt={`${p.name} — flat lay`}
@@ -103,14 +103,14 @@ function ShopIndex() {
                     className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-100 ease-linear group-hover:opacity-100"
                   />
                 </div>
-                <div className="mt-5 flex items-start justify-between gap-6">
-                  <div className="flex items-baseline gap-4">
-                    <span className="label text-foreground/50">{p.n}</span>
-                    <h3 className="display text-2xl">{p.name}</h3>
+                <div className="mt-5 flex min-h-[4.5rem] items-start justify-between gap-4">
+                  <div className="flex min-w-0 items-baseline gap-3">
+                    <span className="label shrink-0 text-foreground/50">{p.n}</span>
+                    <h3 className="display text-xl lg:text-2xl">{p.name}</h3>
                   </div>
-                  <div className="text-right">
+                  <div className="shrink-0 text-right">
                     <p className="label text-foreground/50">Length {p.len}</p>
-                    <p className="display text-2xl mt-1">€{p.price}</p>
+                    <p className="display mt-1 text-xl lg:text-2xl">€{p.price}</p>
                   </div>
                 </div>
               </Link>

@@ -54,7 +54,7 @@ function Checkout() {
               Continue browsing <span className="h-px w-10 bg-foreground" />
             </Link>
             <button
-              onClick={() => navigate({ to: "/" })}
+              onClick={() => navigate({ to: "/home" })}
               className="label inline-flex items-center gap-3 hover:opacity-60"
             >
               Back home
