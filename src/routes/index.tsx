@@ -358,7 +358,7 @@ function ProductCard({
   product,
   offset,
 }: {
-  product: (typeof products)[number];
+  product: Product;
   offset: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -367,7 +367,12 @@ function ProductCard({
 
   return (
     <Reveal variant={shutter} className={offset ? "md:mt-32" : ""}>
-      <div ref={ref} className="group relative">
+      <Link
+        to="/shop/$slug"
+        params={{ slug: product.slug }}
+        ref={ref}
+        className="group relative block"
+      >
         <div className="relative aspect-[3/4] overflow-hidden">
           <motion.img
             src={product.flat}
@@ -394,10 +399,10 @@ function ProductCard({
           </div>
           <div className="text-right">
             <p className="label text-foreground/50">Length {product.len}</p>
-            <p className="display text-2xl mt-1">{product.price}</p>
+            <p className="display text-2xl mt-1">€{product.price}</p>
           </div>
         </div>
-      </div>
+      </Link>
     </Reveal>
   );
 }
