@@ -1,10 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
+import { useShopifyCheckout } from "@/hooks/useShopifyCheckout";
 import { useCart } from "@/lib/cart";
+import { useCustomerAuth } from "@/lib/customer-auth";
 import { productFitImageClass, formatPrice } from "@/lib/products";
+
+function GuestCheckoutLoginHint() {
+  const { session } = useCustomerAuth();
+
+  if (session.authenticated) return null;
+
+  return (
+    <p className="text-[11px] text-foreground/45">
+      Have an account?{" "}
+      <Link
+        to="/login"
+        className="underline underline-offset-2 transition-opacity hover:text-foreground/70"
+      >
+        Log in for faster checkout
+      </Link>
+    </p>
+  );
+}
 
 export function CartDrawer() {
   const { open, setOpen, enriched, setQty, remove, subtotal, count } = useCart();
+  const { checkout, loading, error } = useShopifyCheckout();
 
   return (
     <AnimatePresence>
@@ -120,13 +141,18 @@ export function CartDrawer() {
                   <span className="display text-2xl">{formatPrice(subtotal)}</span>
                 </div>
                 <p className="label text-foreground/50">Shipping and taxes calculated at checkout.</p>
-                <Link
-                  to="/checkout"
-                  onClick={() => setOpen(false)}
-                  className="block w-full bg-foreground text-background text-center px-6 py-5 label hover:opacity-90 transition-opacity"
+                {error && (
+                  <p className="text-sm text-destructive">{error}</p>
+                )}
+                <GuestCheckoutLoginHint />
+                <button
+                  type="button"
+                  onClick={checkout}
+                  disabled={loading}
+                  className="block w-full bg-foreground px-6 py-5 text-center label text-background transition-opacity hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
                 >
-                  Checkout →
-                </Link>
+                  {loading ? "Redirecting to checkout…" : "Checkout →"}
+                </button>
               </div>
             )}
           </motion.aside>

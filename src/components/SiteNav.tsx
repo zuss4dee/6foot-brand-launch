@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
+import { useCustomerAuth } from "@/lib/customer-auth";
 
 const mobileLinks = [
   { label: "Shop", to: "/shop" as const },
@@ -13,6 +14,7 @@ const mobileLinks = [
 
 export function SiteNav() {
   const { count, setOpen } = useCart();
+  const { session } = useCustomerAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -77,6 +79,12 @@ export function SiteNav() {
 
           <div className="justify-self-end flex items-center gap-4 md:gap-6">
             <span className="label text-foreground/50 hidden md:inline">UK / EN</span>
+            <Link
+              to={session.authenticated ? "/account" : "/login"}
+              className="label hidden touch-target items-center transition-opacity hover:opacity-60 sm:inline-flex"
+            >
+              {session.authenticated ? "Account" : "Log In"}
+            </Link>
             <button
               onClick={() => setOpen(true)}
               className="label touch-target inline-flex items-center justify-center gap-2 hover:opacity-60 transition-opacity"
@@ -134,6 +142,15 @@ export function SiteNav() {
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <Link
+                    to={session.authenticated ? "/account" : "/login"}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex min-h-11 items-center text-base lowercase transition-opacity hover:opacity-60"
+                  >
+                    {session.authenticated ? "Account" : "Log In"}
+                  </Link>
+                </li>
               </ul>
             </motion.nav>
           </>

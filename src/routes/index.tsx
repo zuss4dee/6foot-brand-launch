@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { useCart } from "@/lib/cart";
+import fabric from "@/assets/fabric.jpg";
 import launchLeft from "@/assets/launch-left-model.png";
 import launchRight from "@/assets/launch-right-model.png";
 
@@ -35,11 +36,7 @@ const heroEntrance = {
   panelCopy: { duration: 1, leftDelay: 0.55, rightDelay: 0.75 },
 };
 const ticker = [
-  "+2 inch hems",
-  "240gsm cotton",
-  "Proportioned blocks",
-  "Amsterdam studio",
-  "Drop 001 — SS26",
+  "COMPLIMENTARY UK SHIPPING OVER £150 // 240GSM HEAVYWEIGHT COTTON // ENGINEERED TALL BLOCKS // MANCHESTER STUDIO",
 ];
 
 const trustItems = [
@@ -68,6 +65,52 @@ const footerNav = {
     { label: "Cookies", href: "#" },
   ],
 };
+
+function LaunchHeroBackdrop() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 bg-white" />
+
+      <div
+        className="absolute inset-0 opacity-[0.55]"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, color-mix(in oklch, var(--color-foreground) 5%, transparent) 1px, transparent 1px),
+            linear-gradient(to bottom, color-mix(in oklch, var(--color-foreground) 5%, transparent) 1px, transparent 1px),
+            linear-gradient(to right, color-mix(in oklch, var(--color-foreground) 9%, transparent) 1px, transparent 1px),
+            linear-gradient(to bottom, color-mix(in oklch, var(--color-foreground) 9%, transparent) 1px, transparent 1px)
+          `,
+          backgroundSize: "24px 24px, 24px 24px, 96px 96px, 96px 96px",
+        }}
+      />
+
+      <div className="absolute inset-0 opacity-[0.14] mix-blend-multiply">
+        <img
+          src={fabric}
+          alt=""
+          className="h-full w-full scale-105 object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      <div className="absolute inset-x-0 top-[38%] h-px bg-foreground/[0.07] md:top-[42%]" />
+      <div className="absolute inset-x-0 bottom-[18%] h-px bg-foreground/[0.05] md:bottom-[22%]" />
+
+      <span className="absolute left-5 top-[5.25rem] h-5 w-5 border-l border-t border-foreground/15 md:left-10" />
+      <span className="absolute right-5 top-[5.25rem] h-5 w-5 border-r border-t border-foreground/15 md:right-10" />
+      <span className="absolute bottom-5 left-5 h-5 w-5 border-b border-l border-foreground/15 md:left-10" />
+      <span className="absolute bottom-5 right-5 h-5 w-5 border-b border-r border-foreground/15 md:right-10" />
+
+      <p className="label absolute left-6 top-[calc(5.25rem+1.25rem)] text-[9px] text-foreground/25 md:left-10">
+        +2&quot;
+      </p>
+      <p className="label absolute right-6 top-[calc(5.25rem+1.25rem)] text-[9px] text-foreground/25 md:right-10">
+        tall block
+      </p>
+    </div>
+  );
+}
 
 function LaunchHeroCenterLine() {
   return (
@@ -120,13 +163,13 @@ function LaunchHeroMeta() {
       className="pointer-events-none absolute inset-x-0 top-[4.75rem] z-30 hidden px-4 md:block md:top-[5.25rem] md:px-10"
     >
       <div className="grid grid-cols-1 items-start gap-2 pb-3 sm:grid-cols-2 sm:gap-4 md:pb-5">
-        <p className="label max-w-[14ch] text-foreground/50">
-          Chapter 01 — Proportioned essentials
+        <p className="label max-w-[18ch] text-foreground/50">
+          001 — PROPORTIONED ESSENTIALS
         </p>
         <p className="label text-foreground/50 sm:justify-self-end sm:text-right">
           Drop 001 / SS26
           <br />
-          Amsterdam studio
+          Manchester studio
         </p>
       </div>
     </motion.div>
@@ -261,8 +304,8 @@ function LaunchHeroHeadline() {
         {headline.map((word, index) => (
           <motion.span
             key={word}
-            initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: heroEntrance.headlineWord.duration,
               ease: [0.22, 1, 0.36, 1],
@@ -296,20 +339,7 @@ const exploreFlashTransition = {
 };
 
 const exploreGlowAnimate = {
-  color: [
-    "color-mix(in oklch, var(--color-foreground) 40%, transparent)",
-    "color-mix(in oklch, var(--color-foreground) 40%, transparent)",
-    "var(--color-foreground)",
-    "var(--color-foreground)",
-    "color-mix(in oklch, var(--color-foreground) 40%, transparent)",
-  ],
-  textShadow: [
-    "0 0 0 transparent",
-    "0 0 0 transparent",
-    "0 0 10px color-mix(in oklch, var(--color-foreground) 55%, transparent), 0 0 22px color-mix(in oklch, var(--color-foreground) 28%, transparent)",
-    "0 0 4px color-mix(in oklch, var(--color-foreground) 18%, transparent)",
-    "0 0 0 transparent",
-  ],
+  opacity: [0.45, 0.45, 1, 1, 0.45],
 };
 
 function LaunchHeroScrollCue() {
@@ -380,7 +410,7 @@ const launchSlides = [
     imageAlt: "Young Black man in black proportioned essentials",
     chapter: "Drop 001 / SS26",
     title: "The Capsule",
-    subtitle: 'Four proportioned essentials. Engineered +2" through the body.',
+    subtitle: 'Four proportioned staples. Engineered with a strict +2" drop through the torso.',
     cta: "Shop Now",
   },
   {
@@ -389,7 +419,7 @@ const launchSlides = [
     imageAlt: "Model in black proportioned essentials",
     chapter: "Drop 002 / AW26",
     title: "Coming Soon",
-    subtitle: "Next chapter of the tall block. Join the list for first access.",
+    subtitle: "The next iteration of the tall block. Join the registry for early allocations.",
     cta: "Join Waitlist",
   },
 ];
@@ -467,7 +497,7 @@ function LaunchMobileCarousel() {
           {launchSlides.map((slide) => (
             <section
               key={slide.title}
-              className="w-full shrink-0 border-b border-foreground/10 bg-background"
+              className="w-full shrink-0 border-b border-foreground/10 bg-transparent"
             >
               <div className="relative flex min-h-[62svh] items-end justify-center px-1 pt-2">
                 <img
@@ -517,12 +547,12 @@ function Launch() {
 
   return (
     <>
-      <main className="relative flex min-h-dvh flex-col bg-background text-foreground md:h-svh md:overflow-hidden">
+      <main className="relative flex min-h-dvh flex-col bg-white text-foreground md:h-svh md:overflow-hidden">
         <LaunchBrandDropLane />
         <LaunchHeader count={count} onOpenCart={() => setOpen(true)} />
 
         <div className="px-4 pt-[4.75rem] md:hidden">
-          <p className="label text-foreground/50">Chapter 01 — Drop 001 / SS26</p>
+          <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
           <h1 className="display mt-3 max-w-[12ch] text-[clamp(2rem,10vw,2.75rem)] leading-[0.9] tracking-tighter">
             Built for the tall frame.
           </h1>
@@ -535,6 +565,7 @@ function Launch() {
         </div>
 
         <LaunchHeroStage>
+          <LaunchHeroBackdrop />
           <LaunchHeroCenterLine />
           <LaunchHeroWatermark />
           <LaunchHeroMeta />
@@ -621,7 +652,7 @@ function LaunchPanel({ slide }: { slide: LaunchSlide }) {
   const alignRight = slide.side === "right";
 
   return (
-    <div className="relative min-h-0 flex-1 overflow-hidden bg-background">
+    <div className="relative min-h-0 flex-1 overflow-hidden bg-transparent">
       <div className="relative h-full min-h-0">
         <div
           aria-hidden
@@ -686,7 +717,7 @@ function LaunchFooter() {
             <p className="label mb-6 text-foreground/50">Newsletter</p>
             <h3 className="display mb-4 text-2xl md:text-3xl">Join the waitlist</h3>
             <p className="mb-6 max-w-[36ch] text-sm leading-relaxed text-foreground/65">
-              First access to Drop 001 and 002. No restocks, no markdowns, no marketing noise.
+              Priority access to Drop 001. No restocks. No markdowns. Zero noise.
             </p>
             {sent ? (
               <p className="display text-xl">Confirmed. Watch your inbox.</p>
@@ -728,7 +759,7 @@ function LaunchFooter() {
               ))}
               <li>
                 <Link to="/" className="text-base transition-opacity hover:opacity-60">
-                  About 6foot
+                  The Ethos
                 </Link>
               </li>
             </ul>
@@ -750,7 +781,7 @@ function LaunchFooter() {
           <div>
             <p className="label mb-6 text-foreground/50">Studio</p>
             <p className="text-base">studio@6foot.eu</p>
-            <p className="mt-2 text-base text-foreground/60">Amsterdam, NL</p>
+            <p className="mt-2 text-base text-foreground/60">Manchester, UK</p>
             <p className="label mt-8 text-foreground/45">Drop 001 — SS26</p>
             <p className="label mt-1 text-foreground/45">Built for the tall frame</p>
           </div>

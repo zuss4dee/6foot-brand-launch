@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Bookmark, ChevronDown, ChevronLeft, ChevronRight, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -18,6 +18,7 @@ import {
   type Product,
   type ProductImage,
 } from "@/lib/products";
+import { createShopifyCheckoutUrl } from "@/lib/shopify";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/shop/$slug")({
@@ -418,21 +419,29 @@ function ColorVariants({ product }: { product: Product }) {
 function BuyWithShopButton({
   onClick,
   disabled = false,
+  loading = false,
   className = "",
 }: {
   onClick: () => void;
   disabled?: boolean;
+  loading?: boolean;
   className?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || loading}
       className={`mt-2 flex w-full items-center justify-center gap-1 rounded-[4px] bg-[#5433EB] py-4 text-[14px] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 ${className}`}
     >
-      <span>Buy with</span>
-      <span className="font-semibold tracking-tight">shop</span>
+      {loading ? (
+        <span>Redirecting…</span>
+      ) : (
+        <>
+          <span>Buy with</span>
+          <span className="font-semibold tracking-tight">shop</span>
+        </>
+      )}
     </button>
   );
 }
@@ -526,8 +535,9 @@ function ProductPage() {
   const [openSection, setOpenSection] = useState<SectionKey | null>("details");
   const [memberEmail, setMemberEmail] = useState("");
   const [memberSent, setMemberSent] = useState(false);
+  const [shopLoading, setShopLoading] = useState(false);
+  const [shopError, setShopError] = useState<string | null>(null);
   const { add, setOpen } = useCart();
-  const navigate = useNavigate();
 
   useEffect(() => {
     setActiveShot(0);
@@ -546,11 +556,19 @@ function ProductPage() {
     setTimeout(() => setAdded(false), 1800);
   };
 
-  const handleBuyWithShop = () => {
-    if (!size) return;
-    add(product.slug, size, 1);
-    setOpen(false);
-    navigate({ to: "/checkout" });
+  const handleBuyWithShop = async () => {
+    if (!size || shopLoading) return;
+    setShopLoading(true);
+    setShopError(null);
+    try {
+      const checkoutUrl = await createShopifyCheckoutUrl([
+        { item: { slug: product.slug, size, qty: 1 }, product },
+      ]);
+      window.location.href = checkoutUrl;
+    } catch (err) {
+      setShopError(err instanceof Error ? err.message : "Checkout failed.");
+      setShopLoading(false);
+    }
   };
 
   const handleShare = async () => {
@@ -685,8 +703,13 @@ function ProductPage() {
           <BuyWithShopButton
             onClick={handleBuyWithShop}
             disabled={!size}
+            loading={shopLoading}
             className="hidden md:flex"
           />
+
+          {shopError && (
+            <p className="mt-2 hidden text-[11px] text-destructive md:block">{shopError}</p>
+          )}
 
           <div className="mt-8 hidden border-t border-foreground/10 md:block">
             <ProductAccordions
@@ -844,9 +867,13 @@ function ProductPage() {
             <BuyWithShopButton
               onClick={handleBuyWithShop}
               disabled={!size}
+              loading={shopLoading}
               className="mt-0 py-3 text-[12px]"
             />
           </div>
+          {shopError && (
+            <p className="col-span-2 text-center text-[10px] text-destructive">{shopError}</p>
+          )}
         </div>
       </div>
 
