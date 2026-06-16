@@ -11,7 +11,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 function getLaunchTargetMs() {
   const target = new Date();
-  target.setMonth(target.getMonth() + 6);
+  target.setDate(target.getDate() + 90);
   return target.getTime();
 }
 
