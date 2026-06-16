@@ -1,15 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { Bookmark, SlidersHorizontal, X } from "lucide-react";
+import { Plus, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { useCart } from "@/lib/cart";
 import {
   formatPrice,
+  getColorVariants,
+  getProductColorHex,
+  getSectionPieceCount,
+  getSectionProducts,
   products,
-  productGridImageClass,
+  productGridRepresentImageClass,
+  shopSections,
   type Product,
   type ProductCategory,
+  type ShopEditorialItem,
+  type ShopSection,
 } from "@/lib/products";
 
 export const Route = createFileRoute("/shop/")({
@@ -33,10 +40,17 @@ export const Route = createFileRoute("/shop/")({
 
 type SortKey = "featured" | "price-asc" | "price-desc" | "name";
 type FilterKey = "all" | ProductCategory;
+type GridCols = 2 | 3 | 4;
 
-function filterProducts(key: FilterKey): Product[] {
-  if (key === "all") return products;
-  return products.filter((p) => p.category === key);
+const gridClass: Record<GridCols, string> = {
+  2: "grid-cols-2",
+  3: "grid-cols-2 lg:grid-cols-3",
+  4: "grid-cols-2 lg:grid-cols-4",
+};
+
+function filterProducts(key: FilterKey, catalog: Product[]): Product[] {
+  if (key === "all") return catalog;
+  return catalog.filter((p) => p.category === key);
 }
 
 function sortProducts(items: Product[], sort: SortKey): Product[] {
@@ -47,123 +61,277 @@ function sortProducts(items: Product[], sort: SortKey): Product[] {
   return next;
 }
 
-function ProductCell({ product }: { product: Product }) {
-  const [size, setSize] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
-  const { add, setOpen } = useCart();
-
-  const handleSelectSize = () => {
-    if (!size) return;
-    add(product.slug, size, 1);
-    setOpen(true);
-  };
-
-  const modelNote =
-    product.category === "bottoms"
-      ? "model is 6'4 / 1.93m and wears a 34"
-      : "model is 6'4 / 1.93m and wears a large";
+function ColorSwatches({ product }: { product: Product }) {
+  const variants = getColorVariants(product);
+  const visible = variants.slice(0, 4);
+  const extra = variants.length - visible.length;
 
   return (
-    <article className="group border-b border-r border-foreground bg-background">
-      <div className="relative min-h-[62svh] overflow-hidden bg-background sm:aspect-[3/4] sm:min-h-0">
-        <span className="absolute left-3 top-3 z-10 text-[10px] lowercase tracking-wide text-foreground">
-          {product.badge ?? "new:in"}
+    <div className="mt-2 flex items-center gap-1.5">
+      {visible.map((variant) => (
+        <Link
+          key={variant.slug}
+          to="/shop/$slug"
+          params={{ slug: variant.slug }}
+          aria-label={`${variant.name} in ${variant.color}`}
+          className={`h-3.5 w-3.5 rounded-full border border-foreground/15 transition-transform hover:scale-110 ${
+            variant.slug === product.slug ? "ring-1 ring-foreground ring-offset-1" : ""
+          }`}
+          style={{ backgroundColor: getProductColorHex(variant.color) }}
+        />
+      ))}
+      {extra > 0 ? (
+        <span className="text-[10px] lowercase text-foreground/45">+{extra} colours</span>
+      ) : null}
+    </div>
+  );
+}
+
+function ShopToolbar({
+  gridCols,
+  setGridCols,
+  onOpenFilter,
+}: {
+  gridCols: GridCols;
+  setGridCols: (cols: GridCols) => void;
+  onOpenFilter: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between border-y border-foreground/10 px-4 py-3 md:px-6">
+      <div className="flex items-center gap-3">
+        <span className="text-[11px] lowercase text-foreground/45">view</span>
+        <div className="flex items-center gap-1.5">
+          {([2, 3, 4] as const).map((cols) => (
+            <button
+              key={cols}
+              type="button"
+              aria-label={`${cols} column grid`}
+              aria-pressed={gridCols === cols}
+              onClick={() => setGridCols(cols)}
+              className={`inline-flex items-center gap-0.5 rounded-sm p-1 transition-colors ${
+                gridCols === cols ? "text-foreground" : "text-foreground/30 hover:text-foreground/60"
+              }`}
+            >
+              {Array.from({ length: cols > 3 ? 4 : cols }, (_, index) => (
+                <span
+                  key={index}
+                  className={`block h-2.5 w-2.5 border border-current ${
+                    cols === 4 && index === 3 ? "hidden sm:block" : ""
+                  }`}
+                />
+              ))}
+            </button>
+          ))}
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onOpenFilter}
+        className="inline-flex items-center gap-2 text-[11px] lowercase text-foreground/70 transition-opacity hover:text-foreground"
+      >
+        filter
+        <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.5} />
+      </button>
+    </div>
+  );
+}
+
+function CollectionSectionIntro({
+  section,
+  pieceCount,
+  imageRight = false,
+}: {
+  section: ShopSection;
+  pieceCount: number;
+  imageRight?: boolean;
+}) {
+  if (!section.introImage) return null;
+
+  return (
+    <div className="grid border-t border-foreground md:grid-cols-2">
+      <div
+        className={`relative min-h-[min(52svh,620px)] overflow-hidden bg-foreground/[0.04] md:min-h-[min(68vh,780px)] ${
+          imageRight ? "md:order-2 md:border-l md:border-foreground" : "md:border-r md:border-foreground"
+        }`}
+      >
+        <img
+          src={section.introImage}
+          alt={section.introImageAlt ?? section.title}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-contain object-bottom p-4 md:p-8"
+        />
+        <span className="label pointer-events-none absolute bottom-4 left-4 text-foreground/25 md:bottom-6 md:left-6">
+          +2&quot;
         </span>
+        <span className="label pointer-events-none absolute bottom-4 right-4 text-foreground/25 md:bottom-6 md:right-6">
+          tall block
+        </span>
+      </div>
+
+      <div
+        className={`flex min-h-[220px] flex-col justify-between border-t border-foreground px-4 py-8 md:min-h-0 md:border-t-0 md:px-8 md:py-10 lg:px-10 ${
+          imageRight ? "md:order-1" : ""
+        }`}
+      >
+        <div>
+          <p className="label text-foreground/35">{section.eyebrow}</p>
+          <h2 className="display mt-2 text-[clamp(1.75rem,5vw,2.75rem)] leading-[0.95] tracking-tight">
+            {section.title}
+          </h2>
+          {section.description ? (
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-foreground/65">
+              {section.description}
+            </p>
+          ) : null}
+        </div>
+        <p className="label mt-8 text-foreground/40">{pieceCount} pieces</p>
+      </div>
+    </div>
+  );
+}
+
+function EditorialCell({ item }: { item: ShopEditorialItem }) {
+  return (
+    <article className="group border-b border-r border-foreground/10 bg-background">
+      <div className="relative aspect-[3/4] overflow-hidden bg-foreground/[0.04]">
+        <span className="absolute bottom-3 left-3 z-10 bg-background px-2 py-1 text-[10px] lowercase tracking-wide text-foreground shadow-sm">
+          coming soon
+        </span>
+        <Link
+          to={item.to}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <img
+            src={item.image}
+            alt={item.title}
+            loading="lazy"
+            className={productGridRepresentImageClass}
+          />
+        </Link>
+      </div>
+      <div className="px-3 py-3">
+        <Link to={item.to} className="text-sm text-foreground hover:opacity-60">
+          {item.title}
+        </Link>
+        <p className="mt-1 text-xs text-foreground/50">{item.subtitle}</p>
+      </div>
+    </article>
+  );
+}
+
+function CollectionSection({
+  section,
+  items,
+  editorialItems = [],
+  gridCols,
+  imageRight = false,
+}: {
+  section: ShopSection;
+  items: Product[];
+  editorialItems?: ShopEditorialItem[];
+  gridCols: GridCols;
+  imageRight?: boolean;
+}) {
+  if (items.length === 0 && editorialItems.length === 0) return null;
+
+  return (
+    <section id={section.id} className="scroll-mt-28">
+      <CollectionSectionIntro
+        section={section}
+        pieceCount={items.length + editorialItems.length}
+        imageRight={imageRight}
+      />
+      <div className={`grid border-t border-foreground/10 ${gridClass[gridCols]}`}>
+        {items.map((product) => (
+          <ProductCell key={product.slug} product={product} />
+        ))}
+        {editorialItems.map((item) => (
+          <EditorialCell key={item.title} item={item} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProductCell({ product }: { product: Product }) {
+  const [quickOpen, setQuickOpen] = useState(false);
+  const { add, setOpen } = useCart();
+
+  const handleQuickAdd = (size: string) => {
+    add(product.slug, size, 1);
+    setOpen(true);
+    setQuickOpen(false);
+  };
+
+  return (
+    <article className="group border-b border-r border-foreground/10 bg-background">
+      <div className="relative aspect-[3/4] overflow-hidden bg-foreground/[0.04]">
+        {product.badge ? (
+          <span className="absolute bottom-3 left-3 z-10 bg-background px-2 py-1 text-[10px] lowercase tracking-wide text-foreground shadow-sm">
+            {product.badge}
+          </span>
+        ) : null}
+
         <button
           type="button"
-          aria-label="Add to wishlist"
-          onClick={() => setSaved((v) => !v)}
-          className="absolute right-3 top-3 z-10 text-foreground transition-opacity hover:opacity-60"
+          aria-label="Quick add"
+          aria-expanded={quickOpen}
+          onClick={() => setQuickOpen((open) => !open)}
+          className="absolute bottom-3 right-3 z-10 flex h-8 w-8 items-center justify-center bg-background text-foreground shadow-sm transition-opacity hover:opacity-70"
         >
-          <Bookmark className={`h-4 w-4 ${saved ? "fill-foreground" : ""}`} strokeWidth={1.25} />
+          <Plus className="h-4 w-4" strokeWidth={1.5} />
         </button>
 
         <Link
           to="/shop/$slug"
           params={{ slug: product.slug }}
-          className="absolute inset-0 flex items-end justify-center px-1 pb-1 pt-6 md:px-2 md:pt-8"
+          className="absolute inset-0 flex items-center justify-center"
         >
           <img
             src={product.model}
             alt={product.name}
             loading="lazy"
-            className={productGridImageClass}
+            className={productGridRepresentImageClass}
           />
         </Link>
+
+        <AnimatePresence>
+          {quickOpen ? (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="absolute inset-x-0 bottom-0 z-20 border-t border-foreground/10 bg-background/95 px-3 py-3 backdrop-blur-sm"
+            >
+              <p className="text-[10px] lowercase text-foreground/45">select size</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {product.sizes.map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => handleQuickAdd(size)}
+                    className="min-w-8 border border-foreground/15 px-2 py-1 text-[11px] lowercase transition-colors hover:border-foreground hover:bg-foreground hover:text-background"
+                  >
+                    {size.toLowerCase()}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </div>
 
-      <div className="border-t border-foreground">
-        <div className="flex items-center justify-between gap-2 px-3 py-2.5 md:hidden">
-          <Link
-            to="/shop/$slug"
-            params={{ slug: product.slug }}
-            className="min-w-0 truncate text-[11px] lowercase text-foreground"
-          >
-            {product.name.toLowerCase()}
-          </Link>
-          <span className="shrink-0 text-[11px]">{formatPrice(product.price)}</span>
-        </div>
-
-        <div className="hidden items-center justify-between px-3 py-2 md:flex md:group-hover:hidden">
-          <span className="text-xs text-foreground/35">—</span>
-          <span className="text-xs lowercase text-foreground">{product.color.toLowerCase()}</span>
-        </div>
-
-        <div className="hidden p-3 md:group-hover:block">
-          <Link
-            to="/shop/$slug"
-            params={{ slug: product.slug }}
-            className="text-sm lowercase leading-snug text-foreground hover:opacity-60"
-          >
-            {product.name.toLowerCase()}
-          </Link>
-
-          <p className="mt-2 text-[11px] leading-relaxed text-foreground/55">{modelNote}</p>
-
-          <button
-            type="button"
-            className="mt-2 text-[11px] lowercase underline underline-offset-2 text-foreground/70"
-          >
-            size guide
-          </button>
-
-          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-            {product.sizes.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSize(s)}
-                className={`text-[11px] lowercase transition-opacity ${
-                  size === s ? "text-foreground" : "text-foreground/40 hover:text-foreground/70"
-                }`}
-              >
-                {s.toLowerCase()}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <p className="text-sm text-foreground">{formatPrice(product.price)}</p>
-            <div className="flex items-center gap-3">
-              <Link
-                to="/shop/$slug"
-                params={{ slug: product.slug }}
-                className="text-[11px] lowercase underline underline-offset-2 text-foreground/70 hover:text-foreground"
-              >
-                view product
-              </Link>
-              <button
-                type="button"
-                onClick={handleSelectSize}
-                className={`text-[11px] lowercase underline underline-offset-2 ${
-                  size ? "text-foreground" : "text-foreground/40"
-                }`}
-              >
-                {size ? "add to bag" : "select size"}
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className="px-3 py-3">
+        <Link
+          to="/shop/$slug"
+          params={{ slug: product.slug }}
+          className="text-sm leading-snug text-foreground hover:opacity-60"
+        >
+          {product.name}
+        </Link>
+        <p className="mt-1 text-xs text-foreground/50">{product.color}</p>
+        <ColorSwatches product={product} />
+        <p className="mt-2 text-sm text-foreground">{formatPrice(product.price)}</p>
       </div>
     </article>
   );
@@ -284,47 +452,112 @@ function ShopIndex() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [sort, setSort] = useState<SortKey>("featured");
+  const [gridCols, setGridCols] = useState<GridCols>(2);
+  const [pageExpanded, setPageExpanded] = useState(false);
 
-  const visible = useMemo(
-    () => sortProducts(filterProducts(filter), sort),
+  const filteredProducts = useMemo(
+    () => sortProducts(filterProducts(filter, products), sort),
     [filter, sort],
   );
+
+  const visibleSlugs = useMemo(
+    () => new Set(filteredProducts.map((product) => product.slug)),
+    [filteredProducts],
+  );
+
+  const sections = useMemo(
+    () =>
+      shopSections
+        .map((section) => ({
+          section,
+          items: sortProducts(
+            getSectionProducts(section).filter((product) => visibleSlugs.has(product.slug)),
+            sort,
+          ),
+          editorialItems:
+            filter === "all" && sort === "featured" ? (section.editorialItems ?? []) : [],
+        }))
+        .filter(
+          ({ items, editorialItems }) => items.length > 0 || editorialItems.length > 0,
+        ),
+    [filter, sort, visibleSlugs],
+  );
+
+  const totalVisible = sections.reduce(
+    (count, { items, editorialItems }) => count + items.length + editorialItems.length,
+    0,
+  );
+
+  const pageDescription =
+    "Proportioned essentials for the tall frame. Shop Drop 001 or explore what's coming from AW26.";
 
   return (
     <main className="min-h-screen overflow-x-clip bg-background text-foreground">
       <SiteNav />
 
-      <header className="nav-offset px-4 pb-4 md:px-6 md:pb-5">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setFilterOpen(true)}
-            className="inline-flex items-center gap-2 text-[11px] lowercase text-foreground/70 transition-opacity hover:text-foreground md:text-xs"
-          >
-            filter + sort
-            <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.5} />
-          </button>
-          <p className="text-[11px] lowercase text-foreground/45 md:text-xs">
-            {visible.length} products
+      <header className="nav-offset px-4 md:px-6">
+        <div className="mx-auto max-w-[1600px] border-b border-foreground/10 py-6 md:py-8">
+          <div className="flex items-start gap-1">
+            <h1 className="display text-[clamp(1.75rem,5vw,2.5rem)] leading-none tracking-tight">
+              Capsule &apos;26
+            </h1>
+            <span className="mt-0.5 text-[10px] text-foreground/40">{totalVisible}</span>
+          </div>
+
+          <div className="mt-3 max-w-2xl">
+            <p className="text-sm leading-relaxed text-foreground/70">
+              {pageExpanded || pageDescription.length <= 96
+                ? pageDescription
+                : `${pageDescription.slice(0, 96)}…`}
+            </p>
+            <button
+              type="button"
+              onClick={() => setPageExpanded((value) => !value)}
+              className="mt-2 text-[11px] lowercase text-foreground/45 underline underline-offset-2 hover:text-foreground"
+            >
+              {pageExpanded ? "read less" : "read more"}
+            </button>
+          </div>
+
+          <p className="mt-4 text-[11px] leading-relaxed text-foreground/55">
+            {shopSections.map((section, index) => (
+              <span key={section.id}>
+                {index > 0 ? <span className="text-foreground/25"> / </span> : null}
+                <a
+                  href={`#${section.id}`}
+                  className="underline underline-offset-2 transition-colors hover:text-foreground"
+                >
+                  view {section.title.toLowerCase()}
+                </a>
+                <span className="text-foreground/30"> ({getSectionPieceCount(section)})</span>
+              </span>
+            ))}
           </p>
         </div>
 
-        <h1 className="mx-auto mt-4 max-w-[1600px] text-center text-base font-normal lowercase tracking-normal text-foreground md:text-lg">
-          6foot // capsule &apos;26
-        </h1>
+        <ShopToolbar
+          gridCols={gridCols}
+          setGridCols={setGridCols}
+          onOpenFilter={() => setFilterOpen(true)}
+        />
       </header>
 
-      <section className="mx-auto max-w-[1600px] border-l border-t border-foreground">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-          {visible.map((product) => (
-            <ProductCell key={product.slug} product={product} />
-          ))}
-        </div>
-      </section>
+      <div className="mx-auto max-w-[1600px] border-l border-foreground/10">
+        {sections.map(({ section, items, editorialItems }, index) => (
+          <CollectionSection
+            key={section.id}
+            section={section}
+            items={items}
+            editorialItems={editorialItems}
+            gridCols={gridCols}
+            imageRight={index % 2 === 1}
+          />
+        ))}
+      </div>
 
       <footer className="mx-auto max-w-[1600px] px-4 py-8 text-center md:py-10">
         <p className="text-[11px] lowercase text-foreground/45">
-          viewing {visible.length} out of {visible.length} products
+          viewing {totalVisible} pieces across {sections.length} collections
         </p>
         <Link
           to="/"
@@ -341,7 +574,7 @@ function ShopIndex() {
         setFilter={setFilter}
         sort={sort}
         setSort={setSort}
-        count={visible.length}
+        count={filteredProducts.length}
       />
     </main>
   );

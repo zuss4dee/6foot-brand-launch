@@ -62,6 +62,18 @@ export function getColorVariants(product: Product) {
   return products.filter((p) => p.name === product.name);
 }
 
+const productColorHex: Record<string, string> = {
+  "Off-white": "#f2efe8",
+  Black: "#141414",
+  Charcoal: "#4a4a4a",
+  Stone: "#b8b0a4",
+  Olive: "#5c6348",
+};
+
+export function getProductColorHex(color: string) {
+  return productColorHex[color] ?? "#d4d4d4";
+}
+
 export function getRelatedProducts(product: Product, limit = 4) {
   const sameCategory = products.filter(
     (p) => p.slug !== product.slug && p.category === product.category,
@@ -337,6 +349,121 @@ export const products: Product[] = [
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
+
+export type ShopEditorialItem = {
+  title: string;
+  subtitle: string;
+  image: string;
+  to: "/coming-soon";
+};
+
+export type ShopSection = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description?: string;
+  introImage?: string;
+  introImageAlt?: string;
+  slugs: string[];
+  editorialItems?: ShopEditorialItem[];
+};
+
+export const shopSections: ShopSection[] = [
+  {
+    id: "drop-001",
+    eyebrow: "Drop 001 / SS26",
+    title: "The Capsule",
+    description:
+      "Four proportioned staples. Engineered with a strict +2\" drop through the torso.",
+    introImage: launchRight,
+    introImageAlt: "Model in Drop 001 proportioned essentials",
+    slugs: ["long-tee", "heavy-hoodie", "wide-trouser", "long-sleeve"],
+  },
+  {
+    id: "tees-layering",
+    eyebrow: "Collection 02",
+    title: "Tees & Layering",
+    description: "240gsm foundations, longline blocks, and wrist-true cuffs.",
+    introImage: launchLeft,
+    introImageAlt: "Side view — tees and layering",
+    slugs: ["long-tee-black", "long-sleeve-black", "tall-tank", "heavyweight-crew"],
+  },
+  {
+    id: "hoodies",
+    eyebrow: "Collection 03",
+    title: "Hoodies & Zip Layers",
+    description: "480gsm loopback with elongated torso and deep hood.",
+    introImage: launchMaleTransparent,
+    introImageAlt: "Model in heavyweight hoodie layer",
+    slugs: ["zip-hoodie", "heavyweight-crew"],
+  },
+  {
+    id: "bottoms",
+    eyebrow: "Collection 04",
+    title: "Bottoms",
+    description: "Extended inseams, wide legs, and utility cuts for height.",
+    introImage: launchMaleCutout,
+    introImageAlt: "Full-length view — proportioned bottoms",
+    slugs: ["wide-trouser", "wide-trouser-black", "carpenter-pant"],
+  },
+  {
+    id: "outerwear",
+    eyebrow: "Collection 05",
+    title: "Outerwear",
+    description: "Proportioned shells built past the hip line.",
+    introImage: launchFemaleTransparent,
+    introImageAlt: "Model in outerwear silhouette",
+    slugs: ["coach-jacket"],
+  },
+  {
+    id: "drop-002",
+    eyebrow: "Drop 002 / AW26",
+    title: "Shop the Edit",
+    description: "The next iteration of the tall block. Registry opens first.",
+    introImage: launchFemaleCutout,
+    introImageAlt: "AW26 editorial preview",
+    slugs: [],
+    editorialItems: [
+      {
+        title: "AW26 Look I",
+        subtitle: "proportioned block",
+        image: launchLeft,
+        to: "/coming-soon",
+      },
+      {
+        title: "AW26 Look II",
+        subtitle: "tall frame edit",
+        image: launchRight,
+        to: "/coming-soon",
+      },
+      {
+        title: "AW26 Look III",
+        subtitle: "studio preview",
+        image: launchMaleCutout,
+        to: "/coming-soon",
+      },
+      {
+        title: "AW26 Look IV",
+        subtitle: "registry early access",
+        image: launchFemaleCutout,
+        to: "/coming-soon",
+      },
+    ],
+  },
+];
+
+export function getSectionProducts(section: ShopSection): Product[] {
+  return section.slugs
+    .map((slug) => getProduct(slug))
+    .filter((product): product is Product => Boolean(product));
+}
+
+export function getSectionPieceCount(section: ShopSection) {
+  return section.slugs.length + (section.editorialItems?.length ?? 0);
+}
+
+export const productGridRepresentImageClass =
+  "h-full w-full object-contain object-center p-4 md:p-6";
 
 export const productFitImageClass =
   "max-h-full w-auto max-w-full object-contain object-bottom max-md:mx-auto max-md:h-[min(58vh,640px)] max-md:max-w-[96%]";
