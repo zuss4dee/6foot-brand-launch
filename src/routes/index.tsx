@@ -469,7 +469,7 @@ function LaunchMobileCarousel() {
 
   return (
     <div className="relative z-[12] overflow-hidden nav-offset md:hidden">
-      <div className="px-4 pb-4">
+      <div className="px-4 pb-3">
         <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
         <h1 className="display mt-2 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
           Built for the tall frame.
@@ -478,7 +478,7 @@ function LaunchMobileCarousel() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-          className="mt-6"
+          className="mt-5"
         >
           <LaunchShopButton id="launch-shop-now-mobile" />
         </motion.div>
@@ -495,13 +495,13 @@ function LaunchMobileCarousel() {
               key={slide.title}
               className="w-full shrink-0 border-b border-foreground/10 bg-transparent"
             >
-              <div className="flex min-h-[62svh] items-end justify-center px-1 pt-2">
+              <div className="flex h-[min(calc(100svh-10.5rem-env(safe-area-inset-top)),940px)] items-end justify-center px-0">
                 <img
                   src={slide.image}
                   alt={slide.imageAlt}
                   decoding="async"
                   draggable={false}
-                  className="h-[min(60svh,760px)] w-auto max-w-full object-contain object-bottom"
+                  className="h-full w-auto max-w-full object-contain object-bottom"
                 />
               </div>
               <div className="border-t border-foreground/10 px-4 py-6">
