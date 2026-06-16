@@ -55,21 +55,23 @@ export function CartDrawer() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6">
+            <div className="flex min-h-0 flex-1 flex-col px-6 md:px-8">
               {enriched.length === 0 ? (
-                <div className="flex flex-col items-start gap-6 py-10">
-                  <p className="display text-3xl leading-tight">Your bag is empty.</p>
-                  <Link
-                    to="/shop"
+                <div className="flex flex-1 flex-col items-center justify-center text-center">
+                  <p className="mb-4 text-sm uppercase tracking-widest text-foreground">
+                    YOUR BAG IS CURRENTLY EMPTY.
+                  </p>
+                  <button
+                    type="button"
                     onClick={() => setOpen(false)}
-                    className="label inline-flex items-center gap-3"
+                    className="text-xs uppercase tracking-wider text-neutral-500 underline underline-offset-4 transition-opacity hover:opacity-70"
                   >
-                    Browse the capsule
-                    <span className="h-px w-10 bg-foreground" />
-                  </Link>
+                    RETURN TO ESSENTIALS
+                  </button>
                 </div>
               ) : (
-                <ul className="space-y-8">
+                <div className="flex-1 overflow-y-auto py-6">
+                  <ul className="space-y-8">
                   {enriched.map(({ item, product }) => (
                     <li
                       key={`${item.slug}-${item.size}`}
@@ -146,7 +148,8 @@ export function CartDrawer() {
                       </div>
                     </li>
                   ))}
-                </ul>
+                  </ul>
+                </div>
               )}
             </div>
 

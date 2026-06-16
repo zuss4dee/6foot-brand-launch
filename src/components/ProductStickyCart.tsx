@@ -10,6 +10,7 @@ type ProductStickyCartProps = {
   setSize: (size: string) => void;
   onAdd: () => void;
   added: boolean;
+  soldOut?: boolean;
   onBuyWithShop: () => void;
   shopLoading: boolean;
   shopError: string | null;
@@ -20,11 +21,25 @@ function BuyWithShopCompact({
   onClick,
   disabled,
   loading,
+  soldOut = false,
 }: {
   onClick: () => void;
   disabled: boolean;
   loading: boolean;
+  soldOut?: boolean;
 }) {
+  if (soldOut) {
+    return (
+      <button
+        type="button"
+        disabled
+        className="flex items-center justify-center px-4 py-3 text-[11px] uppercase tracking-widest text-neutral-400"
+      >
+        SOLD OUT
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -50,6 +65,7 @@ export function ProductStickyCart({
   setSize,
   onAdd,
   added,
+  soldOut = false,
   onBuyWithShop,
   shopLoading,
   shopError,
@@ -105,17 +121,24 @@ export function ProductStickyCart({
             <motion.button
               type="button"
               onClick={onAdd}
-              disabled={!size}
-              whileTap={{ scale: size ? 0.99 : 1 }}
-              className={`py-3 text-[11px] lowercase md:min-w-[10rem] ${
-                size
-                  ? "bg-foreground text-background hover:opacity-90"
-                  : "cursor-not-allowed bg-foreground/10 text-foreground/40"
+              disabled={!size || soldOut}
+              whileTap={{ scale: size && !soldOut ? 0.99 : 1 }}
+              className={`py-3 text-[11px] uppercase tracking-widest md:min-w-[10rem] ${
+                soldOut
+                  ? "cursor-not-allowed text-neutral-400"
+                  : size
+                    ? "bg-foreground text-background hover:opacity-90"
+                    : "cursor-not-allowed bg-foreground/10 text-foreground/40"
               }`}
             >
-              {added ? "added to bag" : "add to bag"}
+              {soldOut ? "SOLD OUT" : added ? "added to bag" : "add to bag"}
             </motion.button>
-            <BuyWithShopCompact onClick={onBuyWithShop} disabled={!size} loading={shopLoading} />
+            <BuyWithShopCompact
+              onClick={onBuyWithShop}
+              disabled={!size}
+              soldOut={soldOut}
+              loading={shopLoading}
+            />
           </div>
         </div>
       </div>

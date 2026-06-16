@@ -17,26 +17,21 @@ import { CustomerAuthProvider } from "../lib/customer-auth";
 import { CartDrawer } from "../components/CartDrawer";
 import { CookieBanner } from "../components/CookieBanner";
 import { DiscountEmailPopup } from "../components/DiscountEmailPopup";
-import { initShopifyAnalytics, trackPageView } from "../lib/analytics";
+import { initAnalytics, trackPageView } from "../lib/analytics";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
+      <h1 className="mb-2 text-7xl font-extralight tracking-tighter text-black">404</h1>
+      <p className="mb-8 text-xs uppercase tracking-widest text-neutral-400">
+        THE REQUESTED PATH DOES NOT EXIST.
+      </p>
+      <Link
+        to="/"
+        className="bg-black px-8 py-3 text-xs uppercase tracking-widest text-white transition-opacity hover:opacity-80"
+      >
+        RETURN TO STUDIO
+      </Link>
     </div>
   );
 }
@@ -138,7 +133,7 @@ function RootComponent() {
   const location = useRouterState({ select: (state) => state.location.href });
 
   useEffect(() => {
-    void initShopifyAnalytics();
+    void initAnalytics();
   }, []);
 
   useEffect(() => {

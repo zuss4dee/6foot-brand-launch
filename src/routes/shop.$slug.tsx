@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
 import { Bookmark, ChevronDown, ChevronLeft, ChevronRight, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -21,7 +22,7 @@ import {
   type ProductImage,
 } from "@/lib/products";
 import { trackAddToCart, trackProductView } from "@/lib/analytics";
-import { createShopifyCheckoutUrl } from "@/lib/shopify";
+import { createShopifyCheckoutUrl, fetchProductVariantAvailability } from "@/lib/shopify";
 import { resolveMerchandiseId } from "@/lib/shopify-variants";
 import { useCart } from "@/lib/cart";
 
@@ -371,13 +372,27 @@ function BuyWithShopButton({
   onClick,
   disabled = false,
   loading = false,
+  soldOut = false,
   className = "",
 }: {
   onClick: () => void;
   disabled?: boolean;
   loading?: boolean;
+  soldOut?: boolean;
   className?: string;
 }) {
+  if (soldOut) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={`mt-2 flex w-full items-center justify-center py-4 text-[11px] uppercase tracking-widest text-neutral-400 ${className}`}
+      >
+        SOLD OUT
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -483,6 +498,14 @@ function ProductPage() {
   const [shopError, setShopError] = useState<string | null>(null);
   const { add, setOpen } = useCart();
 
+  const { data: availability } = useQuery({
+    queryKey: ["shopify-availability", product.slug],
+    queryFn: () => fetchProductVariantAvailability(product.slug, product.sizes),
+    staleTime: 30_000,
+  });
+
+  const isSelectedSoldOut = Boolean(size && availability && availability[size] === false);
+
   useEffect(() => {
     setActiveShot(0);
     setSize(null);
@@ -502,7 +525,7 @@ function ProductPage() {
   const shopTheLook = products.filter((p) => p.slug !== product.slug).slice(0, 3);
 
   const handleAdd = () => {
-    if (!size) return;
+    if (!size || isSelectedSoldOut) return;
     add(product.slug, size, 1);
     const variantGid = resolveMerchandiseId(product.slug, size);
     if (variantGid) {
@@ -522,7 +545,7 @@ function ProductPage() {
   };
 
   const handleBuyWithShop = async () => {
-    if (!size || shopLoading) return;
+    if (!size || shopLoading || isSelectedSoldOut) return;
     setShopLoading(true);
     setShopError(null);
     const variantGid = resolveMerchandiseId(product.slug, size);
@@ -667,19 +690,22 @@ function ProductPage() {
           <motion.button
             type="button"
             onClick={handleAdd}
-            disabled={!size}
-            whileTap={{ scale: size ? 0.99 : 1 }}
-            className={`mt-6 hidden w-full py-4 text-[11px] lowercase md:block ${
-              size
-                ? "bg-foreground text-background hover:opacity-90"
-                : "cursor-not-allowed bg-foreground/10 text-foreground/40"
+            disabled={!size || isSelectedSoldOut}
+            whileTap={{ scale: size && !isSelectedSoldOut ? 0.99 : 1 }}
+            className={`mt-6 hidden w-full py-4 text-[11px] uppercase tracking-widest md:block ${
+              isSelectedSoldOut
+                ? "cursor-not-allowed text-neutral-400"
+                : size
+                  ? "bg-foreground text-background hover:opacity-90"
+                  : "cursor-not-allowed bg-foreground/10 text-foreground/40"
             }`}
           >
-            {added ? "added to bag" : "add to bag"}
+            {isSelectedSoldOut ? "SOLD OUT" : added ? "added to bag" : "add to bag"}
           </motion.button>
           <BuyWithShopButton
             onClick={handleBuyWithShop}
             disabled={!size}
+            soldOut={isSelectedSoldOut}
             loading={shopLoading}
             className="hidden md:flex"
           />
@@ -828,6 +854,7 @@ function ProductPage() {
         setSize={setSize}
         onAdd={handleAdd}
         added={added}
+        soldOut={isSelectedSoldOut}
         onBuyWithShop={handleBuyWithShop}
         shopLoading={shopLoading}
         shopError={shopError}

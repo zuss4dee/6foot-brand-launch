@@ -68,6 +68,8 @@ type MonorailEvent = {
 
 declare global {
   interface Window {
+    fbq?: FbqFunction;
+    _fbq?: FbqFunction;
     privacyBanner?: {
       loadBanner: (config: Record<string, string>) => Promise<void>;
     };
@@ -81,7 +83,17 @@ declare global {
   }
 }
 
+type FbqFunction = {
+  (...args: unknown[]): void;
+  callMethod?: (...args: unknown[]) => void;
+  queue: unknown[][];
+  push: FbqFunction;
+  loaded: boolean;
+  version: string;
+};
+
 let initPromise: Promise<void> | null = null;
+let metaInitPromise: Promise<void> | null = null;
 let shopConfig: ShopConfig | null = null;
 const productGidCache = new Map<string, string>();
 
@@ -190,6 +202,16 @@ function hasUserConsent() {
   }
 }
 
+function hasMarketingConsent() {
+  if (!isClient()) return false;
+  if (localStorage.getItem(COOKIE_CONSENT_KEY) === "true") return true;
+  try {
+    return window.Shopify?.customerPrivacy?.marketingAllowed?.() ?? false;
+  } catch {
+    return false;
+  }
+}
+
 function privacyFlags() {
   try {
     const privacy = window.Shopify?.customerPrivacy;
@@ -275,6 +297,88 @@ async function loadPrivacyScript(config: ShopConfig) {
   }
 }
 
+function initMetaPixel(): Promise<void> {
+  if (!isClient()) return Promise.resolve();
+
+  const pixelId = (import.meta.env.VITE_META_PIXEL_ID as string | undefined)?.trim();
+  if (!pixelId) return Promise.resolve();
+  if (metaInitPromise) return metaInitPromise;
+
+  metaInitPromise = (async () => {
+    if (!window.fbq) {
+      const fbq = function (this: unknown, ...args: unknown[]) {
+        if (fbq.callMethod) {
+          fbq.callMethod(...args);
+        } else {
+          fbq.queue.push(args);
+        }
+      } as FbqFunction;
+      fbq.queue = [];
+      fbq.push = fbq;
+      fbq.loaded = true;
+      fbq.version = "2.0";
+      window.fbq = fbq;
+      if (!window._fbq) window._fbq = fbq;
+    }
+
+    await loadScript("https://connect.facebook.net/en_US/fbevents.js", "meta-pixel");
+    window.fbq?.("init", pixelId);
+  })().catch((err) => {
+    metaInitPromise = null;
+    console.warn("[analytics] Meta Pixel initialization failed", err);
+  });
+
+  return metaInitPromise;
+}
+
+function runMeta(event: string, payload?: Record<string, unknown>) {
+  if (!hasMarketingConsent()) return;
+  try {
+    if (typeof window.fbq === "function") {
+      if (payload) window.fbq("track", event, payload);
+      else window.fbq("track", event);
+    }
+  } catch (err) {
+    console.warn(`[analytics] Meta ${event} failed`, err);
+  }
+}
+
+function metaContentId(variantGid?: string, slug?: string) {
+  if (variantGid) {
+    const id = parseGid(variantGid).id;
+    if (id) return id;
+  }
+  return slug ?? "";
+}
+
+function trackMetaPageView() {
+  runMeta("PageView");
+}
+
+function trackMetaViewContent(productData: ShopifyProductEventData) {
+  const currency = productData.currency ?? "GBP";
+  runMeta("ViewContent", {
+    content_ids: [metaContentId(productData.variantGid, productData.slug)],
+    content_name: productData.title,
+    content_type: "product",
+    value: productData.price,
+    currency,
+  });
+}
+
+function trackMetaAddToCart(itemData: ShopifyAddToCartEventData) {
+  const currency = itemData.currency ?? "GBP";
+  const contentId = metaContentId(itemData.variantGid, itemData.slug);
+  runMeta("AddToCart", {
+    content_ids: [contentId],
+    content_name: itemData.title,
+    content_type: "product",
+    value: itemData.price * itemData.quantity,
+    currency,
+    contents: [{ id: contentId, quantity: itemData.quantity }],
+  });
+}
+
 async function ensureShopConfig() {
   if (shopConfig?.shopId) return shopConfig;
 
@@ -296,10 +400,15 @@ export function initShopifyAnalytics(): Promise<void> {
     if (config) await loadPrivacyScript(config);
   })().catch((err) => {
     initPromise = null;
-    console.warn("[analytics] initialization failed", err);
+    console.warn("[analytics] Shopify initialization failed", err);
   });
 
   return initPromise;
+}
+
+/** Bootstraps Shopify Monorail tracking and Meta Pixel (when configured). */
+export function initAnalytics(): Promise<void> {
+  return Promise.all([initShopifyAnalytics(), initMetaPixel()]).then(() => undefined);
 }
 
 async function resolveProductGid(slug: string, productGid?: string) {
@@ -431,10 +540,13 @@ async function sendToShopify(events: MonorailEvent[], domain?: string) {
   }
 }
 
-function enqueue(send: () => Promise<void>) {
+function enqueue(send: () => Promise<void>, beforeSend?: () => void) {
   if (!isClient()) return;
-  void initShopifyAnalytics()
-    .then(send)
+  void initAnalytics()
+    .then(() => {
+      beforeSend?.();
+      return send();
+    })
     .catch((err) => console.warn("[analytics] event dispatch failed", err));
 }
 
@@ -498,54 +610,60 @@ export function trackPageView(url: string) {
       publishCustomerEvent("page_rendered", browser),
       publishTrekkiePageView(browser),
     ]);
-  });
+  }, trackMetaPageView);
 }
 
 export function trackProductView(productData: ShopifyProductEventData) {
-  enqueue(async () => {
-    const browser = getBrowserContext();
-    const productGid = await resolveProductGid(productData.slug, productData.productGid);
-    if (!productGid) return;
+  enqueue(
+    async () => {
+      const browser = getBrowserContext();
+      const productGid = await resolveProductGid(productData.slug, productData.productGid);
+      if (!productGid) return;
 
-    const product: AnalyticsProduct = {
-      productGid,
-      variantGid: productData.variantGid,
-      title: productData.title,
-      variantTitle: productData.variantTitle,
-      brand: productData.brand ?? "6foot",
-      category: productData.category,
-      price: productData.price,
-      quantity: 1,
-    };
+      const product: AnalyticsProduct = {
+        productGid,
+        variantGid: productData.variantGid,
+        title: productData.title,
+        variantTitle: productData.variantTitle,
+        brand: productData.brand ?? "6foot",
+        category: productData.category,
+        price: productData.price,
+        quantity: 1,
+      };
 
-    await publishCustomerEvent("product_page_rendered", browser, {
-      products: [formatProductLine(product)],
-      total_value: productData.price,
-    });
-  });
+      await publishCustomerEvent("product_page_rendered", browser, {
+        products: [formatProductLine(product)],
+        total_value: productData.price,
+      });
+    },
+    () => trackMetaViewContent(productData),
+  );
 }
 
 export function trackAddToCart(itemData: ShopifyAddToCartEventData) {
-  enqueue(async () => {
-    const browser = getBrowserContext();
-    const productGid = await resolveProductGid(itemData.slug, itemData.productGid);
-    if (!productGid || !itemData.variantGid) return;
+  enqueue(
+    async () => {
+      const browser = getBrowserContext();
+      const productGid = await resolveProductGid(itemData.slug, itemData.productGid);
+      if (!productGid || !itemData.variantGid) return;
 
-    const product: AnalyticsProduct = {
-      productGid,
-      variantGid: itemData.variantGid,
-      title: itemData.title,
-      variantTitle: itemData.variantTitle,
-      brand: itemData.brand ?? "6foot",
-      category: itemData.category,
-      price: itemData.price,
-      quantity: itemData.quantity,
-    };
+      const product: AnalyticsProduct = {
+        productGid,
+        variantGid: itemData.variantGid,
+        title: itemData.title,
+        variantTitle: itemData.variantTitle,
+        brand: itemData.brand ?? "6foot",
+        category: itemData.category,
+        price: itemData.price,
+        quantity: itemData.quantity,
+      };
 
-    await publishCustomerEvent("product_added_to_cart", browser, {
-      products: [formatProductLine(product)],
-      total_value: itemData.price * itemData.quantity,
-      cart_token: null,
-    });
-  });
+      await publishCustomerEvent("product_added_to_cart", browser, {
+        products: [formatProductLine(product)],
+        total_value: itemData.price * itemData.quantity,
+        cart_token: null,
+      });
+    },
+    () => trackMetaAddToCart(itemData),
+  );
 }
