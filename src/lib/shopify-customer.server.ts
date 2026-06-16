@@ -137,10 +137,20 @@ export async function createCustomer(
 }
 
 function generateRegistryPassword() {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return `6f-${crypto.randomUUID()}${crypto.randomUUID()}`;
+  const length = 12;
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+
+  if (typeof crypto !== "undefined" && "getRandomValues" in crypto) {
+    const bytes = new Uint8Array(length);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (byte) => chars[byte % chars.length]).join("");
   }
-  return `6f-${Math.random().toString(36).slice(2)}${Date.now()}`;
+
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return password;
 }
 
 /** Newsletter / vault registry — creates a marketing customer without account login. */
