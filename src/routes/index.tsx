@@ -382,12 +382,13 @@ const launchSlides = [
   },
   {
     side: "right" as const,
+    ctaTo: "/shop" as const,
     image: launchLeft,
     imageAlt: "Model in black proportioned essentials",
     chapter: "Drop 002 / AW26",
     title: "Coming Soon",
     subtitle: "The next iteration of the tall block. Join the registry for early allocations.",
-    cta: "Join Waitlist",
+    cta: "Shop Now",
   },
 ];
 
@@ -441,6 +442,27 @@ function LaunchPanelCopy({
 
 const MOBILE_CAROUSEL_INTERVAL_MS = 5000;
 
+function LaunchMobileSlideCta() {
+  return (
+    <Link
+      to="/shop"
+      className="label flex w-full items-center justify-center bg-foreground py-3.5 text-background transition-opacity hover:opacity-90"
+    >
+      Shop Now
+    </Link>
+  );
+}
+
+function LaunchMobileSlideText({ slide }: { slide: LaunchSlide }) {
+  return (
+    <>
+      <p className="label text-foreground/60">{slide.chapter}</p>
+      <h2 className="display mt-1 text-xl tracking-tight text-foreground">{slide.title}</h2>
+      <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-foreground/70">{slide.subtitle}</p>
+    </>
+  );
+}
+
 function LaunchMobileCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -456,81 +478,77 @@ function LaunchMobileCarousel() {
   }, []);
 
   return (
-    <div className="relative z-[12] overflow-hidden nav-offset md:hidden">
-      <div className="px-4 pb-4">
-        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
-        <h1 className="display mt-2 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
-          Built for the tall frame.
-        </h1>
-      </div>
-
-      <div className="overflow-hidden">
-        <motion.div
-          className="flex"
-          animate={{ x: `-${activeIndex * 100}%` }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {launchSlides.map((slide) => (
-            <section
-              key={slide.title}
-              className="w-full shrink-0 border-b border-foreground/10 bg-transparent"
-            >
-              <div className="relative flex min-h-[62svh] items-end justify-center px-1 pt-2">
-                <img
-                  src={slide.image}
-                  alt={slide.imageAlt}
-                  decoding="async"
-                  draggable={false}
-                  className="h-[min(60svh,760px)] w-auto max-w-full object-contain object-bottom"
-                />
-              </div>
-              <div className="px-4 py-6">
-                <LaunchPanelCopy slide={slide} hideCta />
-                {slide.ctaTo ? (
-                  <Link
-                    to={slide.ctaTo}
-                    className="label mt-6 flex w-full items-center justify-center bg-foreground py-4 text-background transition-opacity hover:opacity-90"
-                  >
-                    Shop Now
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}
-                    className="label mt-6 flex w-full items-center justify-center border border-foreground py-4 transition-colors hover:bg-foreground hover:text-background"
-                  >
-                    Join Waitlist
-                  </button>
-                )}
-              </div>
-            </section>
-          ))}
-        </motion.div>
-      </div>
-
-      {launchSlides.length > 1 && (
-        <div
-          className="flex items-center justify-center gap-3 border-t border-foreground/10 py-3"
-          aria-live="polite"
-          aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
-        >
-          <p className="text-[10px] lowercase text-foreground/45">
-            {activeIndex + 1} / {launchSlides.length}
-          </p>
-          <div className="flex gap-1.5">
-            {launchSlides.map((slide, index) => (
-              <span
-                key={slide.title}
-                aria-hidden
-                className={`h-1.5 rounded-full transition-all ${
-                  activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
-                }`}
-              />
-            ))}
-          </div>
+    <>
+      <div className="relative z-[12] flex h-[calc(100dvh-6.75rem-env(safe-area-inset-top))] flex-col overflow-hidden nav-offset md:hidden">
+        <div className="shrink-0 px-4 pb-2">
+          <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
+          <h1 className="display mt-1.5 max-w-[13ch] text-[clamp(1.625rem,8.5vw,2.25rem)] leading-[0.9] tracking-tighter">
+            Built for the tall frame.
+          </h1>
         </div>
-      )}
-    </div>
+
+        <motion.div
+          key={launchSlides[activeIndex]!.title}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="shrink-0 px-4 pb-3"
+        >
+          <LaunchMobileSlideText slide={launchSlides[activeIndex]!} />
+        </motion.div>
+
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <motion.div
+            className="flex h-full"
+            animate={{ x: `-${activeIndex * 100}%` }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {launchSlides.map((slide) => (
+              <section
+                key={slide.title}
+                className="relative h-full w-full shrink-0 bg-transparent"
+              >
+                <div className="relative flex h-full items-end justify-center px-1">
+                  <img
+                    src={slide.image}
+                    alt={slide.imageAlt}
+                    decoding="async"
+                    draggable={false}
+                    className="max-h-full w-auto max-w-full object-contain object-bottom pb-[3.25rem]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 border-t border-foreground/10 bg-white px-4 py-3">
+                    <LaunchMobileSlideCta />
+                  </div>
+                </div>
+              </section>
+            ))}
+          </motion.div>
+        </div>
+
+        {launchSlides.length > 1 && (
+          <div
+            className="flex shrink-0 items-center justify-center gap-3 border-t border-foreground/10 py-2.5"
+            aria-live="polite"
+            aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
+          >
+            <p className="text-[10px] lowercase text-foreground/45">
+              {activeIndex + 1} / {launchSlides.length}
+            </p>
+            <div className="flex gap-1.5">
+              {launchSlides.map((slide, index) => (
+                <span
+                  key={slide.title}
+                  aria-hidden
+                  className={`h-1.5 rounded-full transition-all ${
+                    activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -584,7 +602,7 @@ function Launch() {
                 <button
                   id="launch-explore-mobile"
                   type="button"
-                  onClick={() => document.getElementById("launch-trust")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}
                   className="label group inline-flex items-center gap-3 transition-opacity hover:opacity-60"
                 >
                   <motion.span
@@ -667,7 +685,7 @@ function LaunchPanel({ slide }: { slide: LaunchSlide }) {
 
 function TrustBar() {
   return (
-    <section id="launch-trust" className="border-y border-foreground/10 bg-secondary/20">
+    <section id="launch-trust" className="hidden border-y border-foreground/10 bg-secondary/20 md:block">
       <div className="grid grid-cols-1 divide-y divide-foreground/10 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
         {trustItems.map((item) => (
           <p
