@@ -20,7 +20,9 @@ import {
   type Product,
   type ProductImage,
 } from "@/lib/products";
+import { trackAddToCart, trackProductView } from "@/lib/analytics";
 import { createShopifyCheckoutUrl } from "@/lib/shopify";
+import { resolveMerchandiseId } from "@/lib/shopify-variants";
 import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/shop/$slug")({
@@ -33,14 +35,16 @@ export const Route = createFileRoute("/shop/$slug")({
     loaderData
       ? {
           meta: [
-            { title: `${loaderData.product.name} — 6foot` },
+            { title: `${loaderData.product.name} — 6FOOT` },
             { name: "description", content: loaderData.product.description },
-            { property: "og:title", content: `${loaderData.product.name} — 6foot` },
+            { property: "og:title", content: `${loaderData.product.name} — 6FOOT` },
             { property: "og:description", content: loaderData.product.description },
-            { property: "og:image", content: loaderData.product.model },
+            { property: "og:image", content: loaderData.product.flat },
+            { property: "og:price:amount", content: String(loaderData.product.price) },
+            { property: "og:price:currency", content: "GBP" },
           ],
         }
-      : { meta: [{ title: "Product — 6foot" }] },
+      : { meta: [{ title: "Product — 6FOOT" }] },
   notFoundComponent: () => (
     <main className="min-h-screen grid place-items-center px-6">
       <div className="text-center">
@@ -485,12 +489,33 @@ function ProductPage() {
     setAdded(false);
   }, [product.slug]);
 
+  useEffect(() => {
+    trackProductView({
+      slug: product.slug,
+      title: product.name,
+      price: product.price,
+      category: product.category,
+    });
+  }, [product.slug, product.name, product.price, product.category]);
+
   const related = getRelatedProducts(product, 4);
   const shopTheLook = products.filter((p) => p.slug !== product.slug).slice(0, 3);
 
   const handleAdd = () => {
     if (!size) return;
     add(product.slug, size, 1);
+    const variantGid = resolveMerchandiseId(product.slug, size);
+    if (variantGid) {
+      trackAddToCart({
+        slug: product.slug,
+        title: product.name,
+        price: product.price,
+        quantity: 1,
+        variantGid,
+        variantTitle: size,
+        category: product.category,
+      });
+    }
     setAdded(true);
     setOpen(true);
     setTimeout(() => setAdded(false), 1800);
@@ -500,6 +525,18 @@ function ProductPage() {
     if (!size || shopLoading) return;
     setShopLoading(true);
     setShopError(null);
+    const variantGid = resolveMerchandiseId(product.slug, size);
+    if (variantGid) {
+      trackAddToCart({
+        slug: product.slug,
+        title: product.name,
+        price: product.price,
+        quantity: 1,
+        variantGid,
+        variantTitle: size,
+        category: product.category,
+      });
+    }
     try {
       const checkoutUrl = await createShopifyCheckoutUrl([
         { item: { slug: product.slug, size, qty: 1 }, product },

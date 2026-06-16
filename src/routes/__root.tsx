@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -14,7 +15,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "../lib/cart";
 import { CustomerAuthProvider } from "../lib/customer-auth";
 import { CartDrawer } from "../components/CartDrawer";
+import { CookieBanner } from "../components/CookieBanner";
 import { DiscountEmailPopup } from "../components/DiscountEmailPopup";
+import { initShopifyAnalytics, trackPageView } from "../lib/analytics";
 
 function NotFoundComponent() {
   return (
@@ -81,14 +84,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "6FOOT STUDIO" },
+      {
+        name: "description",
+        content:
+          "Proportioned streetwear for the tall frame. Engineered blocks, extended lengths, and limited drops from Manchester.",
+      },
+      { property: "og:title", content: "6FOOT STUDIO" },
+      {
+        property: "og:description",
+        content:
+          "Proportioned streetwear for the tall frame. Engineered blocks, extended lengths, and limited drops from Manchester.",
+      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:image", content: "https://6foot.store/og-default.jpg" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
@@ -125,6 +135,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useRouterState({ select: (state) => state.location.href });
+
+  useEffect(() => {
+    void initShopifyAnalytics();
+  }, []);
+
+  useEffect(() => {
+    if (!location) return;
+    trackPageView(location);
+  }, [location]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -134,6 +154,7 @@ function RootComponent() {
           <Outlet />
           <CartDrawer />
           <DiscountEmailPopup />
+          <CookieBanner />
         </CartProvider>
       </CustomerAuthProvider>
     </QueryClientProvider>

@@ -55,14 +55,12 @@ const footerNav = {
   ],
   help: [
     { label: "Contact", href: "mailto:studio@6foot.eu" },
-    { label: "Shipping", href: "#" },
-    { label: "Returns", href: "#" },
+    { label: "Shipping & Returns", to: "/shipping-returns" },
     { label: "Size Guide", href: "#" },
   ],
   legal: [
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
-    { label: "Cookies", href: "#" },
+    { label: "Privacy", to: "/privacy" },
+    { label: "Terms", to: "/terms" },
   ],
 };
 
@@ -821,9 +819,15 @@ function LaunchFooter() {
             <ul className="space-y-3">
               {footerNav.help.map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} className="text-base transition-opacity hover:opacity-60">
-                    {item.label}
-                  </a>
+                  {"to" in item && item.to ? (
+                    <Link to={item.to} className="text-base transition-opacity hover:opacity-60">
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a href={item.href} className="text-base transition-opacity hover:opacity-60">
+                      {item.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -843,25 +847,15 @@ function LaunchFooter() {
           <ul className="flex flex-wrap gap-6">
             {footerNav.legal.map((item) => (
               <li key={item.label}>
-                <a href={item.href} className="label text-foreground/45 transition-opacity hover:opacity-80">
+                <Link to={item.to} className="label text-foreground/45 transition-opacity hover:opacity-80">
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
           <p className="label text-foreground/45">UK / EN · GBP £</p>
         </div>
 
-        <p className="label mt-6 text-center text-foreground/40 md:text-left">
-          6foot uses cookies to improve your experience.{" "}
-          <a href="#" className="underline underline-offset-2 hover:opacity-70">
-            Accept
-          </a>{" "}
-          or{" "}
-          <a href="#" className="underline underline-offset-2 hover:opacity-70">
-            Decline
-          </a>
-        </p>
       </div>
     </footer>
   );

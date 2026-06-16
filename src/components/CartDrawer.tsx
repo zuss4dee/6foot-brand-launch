@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { useShopifyCheckout } from "@/hooks/useShopifyCheckout";
+import { trackAddToCart } from "@/lib/analytics";
 import { useCart } from "@/lib/cart";
 import { useCustomerAuth } from "@/lib/customer-auth";
 import { productFitImageClass, formatPrice } from "@/lib/products";
+import { resolveMerchandiseId } from "@/lib/shopify-variants";
 
 function GuestCheckoutLoginHint() {
   const { session } = useCustomerAuth();
@@ -113,7 +115,21 @@ export function CartDrawer() {
                             </button>
                             <span className="label px-3 min-w-[2ch] text-center">{item.qty}</span>
                             <button
-                              onClick={() => setQty(item.slug, item.size, item.qty + 1)}
+                              onClick={() => {
+                                setQty(item.slug, item.size, item.qty + 1);
+                                const variantGid = resolveMerchandiseId(product.slug, item.size);
+                                if (variantGid) {
+                                  trackAddToCart({
+                                    slug: product.slug,
+                                    title: product.name,
+                                    price: product.price,
+                                    quantity: 1,
+                                    variantGid,
+                                    variantTitle: item.size,
+                                    category: product.category,
+                                  });
+                                }
+                              }}
                               className="px-3 py-1 label hover:bg-foreground hover:text-background transition-colors"
                               aria-label="Increase"
                             >

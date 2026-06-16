@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ShippingReturnsRouteImport } from './routes/shipping-returns'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -17,6 +20,21 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as ShopSlugRouteImport } from './routes/shop.$slug'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShippingReturnsRoute = ShippingReturnsRouteImport.update({
+  id: '/shipping-returns',
+  path: '/shipping-returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -59,6 +77,9 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/coming-soon': typeof ComingSoonRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/shipping-returns': typeof ShippingReturnsRoute
+  '/terms': typeof TermsRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/': typeof ShopIndexRoute
 }
@@ -68,6 +89,9 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/coming-soon': typeof ComingSoonRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/shipping-returns': typeof ShippingReturnsRoute
+  '/terms': typeof TermsRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop': typeof ShopIndexRoute
 }
@@ -78,6 +102,9 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/coming-soon': typeof ComingSoonRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/shipping-returns': typeof ShippingReturnsRoute
+  '/terms': typeof TermsRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/': typeof ShopIndexRoute
 }
@@ -89,6 +116,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/coming-soon'
     | '/login'
+    | '/privacy'
+    | '/shipping-returns'
+    | '/terms'
     | '/shop/$slug'
     | '/shop/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +128,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/coming-soon'
     | '/login'
+    | '/privacy'
+    | '/shipping-returns'
+    | '/terms'
     | '/shop/$slug'
     | '/shop'
   id:
@@ -107,6 +140,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/coming-soon'
     | '/login'
+    | '/privacy'
+    | '/shipping-returns'
+    | '/terms'
     | '/shop/$slug'
     | '/shop/'
   fileRoutesById: FileRoutesById
@@ -117,12 +153,36 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   ComingSoonRoute: typeof ComingSoonRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ShippingReturnsRoute: typeof ShippingReturnsRoute
+  TermsRoute: typeof TermsRoute
   ShopSlugRoute: typeof ShopSlugRoute
   ShopIndexRoute: typeof ShopIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipping-returns': {
+      id: '/shipping-returns'
+      path: '/shipping-returns'
+      fullPath: '/shipping-returns'
+      preLoaderRoute: typeof ShippingReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -181,6 +241,9 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   ComingSoonRoute: ComingSoonRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
+  ShippingReturnsRoute: ShippingReturnsRoute,
+  TermsRoute: TermsRoute,
   ShopSlugRoute: ShopSlugRoute,
   ShopIndexRoute: ShopIndexRoute,
 }

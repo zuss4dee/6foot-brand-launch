@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://6foot.store/</loc>
+  </url>
+  <url>
+    <loc>https://6foot.store/shipping-returns</loc>
+  </url>
+  <url>
+    <loc>https://6foot.store/privacy</loc>
+  </url>
+  <url>
+    <loc>https://6foot.store/terms</loc>
+  </url>
+  <!-- Dynamic product URLs (e.g. /shop/{slug}) are appended here by the build pipeline. -->
+</urlset>
