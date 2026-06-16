@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 
+import { BuyWithShopButton } from "@/components/BuyWithShopButton";
 import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/products";
 import { getFitRecommendation } from "@/lib/size-guide";
@@ -17,48 +18,6 @@ type ProductStickyCartProps = {
   onOpenSizeGuide: () => void;
 };
 
-function BuyWithShopCompact({
-  onClick,
-  disabled,
-  loading,
-  soldOut = false,
-}: {
-  onClick: () => void;
-  disabled: boolean;
-  loading: boolean;
-  soldOut?: boolean;
-}) {
-  if (soldOut) {
-    return (
-      <button
-        type="button"
-        disabled
-        className="flex items-center justify-center px-4 py-3 text-[11px] uppercase tracking-widest text-neutral-400"
-      >
-        SOLD OUT
-      </button>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled || loading}
-      className="flex items-center justify-center gap-1 rounded-[4px] bg-[#5433EB] px-4 py-3 text-[12px] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      {loading ? (
-        "…"
-      ) : (
-        <>
-          <span>Buy with</span>
-          <span className="font-semibold">shop</span>
-        </>
-      )}
-    </button>
-  );
-}
-
 export function ProductStickyCart({
   product,
   size,
@@ -74,8 +33,9 @@ export function ProductStickyCart({
   const fitNote = size ? getFitRecommendation(product, size) : null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground bg-background/95 backdrop-blur-md">
-      <div className="mx-auto max-w-[1600px] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-6 md:py-4">
+    <div className="fixed inset-x-0 bottom-0 z-50 w-full max-w-full isolate">
+      <div aria-hidden className="absolute inset-0 border-t border-foreground/10 bg-background shadow-[0_-16px_48px_rgba(0,0,0,0.12)]" />
+      <div className="relative mx-auto max-w-[1600px] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-6 md:py-4">
         {fitNote ? (
           <p className="mb-2 text-center text-[10px] text-foreground/45 md:text-left">{fitNote}</p>
         ) : null}
@@ -133,11 +93,12 @@ export function ProductStickyCart({
             >
               {soldOut ? "SOLD OUT" : added ? "added to bag" : "add to bag"}
             </motion.button>
-            <BuyWithShopCompact
+            <BuyWithShopButton
               onClick={onBuyWithShop}
               disabled={!size}
               soldOut={soldOut}
               loading={shopLoading}
+              compact
             />
           </div>
         </div>
@@ -145,4 +106,3 @@ export function ProductStickyCart({
     </div>
   );
 }
-

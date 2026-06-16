@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Bookmark, ChevronDown, ChevronLeft, ChevronRight, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SiteNav } from "@/components/SiteNav";
+import { BuyWithShopButton } from "@/components/BuyWithShopButton";
 import { SizeGuideContent } from "@/components/SizeGuideContent";
 import { ProductStickyCart } from "@/components/ProductStickyCart";
 import {
@@ -368,50 +369,6 @@ function ColorVariants({ product }: { product: Product }) {
   );
 }
 
-function BuyWithShopButton({
-  onClick,
-  disabled = false,
-  loading = false,
-  soldOut = false,
-  className = "",
-}: {
-  onClick: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  soldOut?: boolean;
-  className?: string;
-}) {
-  if (soldOut) {
-    return (
-      <button
-        type="button"
-        disabled
-        className={`mt-2 flex w-full items-center justify-center py-4 text-[11px] uppercase tracking-widest text-neutral-400 ${className}`}
-      >
-        SOLD OUT
-      </button>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`mt-2 flex w-full items-center justify-center gap-1 rounded-[4px] bg-[#5433EB] py-4 text-[14px] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 ${className}`}
-    >
-      {loading ? (
-        <span>Redirecting…</span>
-      ) : (
-        <>
-          <span>Buy with</span>
-          <span className="font-semibold tracking-tight">shop</span>
-        </>
-      )}
-    </button>
-  );
-}
-
 function ProductAccordions({
   product,
   openSection,
@@ -594,7 +551,7 @@ function ProductPage() {
   ];
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-background pb-[calc(12rem+env(safe-area-inset-bottom))] text-foreground md:pb-[11rem]">
+    <main className="min-h-screen overflow-x-clip bg-background pb-[calc(15rem+env(safe-area-inset-bottom))] text-foreground md:pb-[12rem]">
       <SiteNav />
 
       <div className="flex items-center justify-between px-4 nav-offset md:px-6">

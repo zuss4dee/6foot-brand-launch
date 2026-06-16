@@ -217,7 +217,7 @@ export function VaultGate() {
   };
 
   return (
-    <div className="vault-gate relative flex min-h-screen flex-col overflow-hidden bg-[#070707] text-[#f4f4f2]">
+    <div className="vault-gate relative isolate flex min-h-dvh w-full max-w-full flex-col overflow-x-clip overflow-y-auto bg-[#070707] text-[#f4f4f2]">
       <div aria-hidden className="vault-gate__grid pointer-events-none absolute inset-0" />
       <div aria-hidden className="vault-gate__grain pointer-events-none absolute inset-0" />
       <div aria-hidden className="vault-gate__vignette pointer-events-none absolute inset-0" />
@@ -244,7 +244,7 @@ export function VaultGate() {
               onChange={(event) => setBypassValue(event.target.value)}
               autoFocus
               placeholder="access code"
-              className="w-36 border-0 border-b border-white/20 bg-transparent py-1 text-[10px] tracking-widest uppercase outline-none placeholder:text-white/25 focus:border-white/70"
+              className="w-full max-w-[10rem] border-0 border-b border-white/20 bg-transparent py-1 text-base tracking-widest uppercase outline-none placeholder:text-white/25 focus:border-white/70 sm:w-36"
             />
           </form>
         ) : (
@@ -271,13 +271,13 @@ export function VaultGate() {
         </div>
       </motion.header>
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-16 md:py-20">
+      <div className="relative z-10 flex w-full max-w-full flex-1 flex-col items-center justify-center overflow-x-clip px-6 py-16 md:py-20">
         <motion.p
           aria-hidden
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease, delay: 0.1 }}
-          className="display pointer-events-none absolute top-[18%] left-1/2 -translate-x-1/2 text-[clamp(4.5rem,22vw,13rem)] leading-none whitespace-nowrap text-white/[0.035] select-none"
+          className="display pointer-events-none absolute top-[16%] left-1/2 w-full max-w-full -translate-x-1/2 overflow-hidden px-6 text-center text-[clamp(2.75rem,16vw,13rem)] leading-none tracking-tighter text-white/[0.035] select-none"
         >
           6FOOT
         </motion.p>
@@ -350,7 +350,7 @@ export function VaultGate() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="your@email.com"
-                    className="min-h-12 flex-1 border border-white/25 bg-white/[0.06] px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-white focus:bg-white/[0.09]"
+                    className="min-h-12 flex-1 border border-white/25 bg-white/[0.06] px-4 text-base text-white outline-none placeholder:text-white/35 focus:border-white focus:bg-white/[0.09]"
                   />
                   <button
                     type="submit"
@@ -380,11 +380,13 @@ export function VaultGate() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, ease, delay: 0.55 }}
-        className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-6 py-4 md:px-10"
+        className="relative z-10 grid w-full max-w-full grid-cols-1 gap-2 border-t border-white/10 px-6 py-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center md:px-10"
       >
-        <p className="label text-white/30">Ref · TV-001 / UK</p>
-        <p className="font-mono text-[9px] tracking-[0.18em] text-white/25 tabular-nums">{chrono.raw}</p>
-        <p className="label text-white/30">Sys · chronograph live</p>
+        <p className="label text-center text-white/30 sm:text-left">Ref · TV-001 / UK</p>
+        <p className="hidden font-mono text-[9px] tracking-[0.18em] text-white/25 tabular-nums sm:block sm:text-center">
+          {chrono.raw}
+        </p>
+        <p className="label text-center text-white/30 sm:text-right">Sys · chronograph live</p>
       </motion.footer>
     </div>
   );

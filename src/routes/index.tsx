@@ -550,9 +550,9 @@ function LaunchMobileCarousel() {
     <div className="relative z-[12] nav-offset md:hidden">
       <LaunchMobileHeroCopy />
 
-      <div className="-mt-1 overflow-hidden">
+      <div className="-mt-1 w-full overflow-x-clip">
         <motion.div
-          className="flex"
+          className="flex w-full"
           animate={{ x: `-${activeIndex * 100}%` }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -629,7 +629,7 @@ function Launch() {
 
   return (
     <>
-      <main className="relative flex min-h-dvh flex-col bg-white text-foreground md:h-svh md:overflow-hidden">
+      <main className="relative flex min-h-dvh w-full max-w-full flex-col overflow-x-clip bg-white text-foreground md:h-svh md:overflow-hidden">
         <LaunchBrandDropLane />
         <SiteNav />
 
