@@ -1,0 +1,136 @@
+{% capture email_title %}REGISTRY CONFIRMED — 001{% endcapture %}
+{% capture email_body %}Your profile has been allocated. When the vault opens for Chapter 001, authenticate to access allocations.{% endcapture %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ email_title }}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <style>
+    @media only screen and (max-width: 620px) {
+      .container { width: 100% !important; }
+      .px { padding-left: 24px !important; padding-right: 24px !important; }
+      .cta-cell { padding: 14px 24px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#FFFFFF;color:#000000;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;mso-hide:all;">
+    {{ email_title }}
+  </div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#FFFFFF;border-collapse:collapse;">
+    <tr>
+      <td align="center" style="padding:48px 16px 56px 16px;">
+        <table role="presentation" class="container" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px;max-width:600px;border-collapse:collapse;">
+          <tr>
+            <td class="px" align="center" style="padding:0 40px 32px 40px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0;font-family:Courier,'Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:0.28em;text-transform:uppercase;color:#000000;">
+                6FOOT STUDIO
+              </p>
+              <p style="margin:8px 0 0 0;font-family:Courier,'Courier New',monospace;font-size:9px;line-height:1.4;letter-spacing:0.22em;text-transform:uppercase;color:#000000;">
+                MANCHESTER · UK
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" style="padding:0 40px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="border-top:1px solid #000000;font-size:0;line-height:0;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="left" style="padding:40px 40px 24px 40px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              {% if customer.first_name != blank %}
+              <p style="margin:0 0 20px 0;font-family:Courier,'Courier New',monospace;font-size:10px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:#000000;">
+                {{ customer.first_name }}
+              </p>
+              {% endif %}
+              <h1 style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:22px;line-height:1.15;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#000000;">
+                {{ email_title }}
+              </h1>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="left" style="padding:0 40px 32px 40px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0;font-size:14px;line-height:1.7;color:#000000;">
+                {{ email_body }}
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="center" style="padding:8px 40px 16px 40px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                <tr>
+                  <td class="cta-cell" align="center" style="background-color:#000000;padding:16px 40px;">
+                    <a href="https://6foot.store" target="_blank" style="display:inline-block;font-family:Courier,'Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:0.24em;text-transform:uppercase;text-decoration:none;color:#FFFFFF;">
+                      RETURN TO STUDIO
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {% if customer_account_activation_url %}
+          <tr>
+            <td class="px" align="center" style="padding:0 40px 40px 40px;font-family:Courier,'Courier New',monospace;">
+              <a href="{{ customer_account_activation_url }}" target="_blank" style="font-size:10px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;text-decoration:underline;color:#000000;">
+                AUTHENTICATE PROFILE
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td style="padding:0 0 40px 0;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td class="px" style="padding:0 40px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="border-top:1px solid #EEEEEE;font-size:0;line-height:0;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="center" style="padding:24px 40px 8px 40px;font-family:Courier,'Courier New',monospace;">
+              <p style="margin:0;font-size:9px;line-height:1.8;letter-spacing:0.16em;text-transform:uppercase;">
+                <a href="https://6foot.store" target="_blank" style="color:#000000;text-decoration:none;">STUDIO</a>
+                &nbsp;&nbsp;/&nbsp;&nbsp;
+                <a href="https://6foot.store/shop" target="_blank" style="color:#000000;text-decoration:none;">SHOP</a>
+                &nbsp;&nbsp;/&nbsp;&nbsp;
+                <a href="https://6foot.store/vault" target="_blank" style="color:#000000;text-decoration:none;">VAULT</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="center" style="padding:8px 40px 0 40px;font-family:Courier,'Courier New',monospace;">
+              <p style="margin:0;font-size:9px;line-height:1.7;letter-spacing:0.12em;text-transform:uppercase;color:#000000;">
+                TRANSACTIONAL MESSAGE · {{ shop.name }}
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="center" style="padding:8px 40px 0 40px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0;font-size:10px;line-height:1.6;color:#000000;">
+                Questions? <a href="mailto:{{ shop.email }}" style="color:#000000;text-decoration:underline;">{{ shop.email }}</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" align="center" style="padding:16px 40px 0 40px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0;font-size:10px;line-height:1.6;color:#000000;">
+                &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
