@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
-import { useCart } from "@/lib/cart";
+import { SiteNav } from "@/components/SiteNav";
 import fabric from "@/assets/fabric.jpg";
 import launchLeft from "@/assets/launch-left-model.png";
 import launchRight from "@/assets/launch-right-model.png";
@@ -369,39 +369,6 @@ function LaunchHeroScrollCue() {
   );
 }
 
-function LaunchHeader({ count, onOpenCart }: { count: number; onOpenCart: () => void }) {
-  return (
-    <motion.header
-      initial={{ opacity: 0, y: -16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-      className="absolute inset-x-0 top-0 z-40 bg-background text-foreground safe-top"
-    >
-      <div className="relative flex items-center justify-between px-4 py-4 md:px-10 md:py-6">
-        <span className="label text-foreground/50">SS26</span>
-        <Link
-          to="/"
-          className="absolute left-1/2 display -translate-x-1/2 text-2xl tracking-tighter md:text-3xl"
-        >
-          6foot.
-        </Link>
-        <div className="flex items-center gap-5 md:gap-6">
-          <span className="label hidden text-foreground/50 sm:inline">EU / EN</span>
-          <button
-            type="button"
-            onClick={onOpenCart}
-            className="label inline-flex items-center gap-2 transition-opacity hover:opacity-60"
-            aria-label="Open cart"
-          >
-            Bag
-            <span className="tabular-nums">{count}</span>
-          </button>
-        </div>
-      </div>
-    </motion.header>
-  );
-}
-
 const launchSlides = [
   {
     side: "left" as const,
@@ -543,15 +510,13 @@ function LaunchMobileCarousel() {
 }
 
 function Launch() {
-  const { count, setOpen } = useCart();
-
   return (
     <>
       <main className="relative flex min-h-dvh flex-col bg-white text-foreground md:h-svh md:overflow-hidden">
         <LaunchBrandDropLane />
-        <LaunchHeader count={count} onOpenCart={() => setOpen(true)} />
+        <SiteNav />
 
-        <div className="px-4 pt-[4.75rem] md:hidden">
+        <div className="px-4 nav-offset md:hidden">
           <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
           <h1 className="display mt-3 max-w-[12ch] text-[clamp(2rem,10vw,2.75rem)] leading-[0.9] tracking-tighter">
             Built for the tall frame.

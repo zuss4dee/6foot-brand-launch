@@ -28,7 +28,7 @@ function LoginPage() {
     return (
       <div className="min-h-dvh bg-background text-foreground">
         <SiteNav />
-        <main className="mx-auto flex max-w-md flex-col px-6 pb-16 pt-28 md:pt-32">
+        <main className="mx-auto flex max-w-md flex-col px-6 pb-16 nav-offset md:pt-32">
           <p className="label text-foreground/50">Member access</p>
           <h1 className="display mt-4 text-3xl">You&apos;re signed in.</h1>
           <p className="mt-3 text-sm text-foreground/65">{session.email}</p>
@@ -65,7 +65,7 @@ function LoginPage() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <SiteNav />
-      <main className="mx-auto flex max-w-md flex-col px-6 pb-16 pt-28 md:pt-32">
+      <main className="mx-auto flex max-w-md flex-col px-6 pb-16 nav-offset md:pt-32">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

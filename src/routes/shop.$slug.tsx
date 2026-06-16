@@ -597,7 +597,7 @@ function ProductPage() {
     <main className="min-h-screen overflow-x-clip bg-background pb-[calc(9.5rem+env(safe-area-inset-bottom))] text-foreground md:pb-32">
       <SiteNav />
 
-      <div className="flex items-center justify-between px-4 pt-24 md:px-6 md:pt-28">
+      <div className="flex items-center justify-between px-4 nav-offset md:px-6">
         <Link
           to="/shop"
           className="text-[11px] lowercase text-foreground/45 transition-opacity hover:text-foreground"

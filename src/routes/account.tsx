@@ -28,7 +28,7 @@ function AccountPage() {
     return (
       <div className="min-h-dvh bg-background text-foreground">
         <SiteNav />
-        <main className="mx-auto max-w-md px-6 pb-16 pt-28 md:pt-32">
+        <main className="mx-auto max-w-md px-6 pb-16 nav-offset md:pt-32">
           <p className="label text-foreground/50">Loading account…</p>
         </main>
       </div>
@@ -41,7 +41,7 @@ function AccountPage() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <SiteNav />
-      <main className="mx-auto max-w-md px-6 pb-16 pt-28 md:pt-32">
+      <main className="mx-auto max-w-md px-6 pb-16 nav-offset md:pt-32">
         <p className="label text-foreground/50">Member account</p>
         <h1 className="display mt-4 text-3xl">{displayName}</h1>
         <p className="mt-3 text-sm text-foreground/65">{session.email}</p>

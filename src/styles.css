@@ -175,6 +175,14 @@
   padding-top: env(safe-area-inset-top);
 }
 
+@utility nav-offset {
+  padding-top: calc(6.75rem + env(safe-area-inset-top));
+
+  @media (width >= 48rem) {
+    padding-top: 7rem;
+  }
+}
+
 @utility safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }

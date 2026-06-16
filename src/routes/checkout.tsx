@@ -25,7 +25,7 @@ function Checkout() {
   if (enriched.length === 0) {
     return (
       <main className="min-h-screen bg-background text-foreground">
-        <SiteNav />
+        <SiteNav showPromo={false} />
         <section className="px-6 pb-32 pt-40 md:px-10">
           <p className="label text-foreground/60">Checkout</p>
           <h1 className="display mt-4 text-5xl md:text-6xl">Nothing to check out.</h1>
@@ -39,7 +39,7 @@ function Checkout() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <SiteNav />
+      <SiteNav showPromo={false} />
 
       <section className="px-6 pb-24 pt-32 md:px-10 md:pt-36">
         <div className="grid grid-cols-12 gap-x-10 gap-y-12">

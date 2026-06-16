@@ -294,7 +294,7 @@ function ShopIndex() {
     <main className="min-h-screen overflow-x-clip bg-background text-foreground">
       <SiteNav />
 
-      <header className="px-4 pb-4 pt-24 md:px-6 md:pb-5 md:pt-28">
+      <header className="nav-offset px-4 pb-4 md:px-6 md:pb-5">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between">
           <button
             type="button"
