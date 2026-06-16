@@ -477,65 +477,65 @@ function LaunchMobileCarousel() {
 
   return (
     <div className="relative z-[12] nav-offset md:hidden">
-      <div className="flex h-[calc(100svh-6.75rem-env(safe-area-inset-top))] flex-col overflow-hidden">
-        <div className="shrink-0 px-4 pb-2">
-          <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
-          <h1 className="display mt-1.5 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
-            Built for the tall frame.
-          </h1>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-            className="mt-4"
-          >
-            <LaunchShopButton id="launch-shop-now-mobile" />
-          </motion.div>
-        </div>
+      <div className="px-4 pb-2">
+        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
+        <h1 className="display mt-1.5 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
+          Built for the tall frame.
+        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+          className="mt-4"
+        >
+          <LaunchShopButton id="launch-shop-now-mobile" />
+        </motion.div>
+      </div>
 
-        <div className="min-h-0 flex-1 overflow-hidden">
-          <motion.div
-            className="flex h-full"
-            animate={{ x: `-${activeIndex * 100}%` }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {launchSlides.map((slide) => (
-              <section key={slide.title} className="flex h-full w-full shrink-0 items-center justify-center px-1">
+      <div className="-mt-1 overflow-hidden">
+        <motion.div
+          className="flex"
+          animate={{ x: `-${activeIndex * 100}%` }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {launchSlides.map((slide) => (
+            <section key={slide.title} className="w-full shrink-0">
+              <div className="flex h-[min(calc(100svh-10.5rem-env(safe-area-inset-top)),940px)] items-center justify-center px-0">
                 <img
                   src={slide.image}
                   alt={slide.imageAlt}
                   decoding="async"
                   draggable={false}
-                  className="max-h-full w-auto max-w-full -translate-y-1 object-contain"
+                  className="h-full w-auto max-w-full object-contain"
                 />
-              </section>
-            ))}
-          </motion.div>
-        </div>
-
-        {launchSlides.length > 1 && (
-          <div
-            className="flex shrink-0 items-center justify-center gap-3 border-t border-foreground/10 py-2.5"
-            aria-live="polite"
-            aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
-          >
-            <p className="text-[10px] lowercase text-foreground/45">
-              {activeIndex + 1} / {launchSlides.length}
-            </p>
-            <div className="flex gap-1.5">
-              {launchSlides.map((slide, index) => (
-                <span
-                  key={slide.title}
-                  aria-hidden
-                  className={`h-1.5 rounded-full transition-all ${
-                    activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            </section>
+          ))}
+        </motion.div>
       </div>
+
+      {launchSlides.length > 1 && (
+        <div
+          className="flex items-center justify-center gap-3 border-t border-foreground/10 py-2.5"
+          aria-live="polite"
+          aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
+        >
+          <p className="text-[10px] lowercase text-foreground/45">
+            {activeIndex + 1} / {launchSlides.length}
+          </p>
+          <div className="flex gap-1.5">
+            {launchSlides.map((slide, index) => (
+              <span
+                key={slide.title}
+                aria-hidden
+                className={`h-1.5 rounded-full transition-all ${
+                  activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="border-t border-foreground/10 px-4 py-6">
         <motion.div
