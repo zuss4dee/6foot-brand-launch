@@ -277,12 +277,12 @@ function LaunchBrandDropLane() {
   );
 }
 
-function LaunchShopButton() {
+function LaunchShopButton({ id, className = "" }: { id?: string; className?: string }) {
   return (
     <Link
-      id="launch-shop-now"
+      id={id}
       to="/shop"
-      className="label mt-6 inline-flex items-center gap-3 border border-foreground px-6 py-3 transition-colors hover:bg-foreground hover:text-background"
+      className={`label inline-flex items-center gap-3 border border-foreground px-6 py-3 transition-colors hover:bg-foreground hover:text-background ${className}`}
     >
       Shop Now
     </Link>
@@ -324,7 +324,7 @@ function LaunchHeroHeadline() {
         transition={{ duration: heroEntrance.shopCta.duration, ease: [0.22, 1, 0.36, 1], delay: heroEntrance.shopCta.delay }}
         className="pointer-events-auto"
       >
-        <LaunchShopButton />
+        <LaunchShopButton id="launch-shop-now" className="mt-6" />
       </motion.div>
     </div>
   );
@@ -386,8 +386,8 @@ const launchSlides = [
     image: launchLeft,
     imageAlt: "Model in black proportioned essentials",
     chapter: "Drop 002 / AW26",
-    title: "Coming Soon",
-    subtitle: "The next iteration of the tall block. Join the registry for early allocations.",
+    title: "Shop the Edit",
+    subtitle: "Drop 001 is live. Proportioned staples with a +2\" block through the torso — shop the full capsule now.",
     cta: "Shop Now",
   },
 ];
@@ -397,11 +397,11 @@ type LaunchSlide = (typeof launchSlides)[number];
 function LaunchPanelCopy({
   slide,
   alignRight = false,
-  hideCta = false,
+  showCta = false,
 }: {
   slide: LaunchSlide;
   alignRight?: boolean;
-  hideCta?: boolean;
+  showCta?: boolean;
 }) {
   return (
     <>
@@ -414,51 +414,41 @@ function LaunchPanelCopy({
       >
         {slide.subtitle}
       </p>
-      {slide.ctaTo ? (
+      {showCta && slide.ctaTo ? (
         <Link
           to={slide.ctaTo}
-          className={`group mt-5 min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground transition-all duration-300 hover:gap-4 ${
-            hideCta ? "hidden md:inline-flex" : "inline-flex"
-          } ${alignRight ? "md:ml-auto" : ""}`}
+          className={`group mt-5 inline-flex min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground transition-all duration-300 hover:gap-4 ${
+            alignRight ? "md:ml-auto" : ""
+          }`}
         >
           <span className="label">{slide.cta}</span>
           <span className="display text-sm">→</span>
         </Link>
-      ) : (
+      ) : null}
+      {showCta && !slide.ctaTo ? (
         <button
           type="button"
           onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}
-          className={`group mt-5 min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-left text-foreground transition-all duration-300 hover:gap-4 ${
-            hideCta ? "hidden md:inline-flex" : "inline-flex"
-          } ${alignRight ? "md:ml-auto" : ""}`}
+          className={`group mt-5 inline-flex min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-left text-foreground transition-all duration-300 hover:gap-4 ${
+            alignRight ? "md:ml-auto" : ""
+          }`}
         >
           <span className="label">{slide.cta}</span>
           <span className="display text-sm">→</span>
         </button>
-      )}
+      ) : null}
     </>
   );
 }
 
 const MOBILE_CAROUSEL_INTERVAL_MS = 5000;
 
-function LaunchMobileSlideCta() {
-  return (
-    <Link
-      to="/shop"
-      className="label flex w-full items-center justify-center bg-foreground py-3.5 text-background transition-opacity hover:opacity-90"
-    >
-      Shop Now
-    </Link>
-  );
-}
-
 function LaunchMobileSlideText({ slide }: { slide: LaunchSlide }) {
   return (
     <>
-      <p className="label text-foreground/60">{slide.chapter}</p>
-      <h2 className="display mt-1 text-xl tracking-tight text-foreground">{slide.title}</h2>
-      <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-foreground/70">{slide.subtitle}</p>
+      <p className="label mb-2 text-foreground/60">{slide.chapter}</p>
+      <h2 className="display text-2xl text-foreground">{slide.title}</h2>
+      <p className="mt-2 max-w-[32ch] text-sm leading-relaxed text-foreground/70">{slide.subtitle}</p>
     </>
   );
 }
@@ -478,77 +468,73 @@ function LaunchMobileCarousel() {
   }, []);
 
   return (
-    <>
-      <div className="relative z-[12] flex h-[calc(100dvh-6.75rem-env(safe-area-inset-top))] flex-col overflow-hidden nav-offset md:hidden">
-        <div className="shrink-0 px-4 pb-2">
-          <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
-          <h1 className="display mt-1.5 max-w-[13ch] text-[clamp(1.625rem,8.5vw,2.25rem)] leading-[0.9] tracking-tighter">
-            Built for the tall frame.
-          </h1>
-        </div>
-
+    <div className="relative z-[12] overflow-hidden nav-offset md:hidden">
+      <div className="px-4 pb-4">
+        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
+        <h1 className="display mt-2 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
+          Built for the tall frame.
+        </h1>
         <motion.div
-          key={launchSlides[activeIndex]!.title}
-          initial={{ opacity: 0, y: 6 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="shrink-0 px-4 pb-3"
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+          className="mt-6"
         >
-          <LaunchMobileSlideText slide={launchSlides[activeIndex]!} />
+          <LaunchShopButton id="launch-shop-now-mobile" />
         </motion.div>
-
-        <div className="min-h-0 flex-1 overflow-hidden">
-          <motion.div
-            className="flex h-full"
-            animate={{ x: `-${activeIndex * 100}%` }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {launchSlides.map((slide) => (
-              <section
-                key={slide.title}
-                className="relative h-full w-full shrink-0 bg-transparent"
-              >
-                <div className="relative flex h-full items-end justify-center px-1">
-                  <img
-                    src={slide.image}
-                    alt={slide.imageAlt}
-                    decoding="async"
-                    draggable={false}
-                    className="max-h-full w-auto max-w-full object-contain object-bottom pb-[3.25rem]"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 border-t border-foreground/10 bg-white px-4 py-3">
-                    <LaunchMobileSlideCta />
-                  </div>
-                </div>
-              </section>
-            ))}
-          </motion.div>
-        </div>
-
-        {launchSlides.length > 1 && (
-          <div
-            className="flex shrink-0 items-center justify-center gap-3 border-t border-foreground/10 py-2.5"
-            aria-live="polite"
-            aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
-          >
-            <p className="text-[10px] lowercase text-foreground/45">
-              {activeIndex + 1} / {launchSlides.length}
-            </p>
-            <div className="flex gap-1.5">
-              {launchSlides.map((slide, index) => (
-                <span
-                  key={slide.title}
-                  aria-hidden
-                  className={`h-1.5 rounded-full transition-all ${
-                    activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
-    </>
+
+      <div className="overflow-hidden">
+        <motion.div
+          className="flex"
+          animate={{ x: `-${activeIndex * 100}%` }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {launchSlides.map((slide) => (
+            <section
+              key={slide.title}
+              className="w-full shrink-0 border-b border-foreground/10 bg-transparent"
+            >
+              <div className="flex min-h-[62svh] items-end justify-center px-1 pt-2">
+                <img
+                  src={slide.image}
+                  alt={slide.imageAlt}
+                  decoding="async"
+                  draggable={false}
+                  className="h-[min(60svh,760px)] w-auto max-w-full object-contain object-bottom"
+                />
+              </div>
+              <div className="border-t border-foreground/10 px-4 py-6">
+                <LaunchMobileSlideText slide={slide} />
+              </div>
+            </section>
+          ))}
+        </motion.div>
+      </div>
+
+      {launchSlides.length > 1 && (
+        <div
+          className="flex items-center justify-center gap-3 border-t border-foreground/10 py-3"
+          aria-live="polite"
+          aria-label={`Showing model ${activeIndex + 1} of ${launchSlides.length}`}
+        >
+          <p className="text-[10px] lowercase text-foreground/45">
+            {activeIndex + 1} / {launchSlides.length}
+          </p>
+          <div className="flex gap-1.5">
+            {launchSlides.map((slide, index) => (
+              <span
+                key={slide.title}
+                aria-hidden
+                className={`h-1.5 rounded-full transition-all ${
+                  activeIndex === index ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
