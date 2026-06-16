@@ -1,6 +1,9 @@
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
+import { useLocation } from "@tanstack/react-router";
 import { type FormEvent, useEffect, useState } from "react";
+
+import { isVaultExperience } from "@/lib/pre-launch";
 
 const STORAGE_KEY = "6foot_discount_popup";
 const SHOW_DELAY_MS = 3000;
@@ -11,16 +14,24 @@ function hasResolvedPopup() {
 }
 
 export function DiscountEmailPopup() {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (hasResolvedPopup()) return;
+    if (isVaultExperience(location.pathname)) return;
 
     const timer = window.setTimeout(() => setOpen(true), SHOW_DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (isVaultExperience(location.pathname)) {
+      setOpen(false);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!open) return;

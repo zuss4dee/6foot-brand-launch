@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 
 import { SiteNav } from "@/components/SiteNav";
 import { VaultGate, hasVaultVipAccess } from "@/components/VaultGate";
+import { IS_PRE_LAUNCH_MODE } from "@/lib/pre-launch";
 import fabric from "@/assets/fabric.jpg";
 import launchLeft from "@/assets/launch-left-model.png";
 import launchRight from "@/assets/launch-right-model.png";
@@ -26,8 +27,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Launch,
 });
-
-const IS_PRE_LAUNCH_MODE = true;
 
 const heroEntrance = {
   ruleH: { duration: 1.65, delay: 1.05 },
