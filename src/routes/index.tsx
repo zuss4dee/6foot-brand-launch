@@ -396,9 +396,11 @@ type LaunchSlide = (typeof launchSlides)[number];
 function LaunchPanelCopy({
   slide,
   alignRight = false,
+  hideCta = false,
 }: {
   slide: LaunchSlide;
   alignRight?: boolean;
+  hideCta?: boolean;
 }) {
   return (
     <>
@@ -414,9 +416,9 @@ function LaunchPanelCopy({
       {slide.ctaTo ? (
         <Link
           to={slide.ctaTo}
-          className={`group mt-5 inline-flex min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground transition-all duration-300 hover:gap-4 ${
-            alignRight ? "md:ml-auto" : ""
-          }`}
+          className={`group mt-5 min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-foreground transition-all duration-300 hover:gap-4 ${
+            hideCta ? "hidden md:inline-flex" : "inline-flex"
+          } ${alignRight ? "md:ml-auto" : ""}`}
         >
           <span className="label">{slide.cta}</span>
           <span className="display text-sm">→</span>
@@ -425,9 +427,9 @@ function LaunchPanelCopy({
         <button
           type="button"
           onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}
-          className={`group mt-5 inline-flex min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-left text-foreground transition-all duration-300 hover:gap-4 ${
-            alignRight ? "md:ml-auto" : ""
-          }`}
+          className={`group mt-5 min-h-11 items-center gap-3 border-b border-foreground/30 pb-0.5 text-left text-foreground transition-all duration-300 hover:gap-4 ${
+            hideCta ? "hidden md:inline-flex" : "inline-flex"
+          } ${alignRight ? "md:ml-auto" : ""}`}
         >
           <span className="label">{slide.cta}</span>
           <span className="display text-sm">→</span>
@@ -454,7 +456,14 @@ function LaunchMobileCarousel() {
   }, []);
 
   return (
-    <div className="relative z-[12] overflow-hidden md:hidden">
+    <div className="relative z-[12] overflow-hidden nav-offset md:hidden">
+      <div className="px-4 pb-4">
+        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
+        <h1 className="display mt-2 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
+          Built for the tall frame.
+        </h1>
+      </div>
+
       <div className="overflow-hidden">
         <motion.div
           className="flex"
@@ -476,7 +485,23 @@ function LaunchMobileCarousel() {
                 />
               </div>
               <div className="px-4 py-6">
-                <LaunchPanelCopy slide={slide} />
+                <LaunchPanelCopy slide={slide} hideCta />
+                {slide.ctaTo ? (
+                  <Link
+                    to={slide.ctaTo}
+                    className="label mt-6 flex w-full items-center justify-center bg-foreground py-4 text-background transition-opacity hover:opacity-90"
+                  >
+                    Shop Now
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}
+                    className="label mt-6 flex w-full items-center justify-center border border-foreground py-4 transition-colors hover:bg-foreground hover:text-background"
+                  >
+                    Join Waitlist
+                  </button>
+                )}
               </div>
             </section>
           ))}
@@ -515,19 +540,6 @@ function Launch() {
       <main className="relative flex min-h-dvh flex-col bg-white text-foreground md:h-svh md:overflow-hidden">
         <LaunchBrandDropLane />
         <SiteNav />
-
-        <div className="px-4 nav-offset md:hidden">
-          <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
-          <h1 className="display mt-3 max-w-[12ch] text-[clamp(2rem,10vw,2.75rem)] leading-[0.9] tracking-tighter">
-            Built for the tall frame.
-          </h1>
-          <Link
-            to="/shop"
-            className="label mt-5 inline-flex items-center gap-3 border border-foreground px-5 py-3"
-          >
-            Shop Now
-          </Link>
-        </div>
 
         <LaunchHeroStage>
           <LaunchHeroBackdrop />
