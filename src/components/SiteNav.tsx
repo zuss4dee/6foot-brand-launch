@@ -9,7 +9,6 @@ const navLinks = [
   { label: "Shop", to: "/shop" as const },
   { label: "Blueprint", to: "/coming-soon" as const },
   { label: "Drop 002", to: "/coming-soon" as const },
-  { label: "Waitlist", to: "/" as const, hash: "waitlist" },
 ];
 
 const defaultPromo =
