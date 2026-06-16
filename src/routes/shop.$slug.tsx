@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { Bookmark, ChevronDown, ChevronLeft, ChevronRight, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SiteNav } from "@/components/SiteNav";
+import { SizeGuideContent } from "@/components/SizeGuideContent";
+import { ProductStickyCart } from "@/components/ProductStickyCart";
 import {
   getProduct,
   getColorVariants,
@@ -71,23 +73,7 @@ const colorSwatch: Record<string, string> = {
   Olive: "bg-[#5c6348]",
 };
 
-type SectionKey = "details" | "fit" | "composition" | "measurements" | "shipping";
-
-const topMeasurements = [
-  ["size", "shoulder", "length", "chest"],
-  ["m", "47.5cm", "78cm", "53.5cm"],
-  ["l", "49.5cm", "80cm", "56cm"],
-  ["xl", "51.5cm", "82cm", "58.5cm"],
-  ["xxl", "53.5cm", "84cm", "61cm"],
-];
-
-const bottomMeasurements = [
-  ["size", "waist", "inseam", "length"],
-  ["32", "32\"", "34\"", "118cm"],
-  ["34", "34\"", "34\"", "120cm"],
-  ["36", "36\"", "36\"", "122cm"],
-  ["38", "38\"", "38\"", "124cm"],
-];
+type SectionKey = "details" | "fit" | "composition" | "shipping";
 
 function Accordion({
   title,
@@ -130,40 +116,6 @@ function Accordion({
   );
 }
 
-function MeasurementTable({ product }: { product: Product }) {
-  const rows = product.category === "bottoms" ? bottomMeasurements : topMeasurements;
-
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[280px] text-left text-[11px] lowercase">
-        <thead>
-          <tr className="border-b border-foreground/10">
-            {rows[0].map((cell) => (
-              <th key={cell} className="pb-2 pr-4 font-normal text-foreground/45">
-                {cell}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.slice(1).map((row) => (
-            <tr key={row[0]} className="border-b border-foreground/5">
-              {row.map((cell) => (
-                <td key={cell} className="py-2 pr-4 text-foreground/70">
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="mt-4 text-[11px] lowercase text-foreground/45">
-        all measurements taken flat. +2 inch extension through body on tall block.
-      </p>
-    </div>
-  );
-}
-
 function SizeGuideDrawer({
   open,
   onClose,
@@ -200,12 +152,7 @@ function SizeGuideDrawer({
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-6">
-              <p className="mb-6 text-[11px] leading-relaxed lowercase text-foreground/55">
-                {product.category === "bottoms"
-                  ? "6foot bottoms are cut with extended rise and inseam. Size by waist — length scales with size."
-                  : "6foot tops are re-blocked with +2 inches through the body. Cuffs land at the wristbone on a 6'4 frame."}
-              </p>
-              <MeasurementTable product={product} />
+              <SizeGuideContent product={product} />
             </div>
           </motion.aside>
         </>
@@ -473,10 +420,10 @@ function ProductAccordions({
       </Accordion>
       <Accordion title="size & fit" open={openSection === "fit"} onToggle={() => toggle("fit")}>
         <p className="mb-3">{modelNote}</p>
-        <p className="mb-4 text-[11px] lowercase text-foreground/55">
-          fit: {productFit(product)}. designed on a re-engineered block for frames 6&apos;2–6&apos;6.
+        <p className="mb-6 text-[11px] lowercase text-foreground/55">
+          fit: {productFit(product)}. calibrated from 6&apos;0&quot; upward on the tall block.
         </p>
-        <MeasurementTable product={product} />
+        <SizeGuideContent product={product} compact />
       </Accordion>
       <Accordion
         title="composition & care"
@@ -501,13 +448,6 @@ function ProductAccordions({
             <dd>machine wash cold · do not tumble dry · cool iron</dd>
           </div>
         </dl>
-      </Accordion>
-      <Accordion
-        title="product measurements"
-        open={openSection === "measurements"}
-        onToggle={() => toggle("measurements")}
-      >
-        <MeasurementTable product={product} />
       </Accordion>
       <Accordion
         title="shipping, exchanges & returns"
@@ -594,7 +534,7 @@ function ProductPage() {
   ];
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-background pb-[calc(9.5rem+env(safe-area-inset-bottom))] text-foreground md:pb-32">
+    <main className="min-h-screen overflow-x-clip bg-background pb-[calc(12rem+env(safe-area-inset-bottom))] text-foreground md:pb-[11rem]">
       <SiteNav />
 
       <div className="flex items-center justify-between px-4 nav-offset md:px-6">
@@ -845,37 +785,17 @@ function ProductPage() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground bg-background px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
-        <div className="grid grid-cols-[auto_1fr] gap-3">
-          <p className="col-span-2 text-center text-[10px] lowercase text-foreground/45">
-            {size ? `${size.toLowerCase()} selected` : "select a size above"}
-          </p>
-          <p className="self-center text-base">{formatPrice(product.price)}</p>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={handleAdd}
-              disabled={!size}
-              className={`py-3 text-[11px] lowercase ${
-                size
-                  ? "bg-foreground text-background"
-                  : "cursor-not-allowed bg-foreground/10 text-foreground/40"
-              }`}
-            >
-              {added ? "added" : "add to bag"}
-            </button>
-            <BuyWithShopButton
-              onClick={handleBuyWithShop}
-              disabled={!size}
-              loading={shopLoading}
-              className="mt-0 py-3 text-[12px]"
-            />
-          </div>
-          {shopError && (
-            <p className="col-span-2 text-center text-[10px] text-destructive">{shopError}</p>
-          )}
-        </div>
-      </div>
+      <ProductStickyCart
+        product={product}
+        size={size}
+        setSize={setSize}
+        onAdd={handleAdd}
+        added={added}
+        onBuyWithShop={handleBuyWithShop}
+        shopLoading={shopLoading}
+        shopError={shopError}
+        onOpenSizeGuide={() => setSizeGuideOpen(true)}
+      />
 
       <SizeGuideDrawer open={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} product={product} />
     </main>
