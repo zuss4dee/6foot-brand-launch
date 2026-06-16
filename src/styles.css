@@ -293,3 +293,17 @@
 .vault-gate__pulse {
   animation: vault-gate-pulse 2.4s ease-in-out infinite;
 }
+
+.vault-gate__registry-pulse {
+  animation: vault-registry-glow 2.8s ease-in-out infinite;
+}
+
+@keyframes vault-registry-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}

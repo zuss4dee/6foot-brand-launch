@@ -42,25 +42,37 @@ function VaultCorner({ className }: { className: string }) {
   );
 }
 
-function VaultBracket({ children }: { children: ReactNode }) {
+function VaultBracket({ children, highlight = false }: { children: ReactNode; highlight?: boolean }) {
   return (
-    <div className="relative px-8 py-6 md:px-10">
+    <div
+      className={`relative px-6 py-7 md:px-10 md:py-9 ${
+        highlight
+          ? "border border-white/25 bg-white/[0.04] shadow-[0_0_0_1px_rgb(255_255_255/0.06),0_24px_80px_rgb(0_0_0/0.45)]"
+          : ""
+      }`}
+    >
       <span
         aria-hidden
-        className="pointer-events-none absolute top-0 left-0 h-4 w-4 border-t border-l border-white/25"
+        className={`pointer-events-none absolute top-0 left-0 h-5 w-5 border-t border-l ${highlight ? "border-white/50" : "border-white/25"}`}
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute top-0 right-0 h-4 w-4 border-t border-r border-white/25"
+        className={`pointer-events-none absolute top-0 right-0 h-5 w-5 border-t border-r ${highlight ? "border-white/50" : "border-white/25"}`}
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 h-4 w-4 border-b border-l border-white/25"
+        className={`pointer-events-none absolute bottom-0 left-0 h-5 w-5 border-b border-l ${highlight ? "border-white/50" : "border-white/25"}`}
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute right-0 bottom-0 h-4 w-4 border-r border-b border-white/25"
+        className={`pointer-events-none absolute right-0 bottom-0 h-5 w-5 border-r border-b ${highlight ? "border-white/50" : "border-white/25"}`}
       />
+      {highlight ? (
+        <span
+          aria-hidden
+          className="vault-gate__registry-pulse pointer-events-none absolute inset-0 border border-white/20"
+        />
+      ) : null}
       {children}
     </div>
   );
@@ -303,27 +315,58 @@ export function VaultGate() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease, delay: 0.42 }}
-          className="mt-12 w-full max-w-lg md:mt-14"
+          className="mt-12 w-full max-w-xl md:mt-14"
         >
-          <VaultBracket>
+          <VaultBracket highlight>
             {registrySent ? (
               <div className="text-center">
-                <p className="text-xs tracking-[0.28em] text-white uppercase">Registry confirmed.</p>
-                <p className="label mt-3 text-white/35">Chapter 001 allocation queued.</p>
+                <p className="text-sm tracking-[0.22em] text-white uppercase">You&apos;re on the list.</p>
+                <p className="mt-3 text-sm leading-relaxed text-white/55">
+                  We&apos;ll email you the moment Chapter 001 drops. First access goes to the registry.
+                </p>
               </div>
             ) : (
-              <form onSubmit={handleRegistrySubmit} className="space-y-4">
-                <p className="label text-center text-white/40">Registry intake · slot 001</p>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="ENTER EMAIL FOR CHAPTER 001 ALLOCATION"
-                  className="w-full border-0 border-b border-white/20 bg-transparent py-3 text-center text-[10px] tracking-[0.18em] uppercase outline-none placeholder:text-white/30 focus:border-white/70"
-                />
+              <form onSubmit={handleRegistrySubmit} className="space-y-5">
+                <div className="space-y-2 text-center md:text-left">
+                  <p className="label text-white/50">Drop alert · chapter 001</p>
+                  <h2 className="display text-[clamp(1.5rem,5vw,2.25rem)] tracking-[-0.05em] text-white">
+                    Get notified at drop.
+                  </h2>
+                  <p className="max-w-md text-sm leading-relaxed text-white/55 md:text-[15px]">
+                    Leave your email for first access when we go live. Early registry gets allocation priority —
+                    no spam.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+                  <label htmlFor="vault-registry-email" className="sr-only">
+                    Email for drop notification
+                  </label>
+                  <input
+                    id="vault-registry-email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="your@email.com"
+                    className="min-h-12 flex-1 border border-white/25 bg-white/[0.06] px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-white focus:bg-white/[0.09]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="label min-h-12 shrink-0 border border-white bg-white px-6 text-[#070707] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {submitting ? "Joining…" : "Notify me"}
+                  </button>
+                </div>
+
+                <p className="text-center text-[10px] tracking-[0.14em] text-white/40 uppercase sm:text-left">
+                  ↳ Required to receive drop date + early access link
+                </p>
+
                 {registryError ? (
-                  <p className="text-center text-[10px] tracking-wider text-white/45 uppercase">
+                  <p className="text-center text-[11px] tracking-wider text-white/60 uppercase sm:text-left">
                     {registryError}
                   </p>
                 ) : null}

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VaultRouteImport } from './routes/vault'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShippingReturnsRouteImport } from './routes/shipping-returns'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as ShopSlugRouteImport } from './routes/shop.$slug'
 
+const VaultRoute = VaultRouteImport.update({
+  id: '/vault',
+  path: '/vault',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/shipping-returns': typeof ShippingReturnsRoute
   '/terms': typeof TermsRoute
+  '/vault': typeof VaultRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/': typeof ShopIndexRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/shipping-returns': typeof ShippingReturnsRoute
   '/terms': typeof TermsRoute
+  '/vault': typeof VaultRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop': typeof ShopIndexRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/shipping-returns': typeof ShippingReturnsRoute
   '/terms': typeof TermsRoute
+  '/vault': typeof VaultRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/': typeof ShopIndexRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/shipping-returns'
     | '/terms'
+    | '/vault'
     | '/shop/$slug'
     | '/shop/'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/shipping-returns'
     | '/terms'
+    | '/vault'
     | '/shop/$slug'
     | '/shop'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/shipping-returns'
     | '/terms'
+    | '/vault'
     | '/shop/$slug'
     | '/shop/'
   fileRoutesById: FileRoutesById
@@ -156,12 +168,20 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ShippingReturnsRoute: typeof ShippingReturnsRoute
   TermsRoute: typeof TermsRoute
+  VaultRoute: typeof VaultRoute
   ShopSlugRoute: typeof ShopSlugRoute
   ShopIndexRoute: typeof ShopIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vault': {
+      id: '/vault'
+      path: '/vault'
+      fullPath: '/vault'
+      preLoaderRoute: typeof VaultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ShippingReturnsRoute: ShippingReturnsRoute,
   TermsRoute: TermsRoute,
+  VaultRoute: VaultRoute,
   ShopSlugRoute: ShopSlugRoute,
   ShopIndexRoute: ShopIndexRoute,
 }
