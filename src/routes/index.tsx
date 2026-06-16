@@ -177,6 +177,10 @@ function LaunchHeroMeta() {
 }
 
 const headline = ["Built", "for", "the", "tall", "frame."];
+const mobileHeadlineLines = [
+  { text: "Built for", words: ["Built", "for"] },
+  { text: "the tall frame.", words: ["the", "tall", "frame."] },
+];
 
 const brandDrop = {
   cycle: 3.6,
@@ -443,6 +447,72 @@ function LaunchPanelCopy({
 
 const MOBILE_CAROUSEL_INTERVAL_MS = 5000;
 
+function LaunchMobileHeroCopy() {
+  return (
+    <div className="px-4 pb-2">
+      <div className="flex items-start justify-between gap-4">
+        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
+        <p className="label text-foreground/35">SS26</p>
+      </div>
+
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.8, ease: [0.83, 0, 0.17, 1], delay: 0.2 }}
+        className="mt-2 h-px w-10 origin-left bg-foreground/15"
+      />
+
+      <h1 className="display mt-3 max-w-[15ch] text-[clamp(2.125rem,11vw,3rem)] leading-[0.86] tracking-[-0.045em]">
+        {mobileHeadlineLines.map((line, lineIndex) => (
+          <span key={line.text} className={`block ${lineIndex === 1 ? "mt-0.5" : ""}`}>
+            {line.words.map((word, wordInLineIndex) => {
+              const wordIndex =
+                mobileHeadlineLines
+                  .slice(0, lineIndex)
+                  .reduce((count, entry) => count + entry.words.length, 0) + wordInLineIndex;
+
+              return (
+                <motion.span
+                  key={`${line.text}-${word}`}
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.85,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: 0.28 + wordIndex * 0.08,
+                  }}
+                  className={`inline-block ${lineIndex === 1 ? "text-foreground/88" : ""}`}
+                >
+                  {word}
+                  {word !== line.words[line.words.length - 1] ? "\u00a0" : ""}
+                </motion.span>
+              );
+            })}
+          </span>
+        ))}
+      </h1>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.72 }}
+        className="label mt-3 text-foreground/40"
+      >
+        +2&quot; tall block · Manchester studio
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.82 }}
+        className="mt-4"
+      >
+        <LaunchShopButton id="launch-shop-now-mobile" />
+      </motion.div>
+    </div>
+  );
+}
+
 function LaunchMobileSlideText({ slide }: { slide: LaunchSlide }) {
   return (
     <>
@@ -477,20 +547,7 @@ function LaunchMobileCarousel() {
 
   return (
     <div className="relative z-[12] nav-offset md:hidden">
-      <div className="px-4 pb-2">
-        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
-        <h1 className="display mt-1.5 max-w-[13ch] text-[clamp(1.875rem,9vw,2.5rem)] leading-[0.9] tracking-tighter">
-          Built for the tall frame.
-        </h1>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-          className="mt-4"
-        >
-          <LaunchShopButton id="launch-shop-now-mobile" />
-        </motion.div>
-      </div>
+      <LaunchMobileHeroCopy />
 
       <div className="-mt-1 overflow-hidden">
         <motion.div
