@@ -111,6 +111,7 @@ export type CustomerProfile = {
 export async function createCustomer(
   email: string,
   password: string,
+  options?: { acceptsMarketing?: boolean },
 ): Promise<{ customer: CustomerProfile | null; errors: string[] }> {
   const json = await storefrontFetch<{
     customerCreate?: {
@@ -118,7 +119,7 @@ export async function createCustomer(
       customerUserErrors?: ShopifyUserError[];
     };
   }>(CUSTOMER_CREATE_MUTATION, {
-    input: { email, password },
+    input: { email, password, acceptsMarketing: options?.acceptsMarketing ?? false },
   });
 
   if (json.errors?.length) {
@@ -133,6 +134,33 @@ export async function createCustomer(
   }
 
   return { customer: payload?.customer ?? null, errors: [] };
+}
+
+function generateRegistryPassword() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `6f-${crypto.randomUUID()}${crypto.randomUUID()}`;
+  }
+  return `6f-${Math.random().toString(36).slice(2)}${Date.now()}`;
+}
+
+/** Newsletter / vault registry — creates a marketing customer without account login. */
+export async function createRegistryCustomer(
+  email: string,
+): Promise<{ customer: CustomerProfile | null; errors: string[]; duplicate?: boolean }> {
+  const { customer, errors } = await createCustomer(email, generateRegistryPassword(), {
+    acceptsMarketing: true,
+  });
+
+  if (errors.length === 0) {
+    return { customer, errors };
+  }
+
+  const duplicate = errors.some((message) => /taken|already|exists/i.test(message));
+  if (duplicate) {
+    return { customer: null, errors: [], duplicate: true };
+  }
+
+  return { customer: null, errors };
 }
 
 export async function createCustomerAccessToken(

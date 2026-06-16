@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { SiteNav } from "@/components/SiteNav";
+import { VaultGate, hasVaultVipAccess } from "@/components/VaultGate";
 import fabric from "@/assets/fabric.jpg";
 import launchLeft from "@/assets/launch-left-model.png";
 import launchRight from "@/assets/launch-right-model.png";
@@ -25,6 +26,8 @@ export const Route = createFileRoute("/")({
   }),
   component: Launch,
 });
+
+const IS_PRE_LAUNCH_MODE = true;
 
 const heroEntrance = {
   ruleH: { duration: 1.65, delay: 1.05 },
@@ -607,6 +610,23 @@ function LaunchMobileCarousel() {
 }
 
 function Launch() {
+  const [gateReady, setGateReady] = useState(!IS_PRE_LAUNCH_MODE);
+  const [vipAccess, setVipAccess] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!IS_PRE_LAUNCH_MODE) return;
+    setVipAccess(hasVaultVipAccess());
+    setGateReady(true);
+  }, []);
+
+  if (IS_PRE_LAUNCH_MODE && gateReady && !vipAccess) {
+    return <VaultGate />;
+  }
+
+  if (IS_PRE_LAUNCH_MODE && !gateReady) {
+    return <div className="min-h-screen bg-background" aria-hidden />;
+  }
+
   return (
     <>
       <main className="relative flex min-h-dvh flex-col bg-white text-foreground md:h-svh md:overflow-hidden">
