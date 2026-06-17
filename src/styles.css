@@ -63,6 +63,13 @@
 
 :root {
   --radius: 0;
+  --promo-bar-height: 2rem;
+  --nav-bar-height: 3.5rem;
+
+  @media (width >= 48rem) {
+    --nav-bar-height: 5.5rem;
+  }
+
   /* 6foot brand palette — stone canvas + charcoal/black structure */
   --background: oklch(0.978 0.002 95);   /* #f9f9f9 stone */
   --foreground: oklch(0.16 0.005 270);   /* near-black charcoal */
@@ -188,11 +195,11 @@
 }
 
 @utility nav-offset {
-  padding-top: calc(6.75rem + env(safe-area-inset-top));
+  padding-top: calc(var(--promo-bar-height) + var(--nav-bar-height) + env(safe-area-inset-top));
+}
 
-  @media (width >= 48rem) {
-    padding-top: 7rem;
-  }
+@utility header-stack-top {
+  top: calc(var(--promo-bar-height) + var(--nav-bar-height) + env(safe-area-inset-top));
 }
 
 @utility safe-bottom {

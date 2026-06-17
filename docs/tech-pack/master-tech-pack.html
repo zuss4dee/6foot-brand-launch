@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6FOOT STUDIO — Master Tech Pack Template</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #000000;
+    --paper: #FFFFFF;
+    --line: #000000;
+    --grid: #C8C8C8;
+    --grid-faint: #E8E8E8;
+    --font-mono: "JetBrains Mono", "Courier New", Courier, monospace;
+    --a4-w: 210mm;
+    --a4-h: 297mm;
+    --pad: 12mm;
+    --rule: 0.25pt;
+    --rule-med: 0.5pt;
+    --rule-heavy: 1pt;
+  }
+  html { background: #B0B0B0; }
+  body {
+    font-family: var(--font-mono);
+    font-size: 7pt;
+    line-height: 1.35;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet {
+    width: var(--a4-w);
+    min-height: var(--a4-h);
+    margin: 8mm auto;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    box-shadow: 0 0 0 0.25pt var(--grid), 0 2mm 8mm rgba(0,0,0,0.08);
+  }
+  @media print {
+    html { background: none; }
+    .sheet { margin: 0; box-shadow: none; }
+  }
+  .frame {
+    position: absolute;
+    inset: 8mm;
+    border: var(--rule-heavy) solid var(--line);
+    pointer-events: none;
+  }
+  .frame-inner {
+    position: absolute;
+    inset: 9.5mm;
+    border: var(--rule) solid var(--grid);
+    pointer-events: none;
+  }
+  .hdr {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    padding: var(--pad) var(--pad) 6mm;
+    border-bottom: var(--rule-heavy) solid var(--line);
+    gap: 4mm;
+  }
+  .hdr__brand { font-size: 9pt; font-weight: 500; letter-spacing: 0.32em; }
+  .hdr__sub { font-size: 6pt; letter-spacing: 0.22em; color: var(--ink); margin-top: 1.5mm; }
+  .hdr__center { text-align: center; }
+  .hdr__doc { font-size: 7pt; letter-spacing: 0.28em; }
+  .hdr__meta { text-align: right; font-size: 6pt; letter-spacing: 0.16em; line-height: 1.6; }
+  .hdr__meta span { display: block; }
+  .block-title {
+    padding: 5mm var(--pad) 3mm;
+    border-bottom: var(--rule) solid var(--grid);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .block-title h2 { font-size: 7pt; font-weight: 500; letter-spacing: 0.24em; }
+  .block-title .ref { font-size: 6pt; letter-spacing: 0.18em; color: var(--ink); }
+  .canvas {
+    padding: 4mm var(--pad) 6mm;
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+  }
+  .canvas-row {
+    display: grid;
+    gap: 4mm;
+    align-items: start;
+  }
+  .canvas-row--2 { grid-template-columns: 1fr 1fr; }
+  .canvas-row--3 { grid-template-columns: 1fr 1fr 1fr; }
+  .fig {
+    border: var(--rule) solid var(--grid);
+    background: var(--paper);
+    position: relative;
+  }
+  .fig__label {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 2mm 3mm;
+    border-bottom: var(--rule) solid var(--grid-faint);
+    font-size: 5.5pt;
+    letter-spacing: 0.2em;
+    background: var(--paper);
+    z-index: 2;
+  }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 5.5pt;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .grid-table th,
+  .grid-table td {
+    border: var(--rule) solid var(--line);
+    padding: 1.8mm 2.5mm;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .grid-table th {
+    background: var(--paper);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    border-bottom: var(--rule-heavy) solid var(--line);
+  }
+  .grid-table td.val { text-align: center; font-variant-numeric: tabular-nums; letter-spacing: 0.06em; min-width: 14mm; }
+  .grid-table td.dim { color: var(--ink); }
+  .grid-table tr.subhead td {
+    background: var(--grid-faint);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    border-top: var(--rule-heavy) solid var(--line);
+  }
+  .grid-table .pom-id { width: 10mm; text-align: center; font-weight: 500; }
+  .ftr {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 3mm var(--pad);
+    border-top: var(--rule) solid var(--grid);
+    display: flex;
+    justify-content: space-between;
+    font-size: 5.5pt;
+    letter-spacing: 0.14em;
+  }
+  .ftr__legal { max-width: 55%; line-height: 1.5; }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4mm 8mm;
+    padding: 2mm 0 0;
+    font-size: 5pt;
+    letter-spacing: 0.12em;
+  }
+  .legend__item { display: flex; align-items: center; gap: 2mm; }
+  .legend__swatch { width: 8mm; height: 0; border-top: var(--rule-med) solid var(--line); }
+  .legend__swatch--dash { border-top-style: dashed; }
+  .legend__swatch--dot { border-top-style: dotted; }
+  .legend__swatch--gray { border-top-color: var(--grid); }
+  svg text {
+    font-family: var(--font-mono);
+    font-size: 6px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: var(--ink);
+  }
+  svg .stroke { fill: none; stroke: #000; stroke-width: 0.75; stroke-linecap: square; stroke-linejoin: miter; }
+  svg .stroke-thin { fill: none; stroke: #000; stroke-width: 0.4; }
+  svg .stroke-gray { fill: none; stroke: #C8C8C8; stroke-width: 0.35; }
+  svg .stroke-dash { fill: none; stroke: #000; stroke-width: 0.4; stroke-dasharray: 3 2; }
+  svg .stroke-dot { fill: none; stroke: #000; stroke-width: 0.35; stroke-dasharray: 1 2; }
+  svg .fill-white { fill: #FFF; }
+  svg .pom-line { fill: none; stroke: #000; stroke-width: 0.35; }
+  svg .pom-cap { fill: #000; }
+  svg .grade-fill { fill: none; stroke: #000; stroke-width: 0.85; }
+  svg .grade-inner { fill: none; stroke: #000; stroke-width: 0.45; }
+  svg .construction { fill: none; stroke: #C8C8C8; stroke-width: 0.3; stroke-dasharray: 2 2; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHEET 01 — COVER + COMPARATIVE HEIGHT SILHOUETTE GRADING CHART
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="sheet" id="sheet-01">
+  <div class="frame"></div>
+  <div class="frame-inner"></div>
+  <header class="hdr">
+    <div>
+      <div class="hdr__brand">6FOOT STUDIO</div>
+      <div class="hdr__sub">Manchester · Engineered Tall Blocks</div>
+    </div>
+    <div class="hdr__center">
+      <div class="hdr__doc">Master Tech Pack</div>
+      <div class="hdr__sub">PDF Template · A4 · Rev 001</div>
+    </div>
+    <div class="hdr__meta">
+      <span>Style: ________________</span>
+      <span>Season: SS26</span>
+      <span>Date: __ / __ / ____</span>
+      <span>Author: ________________</span>
+    </div>
+  </header>
+
+  <div class="block-title">
+    <h2>01 · Comparative Height Silhouette Grading Chart</h2>
+    <span class="ref">REF · GRD-HEIGHT-001</span>
+  </div>
+
+  <div class="canvas">
+    <div class="fig" id="fig-height-grading">
+      <div class="fig__label">Block 1 · Block 2 · Block 3 — Base Grade 6′0″ (182.9 CM)</div>
+      <svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" aria-label="Height silhouette grading chart">
+        <defs>
+          <marker id="arrow" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+            <path d="M0,0 L4,2 L0,4 Z" fill="#000"/>
+          </marker>
+        </defs>
+        <!-- vertical scale -->
+        <g id="scale-rail">
+          <line class="stroke-gray" x1="28" y1="24" x2="28" y2="380"/>
+          <text x="4" y="380" transform="rotate(-90 4 380)">Height (CM)</text>
+          <line class="stroke-gray" x1="22" y1="380" x2="34" y2="380"/>
+          <text x="36" y="384">160</text>
+          <line class="stroke-gray" x1="22" y1="340" x2="34" y2="340"/>
+          <text x="36" y="344">170</text>
+          <line class="stroke-gray" x1="22" y1="300" x2="34" y2="300"/>
+          <text x="36" y="304">180</text>
+          <line class="stroke-heavy stroke" x1="18" y1="260" x2="38" y2="260" stroke-width="1"/>
+          <text x="36" y="264" font-weight="bold">182.9 · 6′0″</text>
+          <line class="stroke-gray" x1="22" y1="220" x2="34" y2="220"/>
+          <text x="36" y="224">190</text>
+          <line class="stroke-gray" x1="22" y1="180" x2="34" y2="180"/>
+          <text x="36" y="184">195</text>
+          <line class="stroke-gray" x1="22" y1="140" x2="34" y2="140"/>
+          <text x="36" y="144">200</text>
+          <line class="stroke-gray" x1="22" y1="100" x2="34" y2="100"/>
+          <text x="36" y="104">205</text>
+          <line class="stroke-gray" x1="22" y1="60" x2="34" y2="60"/>
+          <text x="36" y="64">210</text>
+        </g>
+        <!-- baseline -->
+        <line class="stroke" x1="50" y1="380" x2="700" y2="380"/>
+        <text x="52" y="396">Floor Line · 0.0</text>
+        <!-- BLOCK 1 — 6'0" -->
+        <g id="block-1-silhouette" transform="translate(90,0)">
+          <text x="50" y="18" text-anchor="middle">Block 1</text>
+          <text x="50" y="30" text-anchor="middle" font-size="5">6′0″ · 182.9</text>
+          <path class="grade-fill" d="M50,380 L50,95 C50,70 42,58 50,48 C58,38 62,28 50,18 C38,28 42,38 50,48 C58,58 50,70 50,95 L50,380 Z"/>
+          <path class="grade-inner" d="M50,95 L38,200 L42,280 L50,380 M50,95 L62,200 L58,280 L50,380"/>
+          <line class="stroke-dash" x1="20" y1="260" x2="80" y2="260"/>
+          <text x="82" y="263">Crown · 182.9</text>
+          <line class="stroke-dot" x1="20" y1="200" x2="80" y2="200"/>
+          <text x="82" y="203">Shoulder · 148.2</text>
+          <line class="stroke-dot" x1="20" y1="280" x2="80" y2="280"/>
+          <text x="82" y="283">Hip · 98.4</text>
+          <rect class="stroke-thin" x="10" y="340" width="80" height="28" rx="0"/>
+          <text x="50" y="358" text-anchor="middle" font-size="5">Grade A</text>
+        </g>
+        <!-- BLOCK 2 — 6'3" -->
+        <g id="block-2-silhouette" transform="translate(280,0)">
+          <text x="55" y="18" text-anchor="middle">Block 2</text>
+          <text x="55" y="30" text-anchor="middle" font-size="5">6′3″ · 190.5</text>
+          <path class="grade-fill" d="M55,380 L55,72 C55,46 46,34 55,24 C64,14 68,4 55,-6 C42,4 46,14 55,24 C64,34 55,46 55,72 L55,380 Z" transform="translate(0,6)"/>
+          <path class="grade-inner" d="M55,78 L40,188 L45,272 L55,380 M55,78 L70,188 L65,272 L55,380"/>
+          <line class="stroke-dash" x1="18" y1="242" x2="92" y2="242"/>
+          <text x="94" y="245">Crown · 190.5</text>
+          <line class="stroke-dot" x1="18" y1="182" x2="92" y2="182"/>
+          <text x="94" y="185">Shoulder · 154.8</text>
+          <line class="stroke-dot" x1="18" y1="262" x2="92" y2="262"/>
+          <text x="94" y="265">Hip · 92.6</text>
+          <rect class="stroke-thin" x="8" y="340" width="94" height="28" rx="0"/>
+          <text x="55" y="358" text-anchor="middle" font-size="5">Grade B · +2.5″</text>
+        </g>
+        <!-- BLOCK 3 — 6'6" -->
+        <g id="block-3-silhouette" transform="translate(480,0)">
+          <text x="60" y="18" text-anchor="middle">Block 3</text>
+          <text x="60" y="30" text-anchor="middle" font-size="5">6′6″ · 198.1</text>
+          <path class="grade-fill" d="M60,380 L60,50 C60,24 48,12 60,0 C72,-12 76,-22 60,-32 C44,-22 48,-12 60,0 C72,12 60,24 60,50 L60,380 Z" transform="translate(0,12)"/>
+          <path class="grade-inner" d="M60,62 L42,176 L48,264 L60,380 M60,62 L78,176 L72,264 L60,380"/>
+          <line class="stroke-dash" x1="12" y1="224" x2="108" y2="224"/>
+          <text x="110" y="227">Crown · 198.1</text>
+          <line class="stroke-dot" x1="12" y1="164" x2="108" y2="164"/>
+          <text x="110" y="167">Shoulder · 161.4</text>
+          <line class="stroke-dot" x1="12" y1="244" x2="108" y2="244"/>
+          <text x="110" y="247">Hip · 86.8</text>
+          <rect class="stroke-thin" x="4" y="340" width="112" height="28" rx="0"/>
+          <text x="60" y="358" text-anchor="middle" font-size="5">Grade C · +5.0″</text>
+        </g>
+        <!-- grade delta arrows -->
+        <g id="grade-delta">
+          <line class="stroke-thin" x1="170" y1="400" x2="270" y2="400" marker-end="url(#arrow)"/>
+          <text x="220" y="412" text-anchor="middle" font-size="5">+76.2 MM</text>
+          <line class="stroke-thin" x1="370" y1="400" x2="470" y2="400" marker-end="url(#arrow)"/>
+          <text x="420" y="412" text-anchor="middle" font-size="5">+76.2 MM</text>
+        </g>
+      </svg>
+    </div>
+
+    <table class="grid-table" id="grid-height-grading">
+      <thead>
+        <tr>
+          <th>Block</th>
+          <th>Height</th>
+          <th>CM</th>
+          <th>Crown</th>
+          <th>Shoulder</th>
+          <th>Hip</th>
+          <th>Inseam Δ</th>
+          <th>Sleeve Δ</th>
+          <th>Body Δ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="pom-id">B1</td>
+          <td>6′0″</td>
+          <td class="val">182.9</td>
+          <td class="val">—</td>
+          <td class="val">—</td>
+          <td class="val">—</td>
+          <td class="val">—</td>
+          <td class="val">—</td>
+          <td class="val">—</td>
+        </tr>
+        <tr>
+          <td class="pom-id">B2</td>
+          <td>6′3″</td>
+          <td class="val">190.5</td>
+          <td class="val"></td>
+          <td class="val"></td>
+          <td class="val"></td>
+          <td class="val">+38.1</td>
+          <td class="val">+19.0</td>
+          <td class="val">+19.1</td>
+        </tr>
+        <tr>
+          <td class="pom-id">B3</td>
+          <td>6′6″</td>
+          <td class="val">198.1</td>
+          <td class="val"></td>
+          <td class="val"></td>
+          <td class="val"></td>
+          <td class="val">+76.2</td>
+          <td class="val">+38.1</td>
+          <td class="val">+38.2</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <div class="legend__item"><span class="legend__swatch"></span>Outline</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--dash"></span>Crown Line</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--dot"></span>Landmark</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--gray"></span>Scale Rail</div>
+    </div>
+  </div>
+
+  <footer class="ftr">
+    <span class="ftr__legal">6FOOT STUDIO · CONFIDENTIAL · ENGINEERED TALL BLOCKS · NOT FOR DISTRIBUTION</span>
+    <span>Sheet 01 / 05</span>
+  </footer>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHEET 02 — DROP-SHOULDER HEAVY HOODIE FLAT
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="sheet" id="sheet-02">
+  <div class="frame"></div>
+  <div class="frame-inner"></div>
+  <header class="hdr">
+    <div>
+      <div class="hdr__brand">6FOOT STUDIO</div>
+      <div class="hdr__sub">240GSM · Heavyweight Cotton Fleece</div>
+    </div>
+    <div class="hdr__center">
+      <div class="hdr__doc">Drop-Shoulder Heavy Hoodie</div>
+      <div class="hdr__sub">Style: 6F-HDY-001</div>
+    </div>
+    <div class="hdr__meta">
+      <span>Block: B__</span>
+      <span>Size: __________</span>
+      <span>Scale: 1:4</span>
+    </div>
+  </header>
+
+  <div class="block-title">
+    <h2>02 · Drop-Shoulder Heavy Hoodie — Technical Flat + POM</h2>
+    <span class="ref">REF · FLAT-HDY-001</span>
+  </div>
+
+  <div class="canvas">
+    <div class="canvas-row canvas-row--2">
+      <div class="fig" id="fig-hoodie-front">
+        <div class="fig__label">Front Flat · POM Paths</div>
+        <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+          <g id="hoodie-front-outline">
+            <!-- body -->
+            <path class="stroke" d="M60,120 L40,130 L30,200 L35,360 L285,360 L290,200 L280,130 L260,120 L240,115 L200,108 L160,105 L120,108 L80,115 Z"/>
+            <!-- hood -->
+            <path class="stroke" d="M80,115 C80,80 100,40 160,32 C220,40 240,80 240,115"/>
+            <path class="stroke-thin" d="M95,115 C95,88 115,58 160,52 C205,58 225,88 225,115"/>
+            <!-- kangaroo pocket -->
+            <path class="stroke-thin" d="M100,220 L100,300 Q160,318 220,300 L220,220 Q160,205 100,220 Z"/>
+            <!-- rib hem -->
+            <line class="stroke" x1="35" y1="360" x2="285" y2="360" stroke-width="1.2"/>
+            <path class="construction" d="M35,352 L285,352 M35,368 L285,368"/>
+            <!-- cuffs -->
+            <rect class="stroke-thin" x="30" y="195" width="12" height="28"/>
+            <rect class="stroke-thin" x="278" y="195" width="12" height="28"/>
+            <!-- drop shoulder seam -->
+            <line class="stroke-dash" x1="40" y1="130" x2="280" y2="130"/>
+            <text x="160" y="126" text-anchor="middle" font-size="5">Drop Shoulder Seam</text>
+            <!-- CF line -->
+            <line class="stroke-gray" x1="160" y1="105" x2="160" y2="360"/>
+          </g>
+          <!-- POM A — 1/2 Chest -->
+          <g id="pom-a-chest">
+            <line class="pom-line" x1="20" y1="175" x2="300" y2="175"/>
+            <polygon class="pom-cap" points="20,175 24,173 24,177"/>
+            <polygon class="pom-cap" points="300,175 296,173 296,177"/>
+            <text x="160" y="168" text-anchor="middle">A · 1/2 Chest</text>
+          </g>
+          <!-- POM B — Body Length CF -->
+          <g id="pom-b-body">
+            <line class="pom-line" x1="310" y1="115" x2="310" y2="360"/>
+            <polygon class="pom-cap" points="310,115 308,119 312,119"/>
+            <polygon class="pom-cap" points="310,360 308,356 312,356"/>
+            <text x="318" y="240" transform="rotate(90 318 240)">B · Body Length</text>
+          </g>
+          <!-- POM C — 1/2 Hem -->
+          <g id="pom-c-hem">
+            <line class="pom-line" x1="20" y1="348" x2="300" y2="348"/>
+            <text x="160" y="342" text-anchor="middle">C · 1/2 Hem</text>
+          </g>
+          <!-- POM D — Hood Height -->
+          <g id="pom-d-hood">
+            <line class="pom-line" x1="8" y1="52" x2="8" y2="115"/>
+            <text x="4" y="84" transform="rotate(-90 4 84)" font-size="5">D · Hood H</text>
+          </g>
+          <!-- POM E — Hood Opening -->
+          <g id="pom-e-hood-open">
+            <path class="pom-line" d="M95,115 Q160,128 225,115" fill="none"/>
+            <text x="160" y="138" text-anchor="middle" font-size="5">E · Hood Opening</text>
+          </g>
+          <!-- POM F — Pocket Width -->
+          <g id="pom-f-pocket">
+            <line class="pom-line" x1="100" y1="310" x2="220" y2="310"/>
+            <text x="160" y="324" text-anchor="middle" font-size="5">F · Pocket W</text>
+          </g>
+        </svg>
+      </div>
+      <div class="fig" id="fig-hoodie-back">
+        <div class="fig__label">Back Flat · POM Paths</div>
+        <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+          <g id="hoodie-back-outline">
+            <path class="stroke" d="M60,120 L40,130 L30,200 L35,360 L285,360 L290,200 L280,130 L260,120 L240,115 L200,108 L160,105 L120,108 L80,115 Z"/>
+            <path class="stroke" d="M80,115 C80,80 100,40 160,32 C220,40 240,80 240,115"/>
+            <line class="stroke" x1="35" y1="360" x2="285" y2="360" stroke-width="1.2"/>
+            <rect class="stroke-thin" x="30" y="195" width="12" height="28"/>
+            <rect class="stroke-thin" x="278" y="195" width="12" height="28"/>
+            <line class="stroke-dash" x1="40" y1="130" x2="280" y2="130"/>
+            <line class="stroke-gray" x1="160" y1="105" x2="160" y2="360"/>
+            <!-- hood center seam -->
+            <line class="stroke-thin" x1="160" y1="32" x2="160" y2="115"/>
+          </g>
+          <!-- POM G — 1/2 Shoulder -->
+          <g id="pom-g-shoulder">
+            <line class="pom-line" x1="40" y1="130" x2="280" y2="130"/>
+            <text x="160" y="124" text-anchor="middle">G · 1/2 Shoulder</text>
+          </g>
+          <!-- POM H — Sleeve Length -->
+          <g id="pom-h-sleeve">
+            <line class="pom-line" x1="30" y1="130" x2="30" y2="223"/>
+            <text x="14" y="180" transform="rotate(-90 14 180)" font-size="5">H · Sleeve L</text>
+          </g>
+          <!-- POM I — 1/2 Cuff -->
+          <g id="pom-i-cuff">
+            <line class="pom-line" x1="30" y1="210" x2="42" y2="210"/>
+            <text x="36" y="204" text-anchor="middle" font-size="5">I</text>
+          </g>
+          <!-- POM J — CB Neck Drop -->
+          <g id="pom-j-neck">
+            <line class="pom-line" x1="300" y1="105" x2="300" y2="130"/>
+            <text x="306" y="120" font-size="5">J</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <table class="grid-table" id="grid-hoodie-pom">
+      <thead>
+        <tr>
+          <th>POM</th>
+          <th>Description</th>
+          <th>Tol ±</th>
+          <th>B1</th>
+          <th>B2</th>
+          <th>B3</th>
+          <th>Unit</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="pom-id">A</td><td class="dim">1/2 Chest — 2.5 CM Below Armhole</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">B</td><td class="dim">Body Length — CF Neck Seam to Hem</td><td class="val">1.5</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">C</td><td class="dim">1/2 Hem — Relaxed</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">D</td><td class="dim">Hood Height — Crown to Neck Seam</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">E</td><td class="dim">Hood Opening — Curved Length</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Curved</td></tr>
+        <tr><td class="pom-id">F</td><td class="dim">Kangaroo Pocket Width</td><td class="val">0.5</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">G</td><td class="dim">1/2 Shoulder — Seam to Seam</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">H</td><td class="dim">Sleeve Length — Shoulder to Cuff</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">I</td><td class="dim">1/2 Cuff Opening</td><td class="val">0.5</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+        <tr><td class="pom-id">J</td><td class="dim">CB Neck Drop</td><td class="val">0.3</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Flat</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="ftr">
+    <span class="ftr__legal">6FOOT STUDIO · CONFIDENTIAL · ENGINEERED TALL BLOCKS · NOT FOR DISTRIBUTION</span>
+    <span>Sheet 02 / 05</span>
+  </footer>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHEET 03 — TRACKSUIT BOTTOM FLAT
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="sheet" id="sheet-03">
+  <div class="frame"></div>
+  <div class="frame-inner"></div>
+  <header class="hdr">
+    <div>
+      <div class="hdr__brand">6FOOT STUDIO</div>
+      <div class="hdr__sub">Heavyweight Loopback Fleece</div>
+    </div>
+    <div class="hdr__center">
+      <div class="hdr__doc">Tracksuit Bottom</div>
+      <div class="hdr__sub">Style: 6F-TRK-001</div>
+    </div>
+    <div class="hdr__meta">
+      <span>Block: B__</span>
+      <span>Size: __________</span>
+      <span>Scale: 1:4</span>
+    </div>
+  </header>
+
+  <div class="block-title">
+    <h2>03 · Tracksuit Bottom — Technical Flat + Elastic Casing</h2>
+    <span class="ref">REF · FLAT-TRK-001</span>
+  </div>
+
+  <div class="canvas">
+    <div class="canvas-row canvas-row--2">
+      <div class="fig" id="fig-trk-front">
+        <div class="fig__label">Front Flat · Waist + Ankle Casing</div>
+        <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg">
+          <g id="trk-front-outline">
+            <!-- waist elastic casing -->
+            <rect class="stroke" x="70" y="30" width="160" height="22"/>
+            <line class="stroke-thin" x1="70" y1="38" x2="230" y2="38"/>
+            <line class="stroke-thin" x1="70" y1="46" x2="230" y2="46"/>
+            <text x="150" y="26" text-anchor="middle" font-size="5">Waist Casing · 35 MM</text>
+            <!-- body -->
+            <path class="stroke" d="M70,52 L62,120 L58,200 L55,360 L85,365 L95,200 L100,120 L110,52 Z"/>
+            <path class="stroke" d="M230,52 L238,120 L242,200 L245,360 L215,365 L205,200 L200,120 L190,52 Z"/>
+            <!-- CF seam -->
+            <line class="stroke-gray" x1="150" y1="52" x2="150" y2="365"/>
+            <!-- ankle elastic casing L -->
+            <rect class="stroke" x="55" y="348" width="30" height="18"/>
+            <line class="stroke-thin" x1="55" y1="354" x2="85" y2="354"/>
+            <line class="stroke-thin" x1="55" y1="360" x2="85" y2="360"/>
+            <!-- ankle elastic casing R -->
+            <rect class="stroke" x="215" y="348" width="30" height="18"/>
+            <line class="stroke-thin" x1="215" y1="354" x2="245" y2="354"/>
+            <line class="stroke-thin" x1="215" y1="360" x2="245" y2="360"/>
+            <text x="70" y="378" font-size="5">Ankle Casing</text>
+            <text x="215" y="378" font-size="5">Ankle Casing</text>
+            <!-- side seam -->
+            <line class="stroke-dash" x1="62" y1="120" x2="58" y2="360"/>
+            <line class="stroke-dash" x1="238" y1="120" x2="242" y2="360"/>
+          </g>
+          <!-- POM K — 1/2 Waist -->
+          <g id="pom-k-waist">
+            <line class="pom-line" x1="70" y1="22" x2="230" y2="22"/>
+            <text x="150" y="16" text-anchor="middle" font-size="5">K · 1/2 Waist Relaxed</text>
+          </g>
+          <!-- POM L — Front Rise -->
+          <g id="pom-l-rise">
+            <line class="pom-line" x1="260" y1="52" x2="260" y2="120"/>
+            <text x="268" y="88" font-size="5">L · Rise</text>
+          </g>
+          <!-- POM M — Inseam -->
+          <g id="pom-m-inseam">
+            <line class="pom-line" x1="150" y1="120" x2="150" y2="365"/>
+            <text x="158" y="240" font-size="5">M · Inseam</text>
+          </g>
+          <!-- POM N — 1/2 Hem -->
+          <g id="pom-n-hem">
+            <line class="pom-line" x1="55" y1="374" x2="85" y2="374"/>
+            <text x="70" y="390" text-anchor="middle" font-size="5">N</text>
+          </g>
+        </svg>
+      </div>
+      <div class="fig" id="fig-trk-side">
+        <div class="fig__label">Side Flat · Casing Detail</div>
+        <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg">
+          <g id="trk-side-outline">
+            <!-- waist casing profile -->
+            <path class="stroke" d="M80,40 L80,62 L220,62 L220,40 Z"/>
+            <line class="stroke-thin" x1="80" y1="48" x2="220" y2="48"/>
+            <line class="stroke-dot" x1="80" y1="54" x2="220" y2="54"/>
+            <text x="150" y="34" text-anchor="middle" font-size="5">Elastic Channel · 4.0 CM</text>
+            <!-- leg profile -->
+            <path class="stroke" d="M100,62 L90,180 L82,340 L118,345 L125,180 L135,62 Z"/>
+            <!-- ankle casing profile -->
+            <rect class="stroke" x="78" y="328" width="44" height="18"/>
+            <line class="stroke-thin" x1="78" y1="334" x2="122" y2="334"/>
+            <line class="stroke-dot" x1="78" y1="340" x2="122" y2="340"/>
+            <text x="100" y="358" text-anchor="middle" font-size="5">Ankle · 25 MM Casing</text>
+            <!-- drawcord exit -->
+            <circle class="stroke-thin" cx="150" cy="50" r="3"/>
+            <line class="stroke-thin" x1="150" y1="50" x2="150" y2="62"/>
+          </g>
+          <!-- POM O — Outseam -->
+          <g id="pom-o-outseam">
+            <line class="pom-line" x1="250" y1="40" x2="250" y2="345"/>
+            <text x="258" y="200" transform="rotate(90 258 200)" font-size="5">O · Outseam</text>
+          </g>
+          <!-- POM P — Casing Depth -->
+          <g id="pom-p-casing">
+            <line class="pom-line" x1="60" y1="40" x2="60" y2="62"/>
+            <text x="48" y="54" font-size="5">P</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <table class="grid-table" id="grid-trk-pom">
+      <thead>
+        <tr>
+          <th>POM</th>
+          <th>Description</th>
+          <th>Tol ±</th>
+          <th>B1</th>
+          <th>B2</th>
+          <th>B3</th>
+          <th>Unit</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="pom-id">K</td><td class="dim">1/2 Waist — Relaxed · Elastic In</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>35 MM Casing</td></tr>
+        <tr><td class="pom-id">L</td><td class="dim">Front Rise — Waist to Crotch</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr><td class="pom-id">M</td><td class="dim">Inseam — Crotch to Hem</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Tall Grade +</td></tr>
+        <tr><td class="pom-id">N</td><td class="dim">1/2 Ankle Opening — Relaxed</td><td class="val">0.5</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>25 MM Casing</td></tr>
+        <tr><td class="pom-id">O</td><td class="dim">Outseam — Waist to Hem</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr><td class="pom-id">P</td><td class="dim">Waist Casing Depth</td><td class="val">0.2</td><td class="val">4.0</td><td class="val">4.0</td><td class="val">4.0</td><td>CM</td><td>Fixed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="ftr">
+    <span class="ftr__legal">6FOOT STUDIO · CONFIDENTIAL · ENGINEERED TALL BLOCKS · NOT FOR DISTRIBUTION</span>
+    <span>Sheet 03 / 05</span>
+  </footer>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHEET 04 — LINEAR PLEATED TROUSER FLAT
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="sheet" id="sheet-04">
+  <div class="frame"></div>
+  <div class="frame-inner"></div>
+  <header class="hdr">
+    <div>
+      <div class="hdr__brand">6FOOT STUDIO</div>
+      <div class="hdr__sub">Tailored Wool Blend</div>
+    </div>
+    <div class="hdr__center">
+      <div class="hdr__doc">Linear Pleated Trouser</div>
+      <div class="hdr__sub">Style: 6F-TRS-001</div>
+    </div>
+    <div class="hdr__meta">
+      <span>Block: B__</span>
+      <span>Size: __________</span>
+      <span>Scale: 1:4</span>
+    </div>
+  </header>
+
+  <div class="block-title">
+    <h2>04 · Linear Pleated Trouser — Pressed Center-Pleat Guidelines</h2>
+    <span class="ref">REF · FLAT-TRS-001</span>
+  </div>
+
+  <div class="canvas">
+    <div class="fig" id="fig-pleat-trouser">
+      <div class="fig__label">Front Flat · Single Forward Pleat + Center-Press Guidelines</div>
+      <svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg">
+        <g id="pleat-trouser-front" transform="translate(20,0)">
+          <!-- waistband -->
+          <rect class="stroke" x="120" y="28" width="200" height="16"/>
+          <line class="stroke-thin" x1="120" y1="36" x2="320" y2="36"/>
+          <!-- left leg -->
+          <path class="stroke" d="M120,44 L108,100 L95,200 L88,360 L148,362 L155,200 L162,100 L170,44 Z"/>
+          <!-- right leg -->
+          <path class="stroke" d="M270,44 L282,100 L295,200 L302,360 L242,362 L235,200 L228,100 L220,44 Z"/>
+          <!-- CF line -->
+          <line class="stroke-gray" x1="220" y1="44" x2="220" y2="362"/>
+          <!-- pleat left -->
+          <path class="stroke-thin" d="M170,44 L158,100 L152,180"/>
+          <path class="stroke-thin" d="M182,44 L170,100 L164,180"/>
+          <!-- pleat right -->
+          <path class="stroke-thin" d="M258,44 L270,100 L276,180"/>
+          <path class="stroke-thin" d="M246,44 L258,100 L264,180"/>
+          <!-- pressed center-pleat guidelines L -->
+          <line class="stroke-dot" x1="118" y1="100" x2="118" y2="362"/>
+          <line class="stroke-dot" x1="122" y1="100" x2="122" y2="362"/>
+          <text x="108" y="240" transform="rotate(-90 108 240)" font-size="5">Press Guide</text>
+          <!-- pressed center-pleat guidelines R -->
+          <line class="stroke-dot" x1="318" y1="100" x2="318" y2="362"/>
+          <line class="stroke-dot" x1="322" y1="100" x2="322" y2="362"/>
+          <text x="332" y="240" transform="rotate(90 332 240)" font-size="5">Press Guide</text>
+          <!-- crease lines -->
+          <line class="stroke-dash" x1="118" y1="180" x2="118" y2="362"/>
+          <line class="stroke-dash" x1="322" y1="180" x2="322" y2="362"/>
+          <!-- hem -->
+          <line class="stroke" x1="88" y1="362" x2="148" y2="362" stroke-width="1"/>
+          <line class="stroke" x1="242" y1="362" x2="302" y2="362" stroke-width="1"/>
+          <!-- belt loops -->
+          <rect class="stroke-thin" x="135" y="24" width="6" height="10"/>
+          <rect class="stroke-thin" x="175" y="24" width="6" height="10"/>
+          <rect class="stroke-thin" x="215" y="24" width="6" height="10"/>
+          <rect class="stroke-thin" x="255" y="24" width="6" height="10"/>
+          <rect class="stroke-thin" x="295" y="24" width="6" height="10"/>
+        </g>
+        <!-- POM Q — 1/2 Waist -->
+        <g id="pom-q-waist">
+          <line class="pom-line" x1="140" y1="18" x2="340" y2="18"/>
+          <text x="240" y="12" text-anchor="middle" font-size="5">Q · 1/2 Waist</text>
+        </g>
+        <!-- POM R — Pleat Depth -->
+        <g id="pom-r-pleat">
+          <line class="pom-line" x1="192" y1="44" x2="170" y2="100"/>
+          <text x="188" y="80" font-size="5">R · Pleat D</text>
+        </g>
+        <!-- POM S — 1/2 Thigh -->
+        <g id="pom-s-thigh">
+          <line class="pom-line" x1="95" y1="200" x2="305" y2="200"/>
+          <text x="200" y="194" text-anchor="middle" font-size="5">S · 1/2 Thigh</text>
+        </g>
+        <!-- POM T — Inseam -->
+        <g id="pom-t-inseam">
+          <line class="pom-line" x1="220" y1="100" x2="220" y2="362"/>
+          <text x="228" y="240" font-size="5">T · Inseam</text>
+        </g>
+        <!-- POM U — 1/2 Hem -->
+        <g id="pom-u-hem">
+          <line class="pom-line" x1="88" y1="352" x2="148" y2="352"/>
+          <text x="118" y="346" text-anchor="middle" font-size="5">U</text>
+        </g>
+        <!-- POM V — Crease Offset -->
+        <g id="pom-v-crease">
+          <line class="pom-line" x1="118" y1="362" x2="118" y2="378"/>
+          <line class="pom-line" x1="148" y1="362" x2="148" y2="378"/>
+          <line class="pom-line" x1="118" y1="378" x2="148" y2="378"/>
+          <text x="133" y="392" text-anchor="middle" font-size="5">V · Crease Offset</text>
+        </g>
+      </svg>
+    </div>
+
+    <table class="grid-table" id="grid-pleat-pom">
+      <thead>
+        <tr>
+          <th>POM</th>
+          <th>Description</th>
+          <th>Tol ±</th>
+          <th>B1</th>
+          <th>B2</th>
+          <th>B3</th>
+          <th>Unit</th>
+          <th>Construction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="pom-id">Q</td><td class="dim">1/2 Waist — Finished</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Hook + Bar</td></tr>
+        <tr><td class="pom-id">R</td><td class="dim">Forward Pleat Depth</td><td class="val">0.3</td><td class="val">3.5</td><td class="val">3.5</td><td class="val">3.5</td><td>CM</td><td>Pressed</td></tr>
+        <tr><td class="pom-id">S</td><td class="dim">1/2 Thigh — 2.5 CM Below Crotch</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr><td class="pom-id">T</td><td class="dim">Inseam — Crotch to Hem</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Tall Grade +</td></tr>
+        <tr><td class="pom-id">U</td><td class="dim">1/2 Hem — Finished</td><td class="val">0.5</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>2.5 CM Turn</td></tr>
+        <tr><td class="pom-id">V</td><td class="dim">Crease Offset — Inseam to Press Line</td><td class="val">0.2</td><td class="val">4.5</td><td class="val">4.5</td><td class="val">4.5</td><td>CM</td><td>Linear Press</td></tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <div class="legend__item"><span class="legend__swatch legend__swatch--dot"></span>Center-Pleat Press Guide</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--dash"></span>Finished Crease Line</div>
+      <div class="legend__item"><span class="legend__swatch"></span>Pleat Fold Line</div>
+    </div>
+  </div>
+
+  <footer class="ftr">
+    <span class="ftr__legal">6FOOT STUDIO · CONFIDENTIAL · ENGINEERED TALL BLOCKS · NOT FOR DISTRIBUTION</span>
+    <span>Sheet 04 / 05</span>
+  </footer>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHEET 05 — ENGINEERED DENIM FLAT
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="sheet" id="sheet-05">
+  <div class="frame"></div>
+  <div class="frame-inner"></div>
+  <header class="hdr">
+    <div>
+      <div class="hdr__brand">6FOOT STUDIO</div>
+      <div class="hdr__sub">14OZ Japanese Selvedge Denim</div>
+    </div>
+    <div class="hdr__center">
+      <div class="hdr__doc">Engineered Denim · 5-Pocket</div>
+      <div class="hdr__sub">Style: 6F-DNM-001</div>
+    </div>
+    <div class="hdr__meta">
+      <span>Block: B__</span>
+      <span>Size: __________</span>
+      <span>Scale: 1:4</span>
+    </div>
+  </header>
+
+  <div class="block-title">
+    <h2>05 · Engineered Denim — 5-Pocket Curve Matrix + Shifted Knee Drop-Map</h2>
+    <span class="ref">REF · FLAT-DNM-001</span>
+  </div>
+
+  <div class="canvas">
+    <div class="canvas-row canvas-row--2">
+      <div class="fig" id="fig-denim-front">
+        <div class="fig__label">Front Flat · Pocket Curve Matrix</div>
+        <svg viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg">
+          <g id="denim-front-outline">
+            <!-- waistband -->
+            <rect class="stroke" x="60" y="28" width="200" height="14"/>
+            <!-- body L -->
+            <path class="stroke" d="M60,42 L52,100 L48,200 L45,380 L115,382 L120,200 L125,100 L130,42 Z"/>
+            <!-- body R -->
+            <path class="stroke" d="M260,42 L268,100 L272,200 L275,380 L205,382 L200,200 L195,100 L190,42 Z"/>
+            <!-- CF fly -->
+            <line class="stroke-thin" x1="160" y1="42" x2="160" y2="140"/>
+            <path class="stroke-thin" d="M160,42 L175,55 L160,68 L145,55 Z"/>
+            <!-- front pocket matrix L -->
+            <path class="stroke" id="pocket-curve-fl" d="M52,100 Q80,108 95,130 Q100,145 98,165 Q96,180 88,195 L72,200 L52,100 Z"/>
+            <path class="stroke-thin" id="pocket-curve-fl-inner" d="M60,108 Q78,114 88,128 Q92,140 90,155 L75,195"/>
+            <!-- front pocket matrix R -->
+            <path class="stroke" id="pocket-curve-fr" d="M268,100 Q240,108 225,130 Q220,145 222,165 Q224,180 232,195 L248,200 L268,100 Z"/>
+            <path class="stroke-thin" id="pocket-curve-fr-inner" d="M260,108 Q242,114 232,128 Q228,140 230,155 L245,195"/>
+            <!-- coin pocket -->
+            <path class="stroke-thin" d="M175,55 L210,58 L208,82 L173,78 Z"/>
+            <!-- rivets -->
+            <circle class="stroke-thin" cx="72" cy="200" r="2"/>
+            <circle class="stroke-thin" cx="248" cy="200" r="2"/>
+            <circle class="stroke-thin" cx="175" cy="78" r="1.5"/>
+            <circle class="stroke-thin" cx="208" cy="82" r="1.5"/>
+            <!-- shifted knee drop-map L -->
+            <line class="stroke-dash" x1="48" y1="240" x2="115" y2="240"/>
+            <line class="stroke-dot" x1="48" y1="248" x2="115" y2="248"/>
+            <text x="82" y="234" text-anchor="middle" font-size="5">Knee Drop · +4.0 CM</text>
+            <!-- shifted knee drop-map R -->
+            <line class="stroke-dash" x1="205" y1="240" x2="272" y2="240"/>
+            <line class="stroke-dot" x1="205" y1="248" x2="272" y2="248"/>
+            <!-- knee articulation arc -->
+            <path class="construction" d="M48,240 Q82,228 115,240"/>
+            <path class="construction" d="M205,240 Q238,228 272,240"/>
+            <!-- hem -->
+            <line class="stroke" x1="45" y1="382" x2="115" y2="382" stroke-width="1"/>
+            <line class="stroke" x1="205" y1="382" x2="275" y2="382" stroke-width="1"/>
+          </g>
+          <!-- curve matrix annotation -->
+          <g id="curve-matrix-annotations">
+            <line class="stroke-gray" x1="95" y1="130" x2="30" y2="90"/>
+            <text x="8" y="86" font-size="5">Curve A · R28</text>
+            <line class="stroke-gray" x1="98" y1="165" x2="30" y2="165"/>
+            <text x="8" y="169" font-size="5">Curve B · R42</text>
+            <line class="stroke-gray" x1="88" y1="195" x2="30" y2="210"/>
+            <text x="8" y="214" font-size="5">Curve C · R18</text>
+          </g>
+          <!-- POM W — 1/2 Waist -->
+          <g id="pom-w-waist">
+            <line class="pom-line" x1="60" y1="18" x2="260" y2="18"/>
+            <text x="160" y="12" text-anchor="middle" font-size="5">W · 1/2 Waist</text>
+          </g>
+          <!-- POM X — Front Rise -->
+          <g id="pom-x-rise">
+            <line class="pom-line" x1="290" y1="42" x2="290" y2="100"/>
+            <text x="296" y="72" font-size="5">X</text>
+          </g>
+        </svg>
+      </div>
+      <div class="fig" id="fig-denim-back">
+        <div class="fig__label">Back Flat · Yoke + Patch Pocket Matrix</div>
+        <svg viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg">
+          <g id="denim-back-outline">
+            <rect class="stroke" x="60" y="28" width="200" height="14"/>
+            <path class="stroke" d="M60,42 L52,100 L48,200 L45,380 L115,382 L120,200 L125,100 L130,42 Z"/>
+            <path class="stroke" d="M260,42 L268,100 L272,200 L275,380 L205,382 L200,200 L195,100 L190,42 Z"/>
+            <!-- yoke -->
+            <path class="stroke-thin" d="M60,42 L90,72 L160,78 L230,72 L260,42"/>
+            <!-- back patch pockets -->
+            <path class="stroke" d="M75,120 L105,118 L108,175 L78,178 Z"/>
+            <path class="stroke" d="M215,120 L245,118 L242,175 L212,178 Z"/>
+            <!-- pocket curve matrix back -->
+            <path class="stroke-thin" d="M78,178 Q93,182 108,175"/>
+            <path class="stroke-thin" d="M212,178 Q227,182 242,175"/>
+            <!-- CB seam -->
+            <line class="stroke-gray" x1="160" y1="42" x2="160" y2="382"/>
+            <!-- shifted knee drop-map back -->
+            <line class="stroke-dash" x1="48" y1="245" x2="115" y2="245"/>
+            <line class="stroke-dot" x1="48" y1="253" x2="115" y2="253"/>
+            <line class="stroke-dash" x1="205" y1="245" x2="272" y2="245"/>
+            <line class="stroke-dot" x1="205" y1="253" x2="272" y2="253"/>
+            <path class="construction" d="M48,245 Q82,258 115,245"/>
+            <path class="construction" d="M205,245 Q238,258 272,245"/>
+            <text x="160" y="238" text-anchor="middle" font-size="5">Shifted Knee · Tall Block</text>
+            <!-- hem -->
+            <line class="stroke" x1="45" y1="382" x2="115" y2="382" stroke-width="1"/>
+            <line class="stroke" x1="205" y1="382" x2="275" y2="382" stroke-width="1"/>
+          </g>
+          <!-- POM Y — 1/2 Hip -->
+          <g id="pom-y-hip">
+            <line class="pom-line" x1="48" y1="200" x2="272" y2="200"/>
+            <text x="160" y="194" text-anchor="middle" font-size="5">Y · 1/2 Hip</text>
+          </g>
+          <!-- POM Z — Inseam -->
+          <g id="pom-z-inseam">
+            <line class="pom-line" x1="160" y1="100" x2="160" y2="382"/>
+            <text x="168" y="250" font-size="5">Z · Inseam</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <table class="grid-table" id="grid-denim-pom">
+      <thead>
+        <tr>
+          <th>POM</th>
+          <th>Description</th>
+          <th>Tol ±</th>
+          <th>B1</th>
+          <th>B2</th>
+          <th>B3</th>
+          <th>Unit</th>
+          <th>Matrix Ref</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="subhead"><td colspan="8">5-Pocket Curve Matrix</td></tr>
+        <tr><td class="pom-id">—</td><td class="dim">Front Pocket Curve A · Scoop Radius</td><td class="val">—</td><td class="val">R28</td><td class="val">R28</td><td class="val">R30</td><td>MM</td><td>FL / FR</td></tr>
+        <tr><td class="pom-id">—</td><td class="dim">Front Pocket Curve B · Belly Radius</td><td class="val">—</td><td class="val">R42</td><td class="val">R42</td><td class="val">R44</td><td>MM</td><td>FL / FR</td></tr>
+        <tr><td class="pom-id">—</td><td class="dim">Front Pocket Curve C · Entry Radius</td><td class="val">—</td><td class="val">R18</td><td class="val">R18</td><td class="val">R18</td><td>MM</td><td>FL / FR</td></tr>
+        <tr><td class="pom-id">—</td><td class="dim">Back Patch Pocket Curve · Welt Radius</td><td class="val">—</td><td class="val">R22</td><td class="val">R22</td><td class="val">R22</td><td>MM</td><td>BL / BR</td></tr>
+        <tr class="subhead"><td colspan="8">Shifted Knee Drop-Map</td></tr>
+        <tr><td class="pom-id">—</td><td class="dim">Knee Line Drop — Below Standard Grade</td><td class="val">0.5</td><td class="val">+4.0</td><td class="val">+5.5</td><td class="val">+7.0</td><td>CM</td><td>Tall Block</td></tr>
+        <tr><td class="pom-id">—</td><td class="dim">Knee Width — 35 CM Below Crotch</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr class="subhead"><td colspan="8">Primary POM</td></tr>
+        <tr><td class="pom-id">W</td><td class="dim">1/2 Waist — Finished</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr><td class="pom-id">X</td><td class="dim">Front Rise</td><td class="val">0.5</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr><td class="pom-id">Y</td><td class="dim">1/2 Hip — 18 CM Below Waist</td><td class="val">0.8</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>—</td></tr>
+        <tr><td class="pom-id">Z</td><td class="dim">Inseam — Crotch to Hem</td><td class="val">1.0</td><td class="val"></td><td class="val"></td><td class="val"></td><td>CM</td><td>Tall Grade +</td></tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <div class="legend__item"><span class="legend__swatch"></span>Pocket Outline</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--dash"></span>Knee Drop Line</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--dot"></span>Knee Articulation</div>
+      <div class="legend__item"><span class="legend__swatch legend__swatch--gray"></span>Construction Guide</div>
+    </div>
+  </div>
+
+  <footer class="ftr">
+    <span class="ftr__legal">6FOOT STUDIO · CONFIDENTIAL · ENGINEERED TALL BLOCKS · NOT FOR DISTRIBUTION</span>
+    <span>Sheet 05 / 05</span>
+  </footer>
+</section>
+
+</body>
+</html>

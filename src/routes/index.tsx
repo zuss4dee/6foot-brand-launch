@@ -97,15 +97,15 @@ function LaunchHeroBackdrop() {
       <div className="absolute inset-x-0 top-[38%] h-px bg-foreground/[0.07] md:top-[42%]" />
       <div className="absolute inset-x-0 bottom-[18%] h-px bg-foreground/[0.05] md:bottom-[22%]" />
 
-      <span className="absolute left-5 top-[5.25rem] h-5 w-5 border-l border-t border-foreground/15 md:left-10" />
-      <span className="absolute right-5 top-[5.25rem] h-5 w-5 border-r border-t border-foreground/15 md:right-10" />
+      <span className="absolute left-5 header-stack-top h-5 w-5 border-l border-t border-foreground/15 md:left-10" />
+      <span className="absolute right-5 header-stack-top h-5 w-5 border-r border-t border-foreground/15 md:right-10" />
       <span className="absolute bottom-5 left-5 h-5 w-5 border-b border-l border-foreground/15 md:left-10" />
       <span className="absolute bottom-5 right-5 h-5 w-5 border-b border-r border-foreground/15 md:right-10" />
 
-      <p className="label absolute left-6 top-[calc(5.25rem+1.25rem)] text-[9px] text-foreground/25 md:left-10">
+      <p className="label absolute left-6 top-[calc(var(--promo-bar-height)+var(--nav-bar-height)+1.25rem+env(safe-area-inset-top))] text-[9px] text-foreground/25 md:hidden md:left-10">
         +2&quot;
       </p>
-      <p className="label absolute right-6 top-[calc(5.25rem+1.25rem)] text-[9px] text-foreground/25 md:right-10">
+      <p className="label absolute right-6 top-[calc(var(--promo-bar-height)+var(--nav-bar-height)+1.25rem+env(safe-area-inset-top))] text-[9px] text-foreground/25 md:hidden md:right-10">
         tall block
       </p>
     </div>
@@ -116,7 +116,7 @@ function LaunchHeroCenterLine() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 bottom-0 top-[4.75rem] z-0 hidden md:block md:top-[5.25rem]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-0 hidden md:block header-stack-top"
     >
       <motion.div
         initial={{ scaleX: 0 }}
@@ -141,7 +141,7 @@ function LaunchHeroWatermark() {
       initial={{ opacity: 0, scale: 1.06 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: heroEntrance.watermark.duration, ease: [0.22, 1, 0.36, 1], delay: heroEntrance.watermark.delay }}
-      className="pointer-events-none absolute inset-x-0 bottom-0 top-[4.75rem] z-[8] hidden items-center justify-center overflow-hidden md:top-[5.25rem] md:flex"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] hidden items-center justify-center overflow-hidden header-stack-top md:flex"
     >
       <p className="display select-none text-[clamp(4.5rem,22vw,20rem)] leading-none tracking-tighter text-foreground/[0.035] md:text-[clamp(7rem,26vw,20rem)]">
         6foot
@@ -160,9 +160,9 @@ function LaunchHeroMeta() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-      className="pointer-events-none absolute inset-x-0 top-[4.75rem] z-30 hidden px-4 md:block md:top-[5.25rem] md:px-10"
+      className="pointer-events-none absolute inset-x-0 z-30 hidden px-4 header-stack-top md:block md:px-10"
     >
-      <div className="grid grid-cols-1 items-start gap-2 pb-3 sm:grid-cols-2 sm:gap-4 md:pb-5">
+      <div className="grid grid-cols-1 items-start gap-2 pt-3 pb-3 sm:grid-cols-2 sm:gap-4 md:pt-4 md:pb-5">
         <p className="label max-w-[18ch] text-foreground/50">
           001 — PROPORTIONED ESSENTIALS
         </p>
@@ -724,7 +724,7 @@ function LaunchPanel({ slide }: { slide: LaunchSlide }) {
       <div className="relative h-full min-h-0">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 flex items-end justify-center pt-[5.25rem]"
+          className="pointer-events-none absolute inset-0 flex items-end justify-center header-stack-top"
         >
           <img
             src={slide.image}
