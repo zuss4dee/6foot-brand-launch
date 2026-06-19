@@ -94,8 +94,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:image", content: "https://6foot.store/og-default.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#f9f9f9" },
     ],
     links: [
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.svg" },
       {
         rel: "stylesheet",
         href: appCss,
