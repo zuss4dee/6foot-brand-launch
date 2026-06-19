@@ -49,7 +49,7 @@ export function CartDrawer() {
             className="fixed top-0 right-0 bottom-0 z-[70] flex w-full flex-col bg-background safe-bottom sm:w-[28rem]"
           >
             <div className="flex items-center justify-between px-6 md:px-8 py-6 border-b border-foreground/10">
-              <p className="label">Your bag — {count}</p>
+              <p className="label">Your bag · {count}</p>
               <button onClick={() => setOpen(false)} className="label hover:opacity-60">
                 Close ✕
               </button>

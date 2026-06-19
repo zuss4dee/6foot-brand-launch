@@ -35,7 +35,7 @@ export function CookieBanner() {
         >
           <div className="mx-auto flex max-w-[1600px] flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <p className="text-xs uppercase tracking-wider text-foreground">
-              We use cookies to optimize your experience. By continuing to browse, you accept our{" "}
+              We use cookies to keep the site working and measure traffic. By continuing, you accept our{" "}
               <Link to="/privacy" className="underline underline-offset-2 hover:opacity-70">
                 privacy policy
               </Link>

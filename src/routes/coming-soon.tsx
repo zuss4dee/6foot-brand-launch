@@ -7,9 +7,9 @@ import fabric from "@/assets/fabric.jpg";
 export const Route = createFileRoute("/coming-soon")({
   head: () => ({
     meta: [
-      { title: "Drop 002 — Coming Soon — 6foot" },
+      { title: "Drop 002 | Coming Soon | 6foot" },
       { name: "description", content: "Drop 002 launches Autumn 2026. Join the waitlist for first access." },
-      { property: "og:title", content: "Drop 002 — Coming Soon — 6foot" },
+      { property: "og:title", content: "Drop 002 | Coming Soon | 6foot" },
       { property: "og:description", content: "Drop 002 launches Autumn 2026." },
     ],
   }),
@@ -62,7 +62,7 @@ function ComingSoon() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="label text-foreground/60"
           >
-            Chapter 02 — Drop 002 / AW26
+            Chapter 02 · Drop 002 / AW26
           </motion.p>
 
           <motion.h1

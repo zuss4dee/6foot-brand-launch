@@ -5,7 +5,7 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/shipping-returns")({
   head: () => ({
     meta: [
-      { title: "Shipping & Returns — 6foot" },
+      { title: "Shipping & Returns | 6foot" },
       {
         name: "description",
         content: "Fulfillment, UK delivery, and returns policy for 6foot studio.",
@@ -35,8 +35,8 @@ function ShippingReturnsPage() {
       <LegalSection title="Returns">
         <p>
           In accordance with UK consumer law, we accept return requests within 14 days of delivery.
-          Garments must be unworn, unaltered, and retained in original packaging with all
-          architectural tags attached. Return shipping is the responsibility of the client.
+          Garments must be unworn, unaltered, and returned in original packaging with all tags
+          attached. Return postage is your responsibility.
         </p>
       </LegalSection>
     </LegalPage>

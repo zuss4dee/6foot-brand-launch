@@ -5,7 +5,7 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — 6foot" },
+      { title: "Privacy Policy | 6foot" },
       {
         name: "description",
         content: "How 6foot studio collects, processes, and protects your personal data under UK GDPR.",
@@ -31,7 +31,7 @@ function PrivacyPage() {
 
       <LegalSection title="What We Collect">
         <p>
-          We process only the data required to operate a headless e-commerce store: email addresses
+          We process only the data required to run this store: email addresses
           (newsletter, account, and order communications), shipping and billing addresses, order
           history, and technical session data such as cookies that keep the site functional.
         </p>
@@ -39,9 +39,9 @@ function PrivacyPage() {
 
       <LegalSection title="How We Use Your Data">
         <p>
-          Customer data is processed strictly for order fulfillment, delivery, customer support, and
-          — where you have opted in — marketing communications relating to drops and product
-          releases. We do not sell, rent, or trade your personal information to third parties.
+          Customer data is processed for order fulfillment, delivery, customer support, and,
+          where you have opted in, marketing about drops and product releases. We do not sell,
+          rent, or trade your personal information to third parties.
         </p>
       </LegalSection>
 
@@ -81,7 +81,8 @@ function PrivacyPage() {
 
       <LegalSection title="Cookies">
         <p>
-          We use essential and analytics cookies to optimize site performance. By selecting
+          We use essential and analytics cookies to keep the site working and understand how it is
+          used. By selecting
           &quot;Accept&quot; on our cookie banner, you consent to this use. You may clear cookies via
           your browser settings at any time.
         </p>

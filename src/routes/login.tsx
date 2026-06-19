@@ -8,7 +8,7 @@ import { useCustomerAuth } from "@/lib/customer-auth";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Member Access — 6foot" },
+      { title: "Member Access | 6foot" },
       { name: "description", content: "Sign in or register for members-only access to 6foot." },
     ],
   }),

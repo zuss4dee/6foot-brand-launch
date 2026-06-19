@@ -1,6 +1,9 @@
 import type { Product } from "@/lib/products";
 import {
   bottomHeightChart,
+  formatCmMeasurement,
+  formatInchMeasurement,
+  formatStandingHeight,
   getHeightChart,
   getMeasurementPoints,
   heightAnchor,
@@ -60,7 +63,7 @@ function TopMeasureDiagram() {
         TOP MEASUREMENT MAP
       </text>
       <text x="16" y="404" className="fill-foreground/35 text-[8px]" style={{ fontFamily: "var(--font-mono)" }}>
-        GARMENT FLAT · CM
+        GARMENT FLAT · CM / IN
       </text>
     </svg>
   );
@@ -128,10 +131,7 @@ function HeightScaleDiagram() {
         <g key={mark.label}>
           <line x1="52" y1={mark.y} x2="68" y2={mark.y} className="stroke-foreground" strokeWidth="1" />
           <text x="24" y={mark.y + 3} className="fill-foreground text-[9px]" style={{ fontFamily: "var(--font-mono)" }}>
-            {mark.label}
-          </text>
-          <text x="24" y={mark.y + 13} className="fill-foreground/40 text-[8px]" style={{ fontFamily: "var(--font-mono)" }}>
-            {mark.cm}
+            {mark.label} · {mark.cm} cm
           </text>
         </g>
       ))}
@@ -140,7 +140,7 @@ function HeightScaleDiagram() {
         SIZE M
       </text>
       <text x="236" y="328" className="fill-foreground text-[8px]" style={{ fontFamily: "var(--font-mono)" }}>
-        from 6&apos;0&quot;
+        from 6&apos;0&quot; · 183 cm
       </text>
       <text x="16" y="24" className="fill-foreground/45 text-[9px]" style={{ fontFamily: "var(--font-mono)" }}>
         HEIGHT CALIBRATION
@@ -171,12 +171,11 @@ function HeightSizeTable({ product }: { product: Product }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[520px] text-left text-[11px]">
+      <table className="w-full min-w-[560px] text-left text-[11px]">
         <thead>
           <tr className="border-b border-foreground/15">
             <th className="label pb-3 pr-4 text-foreground/45">Size</th>
-            <th className="label pb-3 pr-4 text-foreground/45">Height</th>
-            <th className="label pb-3 pr-4 text-foreground/45">Metric</th>
+            <th className="label pb-3 pr-4 text-foreground/45">Standing height</th>
             {isBottoms ? (
               <>
                 <th className="label pb-3 pr-4 text-foreground/45">Waist</th>
@@ -196,19 +195,32 @@ function HeightSizeTable({ product }: { product: Product }) {
           {rows.map((row) => (
             <tr key={row.size} className="border-b border-foreground/5">
               <td className="py-2.5 pr-4 font-medium text-foreground">{row.size}</td>
-              <td className="py-2.5 pr-4 text-foreground/70">{row.height}</td>
-              <td className="py-2.5 pr-4 text-foreground/55">{row.cm}</td>
+              <td className="py-2.5 pr-4 text-foreground/70">
+                {formatStandingHeight(row.height, row.cm)}
+              </td>
               {isBottoms ? (
                 <>
-                  <td className="py-2.5 pr-4 text-foreground/70">{"waist" in row ? row.waist : ""}</td>
-                  <td className="py-2.5 pr-4 text-foreground/70">{"inseam" in row ? row.inseam : ""}</td>
-                  <td className="py-2.5 text-foreground/70">{"length" in row ? row.length : ""}</td>
+                  <td className="py-2.5 pr-4 text-foreground/70">
+                    {"waist" in row ? formatInchMeasurement(row.waist) : ""}
+                  </td>
+                  <td className="py-2.5 pr-4 text-foreground/70">
+                    {"inseam" in row ? formatInchMeasurement(row.inseam) : ""}
+                  </td>
+                  <td className="py-2.5 text-foreground/70">
+                    {"length" in row ? formatCmMeasurement(row.length) : ""}
+                  </td>
                 </>
               ) : (
                 <>
-                  <td className="py-2.5 pr-4 text-foreground/70">{"shoulder" in row ? row.shoulder : ""}</td>
-                  <td className="py-2.5 pr-4 text-foreground/70">{"chest" in row ? row.chest : ""}</td>
-                  <td className="py-2.5 text-foreground/70">{"length" in row ? row.length : ""}</td>
+                  <td className="py-2.5 pr-4 text-foreground/70">
+                    {"shoulder" in row ? formatCmMeasurement(row.shoulder) : ""}
+                  </td>
+                  <td className="py-2.5 pr-4 text-foreground/70">
+                    {"chest" in row ? formatCmMeasurement(row.chest) : ""}
+                  </td>
+                  <td className="py-2.5 text-foreground/70">
+                    {"length" in row ? formatCmMeasurement(row.length) : ""}
+                  </td>
                 </>
               )}
             </tr>
@@ -255,12 +267,12 @@ export function SizeGuideContent({ product, compact = false }: SizeGuideContentP
           <p className="label text-foreground/45">Height to size</p>
           <p className="mt-2 text-sm leading-relaxed text-foreground/65">
             Select your size by standing height first, then confirm garment measurements against a piece you
-            already own. Hem should break clean at the shoe — not above the ankle.
+            already own. Hem should break clean at the shoe, not above the ankle.
           </p>
           <ul className="mt-4 space-y-2 text-[11px] text-foreground/55">
-            <li>· Under 6&apos;0&quot; — proportions will read long</li>
-            <li>· Between bands — size up for length, down for a sharper fit</li>
-            <li>· Broad shoulders — prioritise chest measurement over height</li>
+            <li>· Under 6&apos;0&quot;: proportions will read long</li>
+            <li>· Between bands: size up for length, down for a sharper fit</li>
+            <li>· Broad shoulders: prioritise chest measurement over height</li>
           </ul>
         </div>
       </div>
@@ -271,8 +283,9 @@ export function SizeGuideContent({ product, compact = false }: SizeGuideContentP
         </p>
         <HeightSizeTable product={product} />
         <p className="mt-4 text-[11px] leading-relaxed text-foreground/45">
-          All garment measurements taken flat. Double chest and waist values for circumference. Inseam listed
-          per size — extended lengths available on request for 6&apos;6&quot;+.
+          Standing height shown in ft and cm. Garment measurements taken flat in cm and inches. Double chest
+          and waist values for circumference. Inseam listed per size. Extended lengths available on request
+          for 6&apos;6&quot; and above.
         </p>
       </div>
 

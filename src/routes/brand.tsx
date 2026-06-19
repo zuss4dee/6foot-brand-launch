@@ -4,7 +4,7 @@ import { SiteNav } from "@/components/SiteNav";
 
 export const Route = createFileRoute("/brand")({
   head: () => ({
-    meta: [{ title: "Brand — 6foot" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Brand | 6foot" }, { name: "robots", content: "noindex" }],
   }),
   component: BrandPage,
 });
@@ -18,7 +18,7 @@ function BrandPage() {
         <p className="label text-foreground/45">Brand system · Logo 001</p>
         <h1 className="display mt-3 text-4xl tracking-tighter md:text-5xl">6foot.</h1>
         <p className="mt-4 max-w-[48ch] text-sm leading-relaxed text-foreground/65">
-          Inter Tight display, tight tracking. The name is the mark — nav uses the period, hero
+          Inter Tight display, tight tracking. The name is the mark. Nav uses the period; hero
           lockups drop it.
         </p>
 
@@ -52,25 +52,25 @@ function BrandPage() {
               <a href="/logo-mark.svg" className="underline-offset-4 hover:underline">
                 logo-mark.svg
               </a>
-              — nav lockup with period
+              · nav lockup with period
             </li>
             <li>
               <a href="/logo-wordmark.svg" className="underline-offset-4 hover:underline">
                 logo-wordmark.svg
               </a>
-              — hero wordmark
+              · hero wordmark
             </li>
             <li>
               <a href="/favicon.svg" className="underline-offset-4 hover:underline">
                 favicon.svg
               </a>
-              — browser tab
+              · browser tab
             </li>
             <li>
               <a href="/apple-touch-icon.svg" className="underline-offset-4 hover:underline">
                 apple-touch-icon.svg
               </a>
-              — home screen / iOS
+              · home screen / iOS
             </li>
           </ul>
         </section>

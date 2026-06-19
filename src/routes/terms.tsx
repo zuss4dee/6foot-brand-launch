@@ -5,7 +5,7 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Service — 6foot" },
+      { title: "Terms of Service | 6foot" },
       {
         name: "description",
         content: "Terms governing use of 6foot.store and purchase of 6foot studio products.",
@@ -35,7 +35,7 @@ function TermsPage() {
 
       <LegalSection title="Product & Drop Policy">
         <p>
-          Product availability is strictly limited to stated drop allocations. Quantities are fixed at
+          Product availability is limited to stated drop allocations. Quantities are fixed at
           launch and no restocks are guaranteed. We reserve the right to cancel orders placed in
           error, through fraud, or in violation of purchase limits.
         </p>

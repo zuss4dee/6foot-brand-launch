@@ -12,13 +12,13 @@ import launchRight from "@/assets/launch-right-model.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "6foot — Built for the Tall Frame" },
+      { title: "6foot | Built for the Tall Frame" },
       {
         name: "description",
         content:
-          "Premium minimalist essentials proportioned for the tall frame. Shop Drop 001 or join the waitlist for Drop 002.",
+          "Proportioned streetwear for the tall frame. Shop Drop 001 or join the waitlist for Drop 002.",
       },
-      { property: "og:title", content: "6foot — Built for the Tall Frame" },
+      { property: "og:title", content: "6foot | Built for the Tall Frame" },
       {
         property: "og:description",
         content: "Shop the capsule or explore what's coming next.",
@@ -45,7 +45,7 @@ const trustItems = [
   "Free UK delivery over £150",
   "240gsm heavyweight cotton",
   "Proportioned tall blocks",
-  "Amsterdam studio",
+  "Manchester studio",
 ];
 
 const footerNav = {
@@ -164,7 +164,7 @@ function LaunchHeroMeta() {
     >
       <div className="grid grid-cols-1 items-start gap-2 pt-3 pb-3 sm:grid-cols-2 sm:gap-4 md:pt-4 md:pb-5">
         <p className="label max-w-[18ch] text-foreground/50">
-          001 — PROPORTIONED ESSENTIALS
+          001 · PROPORTIONED ESSENTIALS
         </p>
         <p className="label text-foreground/50 sm:justify-self-end sm:text-right">
           Drop 001 / SS26
@@ -302,7 +302,7 @@ function LaunchHeroHeadline() {
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: heroEntrance.watermark.delay * 0.45 }}
         className="label pointer-events-none mb-3 text-foreground/40 md:mb-4"
       >
-        SS26 — Amsterdam
+        SS26 · Manchester
       </motion.p>
       <h1 className="display pointer-events-none mx-auto max-w-[12ch] text-[clamp(2.25rem,7.5vw,5rem)] leading-[0.88] tracking-tighter text-foreground">
         {headline.map((word, index) => (
@@ -389,9 +389,9 @@ const launchSlides = [
     ctaTo: "/shop" as const,
     image: launchLeft,
     imageAlt: "Model in black proportioned essentials",
-    chapter: "Drop 002 / AW26",
+    chapter: "Drop 001 / SS26",
     title: "Shop the Edit",
-    subtitle: "Drop 001 is live. Proportioned staples with a +2\" block through the torso — shop the full capsule now.",
+    subtitle: "Four proportioned staples with a +2\" block through the torso. Shop the full capsule.",
     cta: "Shop Now",
   },
 ];
@@ -451,7 +451,7 @@ function LaunchMobileHeroCopy() {
   return (
     <div className="px-4 pb-2">
       <div className="flex items-start justify-between gap-4">
-        <p className="label text-foreground/50">001 — PROPORTIONED ESSENTIALS</p>
+        <p className="label text-foreground/50">001 · PROPORTIONED ESSENTIALS</p>
         <p className="label text-foreground/35">SS26</p>
       </div>
 
@@ -826,8 +826,8 @@ function LaunchFooter() {
                 </li>
               ))}
               <li>
-                <Link to="/" className="text-base transition-opacity hover:opacity-60">
-                  The Ethos
+                <Link to="/#waitlist" className="text-base transition-opacity hover:opacity-60">
+                  Newsletter
                 </Link>
               </li>
             </ul>
@@ -856,7 +856,7 @@ function LaunchFooter() {
             <p className="label mb-6 text-foreground/50">Studio</p>
             <p className="text-base">studio@6foot.eu</p>
             <p className="mt-2 text-base text-foreground/60">Manchester, UK</p>
-            <p className="label mt-8 text-foreground/45">Drop 001 — SS26</p>
+            <p className="label mt-8 text-foreground/45">Drop 001 · SS26</p>
             <p className="label mt-1 text-foreground/45">Built for the tall frame</p>
           </div>
         </div>

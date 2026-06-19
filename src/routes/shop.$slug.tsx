@@ -37,16 +37,16 @@ export const Route = createFileRoute("/shop/$slug")({
     loaderData
       ? {
           meta: [
-            { title: `${loaderData.product.name} — 6FOOT` },
+            { title: `${loaderData.product.name} | 6foot` },
             { name: "description", content: loaderData.product.description },
-            { property: "og:title", content: `${loaderData.product.name} — 6FOOT` },
+            { property: "og:title", content: `${loaderData.product.name} | 6foot` },
             { property: "og:description", content: loaderData.product.description },
             { property: "og:image", content: loaderData.product.flat },
             { property: "og:price:amount", content: String(loaderData.product.price) },
             { property: "og:price:currency", content: "GBP" },
           ],
         }
-      : { meta: [{ title: "Product — 6FOOT" }] },
+      : { meta: [{ title: "Product | 6foot" }] },
   notFoundComponent: () => (
     <main className="min-h-screen grid place-items-center px-6">
       <div className="text-center">
@@ -397,7 +397,7 @@ function ProductAccordions({
       <Accordion title="size & fit" open={openSection === "fit"} onToggle={() => toggle("fit")}>
         <p className="mb-3">{modelNote}</p>
         <p className="mb-6 text-[11px] lowercase text-foreground/55">
-          fit: {productFit(product)}. calibrated from 6&apos;0&quot; upward on the tall block.
+          fit: {productFit(product)}. Calibrated from 6&apos;0&quot; upward on the tall block.
         </p>
         <SizeGuideContent product={product} compact />
       </Accordion>
@@ -432,9 +432,9 @@ function ProductAccordions({
       >
         <ul className="space-y-2 text-[11px] lowercase">
           <li>free uk delivery on orders over £150</li>
-          <li>standard delivery 3–5 working days</li>
+          <li>standard delivery 3 to 5 working days</li>
           <li>free exchanges for uk customers</li>
-          <li>14-day returns — unworn, tags attached</li>
+          <li>14-day returns. unworn, tags attached</li>
         </ul>
       </Accordion>
     </>

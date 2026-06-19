@@ -9,7 +9,7 @@ import { formatPrice, productFitImageClass } from "@/lib/products";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: "Checkout — 6foot" },
+      { title: "Checkout | 6foot" },
       { name: "description", content: "Complete your order." },
       { name: "robots", content: "noindex" },
     ],
@@ -88,7 +88,7 @@ function Checkout() {
 
           <aside className="col-span-12 lg:col-span-5">
             <div className="space-y-6 bg-foreground/[0.03] p-6 md:p-8 lg:sticky lg:top-32">
-              <p className="label text-foreground/60">Order — {enriched.length} items</p>
+              <p className="label text-foreground/60">Order · {enriched.length} items</p>
               <ul className="space-y-5">
                 {enriched.map(({ item, product }) => (
                   <li key={`${item.slug}-${item.size}`} className="grid grid-cols-[60px_1fr] gap-4">

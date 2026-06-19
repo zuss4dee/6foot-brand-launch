@@ -333,8 +333,8 @@ export function VaultGate() {
                     Get notified at drop.
                   </h2>
                   <p className="max-w-md text-sm leading-relaxed text-white/55 md:text-[15px]">
-                    Leave your email for first access when we go live. Early registry gets allocation priority —
-                    no spam.
+                    Leave your email for first access when we go live. Early registry gets allocation
+                    priority. No spam.
                   </p>
                 </div>
 

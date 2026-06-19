@@ -219,7 +219,7 @@ export const products: Product[] = [
     gsm: "240",
     fabric: "100% heavyweight long-staple cotton",
     description:
-      "The Long Tee in black — same +2 inch tall block, same vertical drape. Pigment-dyed for a deep, stable finish.",
+      "The Long Tee in black. Same +2 inch tall block, same vertical drape. Pigment-dyed for a deep, stable finish.",
     sizes: ["M", "L", "XL", "XXL"],
     color: "Black",
     category: "tops",
@@ -304,7 +304,7 @@ export const products: Product[] = [
     gsm: "320",
     fabric: "320gsm dry-touch cotton twill",
     description:
-      "Wide Trouser in black — same dropped pleat and extended inseam range, finished in a deep enzyme wash.",
+      "Wide Trouser in black. Same dropped pleat and extended inseam range, finished in a deep enzyme wash.",
     sizes: ["30", "32", "34", "36", "38"],
     color: "Black",
     category: "bottoms",
@@ -385,7 +385,7 @@ export const shopSections: ShopSection[] = [
     title: "Tees & Layering",
     description: "240gsm foundations, longline blocks, and wrist-true cuffs.",
     introImage: launchLeft,
-    introImageAlt: "Side view — tees and layering",
+    introImageAlt: "Side view of tees and layering",
     slugs: ["long-tee-black", "long-sleeve-black", "tall-tank", "heavyweight-crew"],
   },
   {
@@ -403,7 +403,7 @@ export const shopSections: ShopSection[] = [
     title: "Bottoms",
     description: "Extended inseams, wide legs, and utility cuts for height.",
     introImage: launchMaleCutout,
-    introImageAlt: "Full-length view — proportioned bottoms",
+    introImageAlt: "Full-length view of proportioned bottoms",
     slugs: ["wide-trouser", "wide-trouser-black", "carpenter-pant"],
   },
   {
