@@ -36,18 +36,18 @@ if (!domain || !token) {
 }
 
 const LOCAL_PRODUCTS = [
-  { slug: "long-tee", sizes: ["M", "L", "XL", "XXL"] },
-  { slug: "heavy-hoodie", sizes: ["M", "L", "XL", "XXL"] },
+  { slug: "long-tee", sizes: ["S", "M", "L", "XL", "XXL"] },
+  { slug: "heavy-hoodie", sizes: ["S", "M", "L", "XL", "XXL"] },
   { slug: "wide-trouser", sizes: ["30", "32", "34", "36", "38"] },
-  { slug: "long-sleeve", sizes: ["M", "L", "XL", "XXL"] },
-  { slug: "long-tee-black", sizes: ["M", "L", "XL", "XXL"] },
-  { slug: "zip-hoodie", sizes: ["M", "L", "XL", "XXL"] },
-  { slug: "tall-tank", sizes: ["M", "L", "XL", "XXL"] },
-  { slug: "long-sleeve-black", sizes: ["M", "L", "XL", "XXL"] },
-  { slug: "heavyweight-crew", sizes: ["M", "L", "XL", "XXL"] },
+  { slug: "long-sleeve", sizes: ["S", "M", "L", "XL", "XXL"] },
+  { slug: "long-tee-black", sizes: ["S", "M", "L", "XL", "XXL"] },
+  { slug: "zip-hoodie", sizes: ["S", "M", "L", "XL", "XXL"] },
+  { slug: "tall-tank", sizes: ["S", "M", "L", "XL", "XXL"] },
+  { slug: "long-sleeve-black", sizes: ["S", "M", "L", "XL", "XXL"] },
+  { slug: "heavyweight-crew", sizes: ["S", "M", "L", "XL", "XXL"] },
   { slug: "wide-trouser-black", sizes: ["30", "32", "34", "36", "38"] },
   { slug: "carpenter-pant", sizes: ["30", "32", "34", "36", "38"] },
-  { slug: "coach-jacket", sizes: ["M", "L", "XL", "XXL"] },
+  { slug: "coach-jacket", sizes: ["S", "M", "L", "XL", "XXL"] },
 ];
 
 const SIZE_TOKENS = new Set([
@@ -271,6 +271,13 @@ console.log(`Fetched ${shopifyProducts.length} Shopify product(s).`);
 
 const { shopifyVariantByKey, shopifyHandleBySlug, unmatchedShopify, unmatchedLocal } =
   buildMaps(shopifyProducts);
+
+if (Object.keys(shopifyVariantByKey).length === 0) {
+  console.error(
+    "No variant mappings found — existing shopify-variants.ts was left unchanged. Check SHOPIFY_STORE_DOMAIN, SHOPIFY_STOREFRONT_ACCESS_TOKEN, and that products are published to the storefront.",
+  );
+  process.exit(1);
+}
 
 const outPath = path.join(root, "src/lib/shopify-variants.ts");
 fs.writeFileSync(outPath, formatTs(shopifyVariantByKey, shopifyHandleBySlug));

@@ -10,9 +10,10 @@ export const tallBlockNote =
   "Every 6foot top is re-blocked with a strict +2\" extension through the torso. Measurements below are garment flat, not body measurements.";
 
 export const heightAnchor =
-  "6foot sizing starts at 6'0\" (183 cm). If you are under 6'0\", these proportions will read long by design.";
+  "6foot tops run from size S upward — calibrated from 5'10\" (178 cm). The tall block still carries a +2\" extension through the torso.";
 
 export const topHeightChart = [
+  { size: "S", height: `5'10" to 6'1"`, cm: "178 to 185 cm", shoulder: "46 cm", chest: "51 cm", length: "76 cm" },
   { size: "M", height: `6'0" to 6'2"`, cm: "183 to 188 cm", shoulder: "47.5 cm", chest: "53.5 cm", length: "78 cm" },
   { size: "L", height: `6'2" to 6'4"`, cm: "188 to 193 cm", shoulder: "49.5 cm", chest: "56 cm", length: "80 cm" },
   { size: "XL", height: `6'4" to 6'6"`, cm: "193 to 198 cm", shoulder: "51.5 cm", chest: "58.5 cm", length: "82 cm" },

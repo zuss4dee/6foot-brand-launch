@@ -70,8 +70,8 @@ function FaqPage() {
         </FaqItem>
         <FaqItem question="How should I choose my size?">
           <p>
-            Use the size guide on each product page. If you are between sizes, we generally recommend
-            sizing up for an easier drape on the tall block. For specific fit questions, email{" "}
+            Use the size guide on each product page. Tops run S–XXL from 5&apos;10&quot; / 178 cm upward.
+            If you are between sizes, we generally recommend sizing up for an easier drape on the tall block. For specific fit questions, email{" "}
             <a
               href="mailto:studio@6foot.eu"
               className="underline underline-offset-2 hover:text-foreground"

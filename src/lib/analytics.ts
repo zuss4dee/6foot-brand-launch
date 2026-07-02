@@ -3,7 +3,6 @@ import { shopifyHandleBySlug } from "@/lib/shopify-variants";
 const MONORAIL_EDGE = "https://monorail-edge.shopifysvc.com/unstable/produce_batch";
 const CUSTOMER_TRACKING_SCHEMA = "custom_storefront_customer_tracking/1.2";
 const TREKKIE_SCHEMA = "trekkie_storefront_page_view/1.4";
-const PRIVACY_SCRIPT = "https://cdn.shopify.com/shopifycloud/privacy-banner/storefront-banner.js";
 const COOKIE_CONSENT_KEY = "6foot_cookies_accepted";
 const COOKIE_Y = "_shopify_y";
 const COOKIE_S = "_shopify_s";
@@ -70,9 +69,6 @@ declare global {
   interface Window {
     fbq?: FbqFunction;
     _fbq?: FbqFunction;
-    privacyBanner?: {
-      loadBanner: (config: Record<string, string>) => Promise<void>;
-    };
     Shopify?: {
       customerPrivacy?: {
         analyticsProcessingAllowed: () => boolean;
@@ -217,8 +213,8 @@ function privacyFlags() {
     const privacy = window.Shopify?.customerPrivacy;
     return {
       analyticsAllowed: privacy?.analyticsProcessingAllowed?.() ?? hasUserConsent(),
-      marketingAllowed: privacy?.marketingAllowed?.() ?? false,
-      saleOfDataAllowed: privacy?.saleOfDataAllowed?.() ?? false,
+      marketingAllowed: privacy?.marketingAllowed?.() ?? hasMarketingConsent(),
+      saleOfDataAllowed: privacy?.saleOfDataAllowed?.() ?? hasMarketingConsent(),
     };
   } catch {
     return {
@@ -277,24 +273,6 @@ function loadScript(src: string, id: string) {
     script.onerror = () => reject(new Error(`Failed to load ${src}`));
     document.head.appendChild(script);
   });
-}
-
-async function loadPrivacyScript(config: ShopConfig) {
-  try {
-    await loadScript(PRIVACY_SCRIPT, "shopify-privacy-banner");
-    if (!window.privacyBanner?.loadBanner) return;
-
-    const checkoutRootDomain = config.checkoutDomain ?? config.domain;
-    const storefrontRootDomain = config.storefrontRootDomain ?? window.location.hostname;
-
-    await window.privacyBanner.loadBanner({
-      storefrontAccessToken: config.token,
-      checkoutRootDomain,
-      storefrontRootDomain,
-    });
-  } catch (err) {
-    console.warn("[analytics] Shopify privacy banner unavailable", err);
-  }
 }
 
 function initMetaPixel(): Promise<void> {
@@ -396,8 +374,7 @@ export function initShopifyAnalytics(): Promise<void> {
 
   initPromise = (async () => {
     ensureTrackingCookies();
-    const config = await ensureShopConfig();
-    if (config) await loadPrivacyScript(config);
+    await ensureShopConfig();
   })().catch((err) => {
     initPromise = null;
     console.warn("[analytics] Shopify initialization failed", err);
@@ -601,6 +578,16 @@ async function publishTrekkiePageView(browser: BrowserContext) {
   };
 
   await sendToShopify([wrapEvent(TREKKIE_SCHEMA, payload)], config.domain);
+}
+
+export function hasCookieConsent() {
+  return hasMarketingConsent();
+}
+
+export function grantCookieConsent() {
+  if (!isClient()) return;
+  localStorage.setItem(COOKIE_CONSENT_KEY, "true");
+  trackPageView(window.location.href);
 }
 
 export function trackPageView(url: string) {

@@ -149,7 +149,7 @@ function SizeGuideDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-background safe-bottom"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-full flex-col bg-background safe-bottom sm:max-w-lg md:max-w-2xl"
           >
             <div className="flex items-center justify-between border-b border-foreground px-5 py-4">
               <h2 className="text-sm lowercase">size guide</h2>
@@ -375,12 +375,14 @@ function ProductAccordions({
   setOpenSection,
   detailBullets,
   modelNote,
+  onOpenSizeGuide,
 }: {
   product: Product;
   openSection: SectionKey | null;
   setOpenSection: (key: SectionKey | null) => void;
   detailBullets: string[];
   modelNote: string;
+  onOpenSizeGuide: () => void;
 }) {
   const toggle = (key: SectionKey) => setOpenSection(openSection === key ? null : key);
 
@@ -396,10 +398,16 @@ function ProductAccordions({
       </Accordion>
       <Accordion title="size & fit" open={openSection === "fit"} onToggle={() => toggle("fit")}>
         <p className="mb-3">{modelNote}</p>
-        <p className="mb-6 text-[11px] lowercase text-foreground/55">
-          fit: {productFit(product)}. Calibrated from 6&apos;0&quot; upward on the tall block.
+        <p className="mb-4 text-[11px] lowercase text-foreground/55">
+          fit: {productFit(product)}. Calibrated from 5&apos;10&quot; upward on the tall block.
         </p>
-        <SizeGuideContent product={product} compact />
+        <button
+          type="button"
+          onClick={onOpenSizeGuide}
+          className="text-[11px] lowercase underline underline-offset-2 text-foreground/70 transition-opacity hover:text-foreground"
+        >
+          view full size guide
+        </button>
       </Accordion>
       <Accordion
         title="composition & care"
@@ -432,8 +440,8 @@ function ProductAccordions({
       >
         <ul className="space-y-2 text-[11px] lowercase">
           <li>free uk delivery on orders over £150</li>
-          <li>standard delivery 3 to 5 working days</li>
-          <li>free exchanges for uk customers</li>
+          <li>dispatch within 1 to 2 business days</li>
+          <li>uk delivery typically 7 to 12 business days</li>
           <li>14-day returns. unworn, tags attached</li>
         </ul>
       </Accordion>
@@ -678,6 +686,7 @@ function ProductPage() {
               setOpenSection={setOpenSection}
               detailBullets={detailBullets}
               modelNote={modelNote}
+              onOpenSizeGuide={() => setSizeGuideOpen(true)}
             />
           </div>
         </div>
@@ -704,6 +713,7 @@ function ProductPage() {
           setOpenSection={setOpenSection}
           detailBullets={detailBullets}
           modelNote={modelNote}
+          onOpenSizeGuide={() => setSizeGuideOpen(true)}
         />
       </section>
 

@@ -1,5 +1,5 @@
 /** Toggle pre-launch Time Vault on the home route. */
-export const IS_PRE_LAUNCH_MODE = true;
+export const IS_PRE_LAUNCH_MODE = false;
 
 const VIP_ACCESS_KEY = "6foot_vip_access";
 

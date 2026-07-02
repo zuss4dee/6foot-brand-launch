@@ -137,10 +137,10 @@ function HeightScaleDiagram() {
       ))}
       <rect x="228" y="300" width="72" height="36" className="fill-foreground/[0.06] stroke-foreground/15" />
       <text x="236" y="316" className="fill-foreground/50 text-[8px]" style={{ fontFamily: "var(--font-mono)" }}>
-        SIZE M
+        SIZE S
       </text>
       <text x="236" y="328" className="fill-foreground text-[8px]" style={{ fontFamily: "var(--font-mono)" }}>
-        from 6&apos;0&quot; · 183 cm
+        from 5&apos;10&quot; · 178 cm
       </text>
       <text x="16" y="24" className="fill-foreground/45 text-[9px]" style={{ fontFamily: "var(--font-mono)" }}>
         HEIGHT CALIBRATION
@@ -165,12 +165,77 @@ function MeasurementLegend({ points }: { points: MeasurementPoint[] }) {
   );
 }
 
+function HeightSizeCards({ product }: { product: Product }) {
+  const rows = getHeightChart(product);
+  const isBottoms = product.category === "bottoms";
+
+  return (
+    <div className="space-y-3 md:hidden">
+      {rows.map((row) => (
+        <div key={row.size} className="border border-foreground/10 bg-foreground/[0.02] p-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-base font-medium text-foreground">{row.size}</p>
+            <p className="text-[11px] text-foreground/55">
+              {formatStandingHeight(row.height, row.cm)}
+            </p>
+          </div>
+          <dl className="mt-3 grid grid-cols-2 gap-3 text-[11px]">
+            {isBottoms ? (
+              <>
+                <div>
+                  <dt className="label text-foreground/45">Waist</dt>
+                  <dd className="mt-1 text-foreground/75">
+                    {"waist" in row ? formatInchMeasurement(row.waist) : ""}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="label text-foreground/45">Inseam</dt>
+                  <dd className="mt-1 text-foreground/75">
+                    {"inseam" in row ? formatInchMeasurement(row.inseam) : ""}
+                  </dd>
+                </div>
+                <div className="col-span-2">
+                  <dt className="label text-foreground/45">Length</dt>
+                  <dd className="mt-1 text-foreground/75">
+                    {"length" in row ? formatCmMeasurement(row.length) : ""}
+                  </dd>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <dt className="label text-foreground/45">Shoulder</dt>
+                  <dd className="mt-1 text-foreground/75">
+                    {"shoulder" in row ? formatCmMeasurement(row.shoulder) : ""}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="label text-foreground/45">Chest</dt>
+                  <dd className="mt-1 text-foreground/75">
+                    {"chest" in row ? formatCmMeasurement(row.chest) : ""}
+                  </dd>
+                </div>
+                <div className="col-span-2">
+                  <dt className="label text-foreground/45">Body length</dt>
+                  <dd className="mt-1 text-foreground/75">
+                    {"length" in row ? formatCmMeasurement(row.length) : ""}
+                  </dd>
+                </div>
+              </>
+            )}
+          </dl>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HeightSizeTable({ product }: { product: Product }) {
   const rows = getHeightChart(product);
   const isBottoms = product.category === "bottoms";
 
   return (
-    <div className="overflow-x-auto">
+    <div className="hidden overflow-x-auto md:block">
       <table className="w-full min-w-[560px] text-left text-[11px]">
         <thead>
           <tr className="border-b border-foreground/15">
@@ -233,18 +298,17 @@ function HeightSizeTable({ product }: { product: Product }) {
 
 type SizeGuideContentProps = {
   product: Product;
-  compact?: boolean;
 };
 
-export function SizeGuideContent({ product, compact = false }: SizeGuideContentProps) {
+export function SizeGuideContent({ product }: SizeGuideContentProps) {
   const points = getMeasurementPoints(product);
   const isBottoms = product.category === "bottoms";
 
   return (
-    <div className={compact ? "space-y-8" : "space-y-12"}>
+    <div className="space-y-10 md:space-y-12">
       <div>
         <p className="label text-foreground/45">6foot size guard</p>
-        <h3 className="display mt-2 text-xl leading-tight md:text-2xl">Built from 6&apos;0&quot; upward.</h3>
+        <h3 className="display mt-2 text-xl leading-tight md:text-2xl">Built from 5&apos;10&quot; upward.</h3>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/65">{heightAnchor}</p>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/65">{tallBlockNote}</p>
       </div>
@@ -270,7 +334,7 @@ export function SizeGuideContent({ product, compact = false }: SizeGuideContentP
             already own. Hem should break clean at the shoe, not above the ankle.
           </p>
           <ul className="mt-4 space-y-2 text-[11px] text-foreground/55">
-            <li>· Under 6&apos;0&quot;: proportions will read long</li>
+            <li>· Size S starts at 5&apos;10&quot; / 178 cm</li>
             <li>· Between bands: size up for length, down for a sharper fit</li>
             <li>· Broad shoulders: prioritise chest measurement over height</li>
           </ul>
@@ -281,6 +345,7 @@ export function SizeGuideContent({ product, compact = false }: SizeGuideContentP
         <p className="label mb-4 text-foreground/45">
           {isBottoms ? "Bottoms size chart" : "Tops size chart"}
         </p>
+        <HeightSizeCards product={product} />
         <HeightSizeTable product={product} />
         <p className="mt-4 text-[11px] leading-relaxed text-foreground/45">
           Standing height shown in ft and cm. Garment measurements taken flat in cm and inches. Double chest
@@ -289,19 +354,17 @@ export function SizeGuideContent({ product, compact = false }: SizeGuideContentP
         </p>
       </div>
 
-      {!compact && (
-        <div className="border border-foreground/10 bg-foreground/[0.03] p-5 md:p-6">
-          <p className="label text-foreground/45">Still unsure?</p>
-          <p className="mt-2 text-sm leading-relaxed text-foreground/70">
-            Email{" "}
-            <a href="mailto:studio@6foot.eu" className="underline underline-offset-2 hover:text-foreground">
-              studio@6foot.eu
-            </a>{" "}
-            with your height, usual size in other brands, and a chest or waist measurement. We respond within
-            one working day.
-          </p>
-        </div>
-      )}
+      <div className="border border-foreground/10 bg-foreground/[0.03] p-5 md:p-6">
+        <p className="label text-foreground/45">Still unsure?</p>
+        <p className="mt-2 text-sm leading-relaxed text-foreground/70">
+          Email{" "}
+          <a href="mailto:studio@6foot.eu" className="underline underline-offset-2 hover:text-foreground">
+            studio@6foot.eu
+          </a>{" "}
+          with your height, usual size in other brands, and a chest or waist measurement. We respond within
+          one working day.
+        </p>
+      </div>
     </div>
   );
 }

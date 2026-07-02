@@ -1,23 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-
-const STORAGE_KEY = "6foot_cookies_accepted";
-
-function hasAcceptedCookies() {
-  if (typeof window === "undefined") return true;
-  return localStorage.getItem(STORAGE_KEY) === "true";
-}
+import { grantCookieConsent, hasCookieConsent } from "../lib/analytics";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!hasAcceptedCookies()) setVisible(true);
+    if (!hasCookieConsent()) setVisible(true);
   }, []);
 
   const accept = () => {
-    localStorage.setItem(STORAGE_KEY, "true");
+    grantCookieConsent();
     setVisible(false);
   };
 

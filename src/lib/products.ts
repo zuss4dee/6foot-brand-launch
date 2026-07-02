@@ -152,7 +152,7 @@ export const products: Product[] = [
     fabric: "100% heavyweight long-staple cotton",
     description:
       "Our foundational tee, re-blocked from the shoulder down with +2 inches through the body. Stays tucked, drapes vertically.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Off-white",
     category: "tops",
     badge: "new:in",
@@ -169,7 +169,7 @@ export const products: Product[] = [
     fabric: "480gsm brushed-back loopback cotton",
     description:
       "A weighted hoodie with elongated body, deep hood, and re-pitched sleeve so the cuff lands at the wristbone.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Black",
     category: "tops",
     badge: "new:in",
@@ -203,7 +203,7 @@ export const products: Product[] = [
     fabric: "240gsm heavyweight long-staple cotton",
     description:
       "The Long Tee, re-engineered for cooler months. Ribbed cuffs sit at the wristbone, never the forearm.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Off-white",
     category: "tops",
     badge: "new:in",
@@ -220,7 +220,7 @@ export const products: Product[] = [
     fabric: "100% heavyweight long-staple cotton",
     description:
       "The Long Tee in black. Same +2 inch tall block, same vertical drape. Pigment-dyed for a deep, stable finish.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Black",
     category: "tops",
     badge: "new:in",
@@ -237,7 +237,7 @@ export const products: Product[] = [
     fabric: "480gsm brushed-back loopback cotton",
     description:
       "Full-zip heavyweight hoodie with elongated torso, matte hardware, and a hood scaled for taller necks.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Black",
     category: "tops",
     badge: "new:in",
@@ -254,7 +254,7 @@ export const products: Product[] = [
     fabric: "220gsm compact cotton jersey",
     description:
       "A longline tank with dropped armhole and extended body length. Layered or worn alone.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Off-white",
     category: "tops",
     badge: "new:in",
@@ -271,7 +271,7 @@ export const products: Product[] = [
     fabric: "240gsm heavyweight long-staple cotton",
     description:
       "Long Sleeve in black with the same wrist-true cuff placement and +2 inch body block as the off-white edition.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Black",
     category: "tops",
     badge: "new:in",
@@ -288,7 +288,7 @@ export const products: Product[] = [
     fabric: "320gsm compact cotton fleece",
     description:
       "A structured crewneck with reinforced neck rib, elongated body, and clean shoulder line for the tall frame.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Stone",
     category: "tops",
     badge: "new:in",
@@ -339,7 +339,7 @@ export const products: Product[] = [
     fabric: "280gsm nylon-cotton shell with quilted lining",
     description:
       "Snap-front coach jacket with elongated body, interior pocket system, and rib that sits at the hip, not above it.",
-    sizes: ["M", "L", "XL", "XXL"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
     color: "Black",
     category: "outerwear",
     badge: "new:in",
