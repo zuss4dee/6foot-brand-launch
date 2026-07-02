@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
 import { VaultGate, hasVaultVipAccess } from "@/components/VaultGate";
 import { IS_PRE_LAUNCH_MODE } from "@/lib/pre-launch";
@@ -47,24 +48,6 @@ const trustItems = [
   "Proportioned tall blocks",
   "Manchester studio",
 ];
-
-const footerNav = {
-  explore: [
-    { label: "The Blueprint", to: "/coming-soon" },
-    { label: "The Capsule", to: "/shop" },
-    { label: "Drop 002", to: "/coming-soon" },
-    { label: "Shop All", to: "/shop" },
-  ],
-  help: [
-    { label: "Contact", href: "mailto:studio@6foot.eu" },
-    { label: "Shipping & Returns", to: "/shipping-returns" },
-    { label: "Size Guide", href: "#" },
-  ],
-  legal: [
-    { label: "Privacy", to: "/privacy" },
-    { label: "Terms", to: "/terms" },
-  ],
-};
 
 function LaunchHeroBackdrop() {
   return (
@@ -711,7 +694,7 @@ function Launch() {
       </main>
 
       <TrustBar />
-      <LaunchFooter />
+      <SiteFooter />
     </>
   );
 }
@@ -773,109 +756,3 @@ function TrustBar() {
   );
 }
 
-function LaunchFooter() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-
-  return (
-    <footer className="border-t border-foreground/10 bg-background px-6 md:px-10">
-      <div className="mx-auto max-w-7xl pt-14 pb-10 md:pt-20">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr] lg:gap-10">
-          <div id="waitlist">
-            <p className="label mb-6 text-foreground/50">Newsletter</p>
-            <h3 className="display mb-4 text-2xl md:text-3xl">Join the waitlist</h3>
-            <p className="mb-6 max-w-[36ch] text-sm leading-relaxed text-foreground/65">
-              Priority access to Drop 001. No restocks. No markdowns. Zero noise.
-            </p>
-            {sent ? (
-              <p className="display text-xl">Confirmed. Watch your inbox.</p>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (email.includes("@")) setSent(true);
-                }}
-                className="space-y-4"
-              >
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email"
-                  className="w-full border-b border-foreground/25 bg-transparent py-3 text-base outline-none placeholder:text-foreground/30 focus:border-foreground"
-                />
-                <button
-                  type="submit"
-                  className="label border border-foreground px-6 py-3 transition-colors hover:bg-foreground hover:text-background"
-                >
-                  Subscribe
-                </button>
-              </form>
-            )}
-          </div>
-
-          <div>
-            <p className="label mb-6 text-foreground/50">Explore</p>
-            <ul className="space-y-3">
-              {footerNav.explore.map((item) => (
-                <li key={item.label}>
-                  <Link to={item.to} className="text-base transition-opacity hover:opacity-60">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link to="/#waitlist" className="text-base transition-opacity hover:opacity-60">
-                  Newsletter
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="label mb-6 text-foreground/50">Help & Info</p>
-            <ul className="space-y-3">
-              {footerNav.help.map((item) => (
-                <li key={item.label}>
-                  {"to" in item && item.to ? (
-                    <Link to={item.to} className="text-base transition-opacity hover:opacity-60">
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <a href={item.href} className="text-base transition-opacity hover:opacity-60">
-                      {item.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="label mb-6 text-foreground/50">Studio</p>
-            <p className="text-base">studio@6foot.eu</p>
-            <p className="mt-2 text-base text-foreground/60">Manchester, UK</p>
-            <p className="label mt-8 text-foreground/45">Drop 001 · SS26</p>
-            <p className="label mt-1 text-foreground/45">Built for the tall frame</p>
-          </div>
-        </div>
-
-        <div className="mt-16 flex flex-col gap-4 border-t border-foreground/10 pt-6 md:flex-row md:items-center md:justify-between">
-          <p className="label text-foreground/45">© 6foot studio MMXXVI</p>
-          <ul className="flex flex-wrap gap-6">
-            {footerNav.legal.map((item) => (
-              <li key={item.label}>
-                <Link to={item.to} className="label text-foreground/45 transition-opacity hover:opacity-80">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <p className="label text-foreground/45">UK / EN · GBP £</p>
-        </div>
-
-      </div>
-    </footer>
-  );
-}
