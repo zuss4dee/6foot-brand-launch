@@ -10,6 +10,10 @@ const navLinks = [
   { label: "Shop", to: "/shop" as const },
   { label: "Blueprint", to: "/coming-soon" as const },
   { label: "Drop 002", to: "/coming-soon" as const },
+  {
+    label: "Track Your Order",
+    href: "https://checkout.6foot.store/apps/17TRACK",
+  },
 ];
 
 type SiteNavProps = {
@@ -90,17 +94,27 @@ export function SiteNav({ showPromo = true }: SiteNavProps) {
               6foot.
             </Link>
             <nav className="hidden items-center gap-10 md:flex">
-              {navLinks.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.to}
-                  hash={item.hash}
-                  className="label hover:opacity-60 transition-opacity"
-                  activeProps={item.to === "/shop" ? { className: "label opacity-100" } : undefined}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navLinks.map((item) =>
+                "href" in item && item.href ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="label hover:opacity-60 transition-opacity"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    hash={item.hash}
+                    className="label hover:opacity-60 transition-opacity"
+                    activeProps={item.to === "/shop" ? { className: "label opacity-100" } : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                ),
+              )}
             </nav>
           </div>
 
@@ -173,14 +187,24 @@ export function SiteNav({ showPromo = true }: SiteNavProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.05 + index * 0.04, duration: 0.35 }}
                   >
-                    <Link
-                      to={item.to}
-                      hash={item.hash}
-                      onClick={() => setMenuOpen(false)}
-                      className="display flex min-h-14 items-center border-b border-foreground/10 text-3xl tracking-tight"
-                    >
-                      {item.label}
-                    </Link>
+                    {"href" in item && item.href ? (
+                      <a
+                        href={item.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="display flex min-h-14 items-center border-b border-foreground/10 text-3xl tracking-tight"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.to}
+                        hash={item.hash}
+                        onClick={() => setMenuOpen(false)}
+                        className="display flex min-h-14 items-center border-b border-foreground/10 text-3xl tracking-tight"
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </motion.li>
                 ))}
               </ul>

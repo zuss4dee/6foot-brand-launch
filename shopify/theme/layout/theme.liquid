@@ -304,24 +304,61 @@
         }
       })();
     </script>
+
+    {%- assign request_path = request.path | downcase -%}
+    {%- if request_path contains '/apps/17track' -%}
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet"
+      >
+      <style>
+        body.gradient,
+        #MainContent.content-for-layout {
+          background-color: #f9f9f9 !important;
+        }
+
+        #MainContent.content-for-layout {
+          padding-top: 0 !important;
+          margin-top: 0 !important;
+        }
+      </style>
+    {%- endif -%}
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    {%- assign hide_store_chrome = false -%}
+    {%- assign request_path = request.path | downcase -%}
+    {%- if request_path contains '/apps/17track' -%}
+      {%- assign hide_store_chrome = true -%}
+    {%- endif -%}
+
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
 
-    {%- if settings.cart_type == 'drawer' -%}
+    {%- if settings.cart_type == 'drawer' and hide_store_chrome == false -%}
       {%- render 'cart-drawer' -%}
     {%- endif -%}
 
-    {% sections 'header-group' %}
+    {%- unless hide_store_chrome -%}
+      {% sections 'header-group' %}
+    {%- else -%}
+      {%- render 'track-page-nav' -%}
+    {%- endunless -%}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
     </main>
 
-    {% sections 'footer-group' %}
+    {%- unless hide_store_chrome -%}
+      {% sections 'footer-group' %}
+    {%- else -%}
+      <footer class="sixfoot-track-footer">
+        <a href="https://6foot.store" class="sixfoot-track-footer__link">← Back to store</a>
+      </footer>
+    {%- endunless -%}
 
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>

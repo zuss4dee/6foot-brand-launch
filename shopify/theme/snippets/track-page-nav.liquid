@@ -1,0 +1,105 @@
+{%- comment -%}
+  Minimal storefront nav for the 17TRACK app proxy page.
+  Links back to the headless 6foot.store site (not checkout.6foot.store).
+{%- endcomment -%}
+<style>
+  .sixfoot-track-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: #f9f9f9;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+    font-family: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  @media (min-width: 768px) {
+    .sixfoot-track-nav {
+      padding: 1.25rem 2.5rem;
+    }
+  }
+
+  .sixfoot-track-nav__logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 1;
+    color: #1a1a1a;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sixfoot-track-nav__logo {
+      font-size: 1.5rem;
+    }
+  }
+
+  .sixfoot-track-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sixfoot-track-nav__links {
+      gap: 2.5rem;
+    }
+  }
+
+  .sixfoot-track-nav__link {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #1a1a1a;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .sixfoot-track-nav__link:hover {
+    opacity: 0.6;
+  }
+
+  .sixfoot-track-footer {
+    padding: 2rem 1rem 2.5rem;
+    text-align: center;
+    background: #f9f9f9;
+    border-top: 1px solid rgba(26, 26, 26, 0.1);
+  }
+
+  .sixfoot-track-footer__link {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: rgba(26, 26, 26, 0.5);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .sixfoot-track-footer__link:hover {
+    color: #1a1a1a;
+    opacity: 1;
+  }
+</style>
+
+<header class="sixfoot-track-nav">
+  <a href="https://6foot.store" class="sixfoot-track-nav__logo">6foot.</a>
+  <nav aria-label="Store navigation">
+    <ul class="sixfoot-track-nav__links">
+      <li><a href="https://6foot.store/shop" class="sixfoot-track-nav__link">Shop</a></li>
+      <li><a href="https://6foot.store/login" class="sixfoot-track-nav__link">Log In</a></li>
+    </ul>
+  </nav>
+</header>
