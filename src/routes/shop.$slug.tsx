@@ -24,6 +24,7 @@ import {
 } from "@/lib/products";
 import { trackAddToCart, trackProductView } from "@/lib/analytics";
 import { createShopifyCheckoutUrl, fetchProductVariantAvailability } from "@/lib/shopify";
+import { trackCheckoutStart } from "@/lib/checkout-analytics";
 import { resolveMerchandiseId } from "@/lib/shopify-variants";
 import { useCart } from "@/lib/cart";
 
@@ -526,6 +527,7 @@ function ProductPage() {
       });
     }
     try {
+      trackCheckoutStart([{ item: { slug: product.slug, size, qty: 1 }, product }]);
       const checkoutUrl = await createShopifyCheckoutUrl([
         { item: { slug: product.slug, size, qty: 1 }, product },
       ]);

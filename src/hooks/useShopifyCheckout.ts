@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
+import { trackCheckoutStart } from "@/lib/checkout-analytics";
 import { createShopifyCheckoutUrl } from "@/lib/shopify";
 
 export function useShopifyCheckout() {
@@ -11,6 +12,7 @@ export function useShopifyCheckout() {
     setLoading(true);
     setError(null);
     try {
+      trackCheckoutStart(enriched);
       const checkoutUrl = await createShopifyCheckoutUrl(enriched);
       window.location.href = checkoutUrl;
     } catch (err) {

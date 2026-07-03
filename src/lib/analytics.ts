@@ -654,3 +654,38 @@ export function trackAddToCart(itemData: ShopifyAddToCartEventData) {
     () => trackMetaAddToCart(itemData),
   );
 }
+
+export type ShopifyInitiateCheckoutData = {
+  value: number;
+  currency?: string;
+  items: Array<{
+    slug: string;
+    variantGid?: string;
+    title: string;
+    quantity: number;
+    price: number;
+  }>;
+};
+
+function trackMetaInitiateCheckout(data: ShopifyInitiateCheckoutData) {
+  const currency = data.currency ?? "GBP";
+  const contents = data.items
+    .map((item) => {
+      const id = metaContentId(item.variantGid, item.slug);
+      if (!id) return null;
+      return { id, quantity: item.quantity };
+    })
+    .filter((entry): entry is { id: string; quantity: number } => entry !== null);
+
+  runMeta("InitiateCheckout", {
+    value: data.value,
+    currency,
+    content_ids: contents.map((entry) => entry.id),
+    contents,
+    num_items: data.items.reduce((total, item) => total + item.quantity, 0),
+  });
+}
+
+export function trackInitiateCheckout(data: ShopifyInitiateCheckoutData) {
+  enqueue(() => Promise.resolve(), () => trackMetaInitiateCheckout(data));
+}
