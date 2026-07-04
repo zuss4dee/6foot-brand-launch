@@ -89,7 +89,7 @@ export const products: Product[] = [
     slug: "long-tee",
     n: "01",
     name: "The Long Tee",
-    price: 150,
+    price: 0,
     flat: p1Flat,
     model: p1Model,
     len: "78cm",
