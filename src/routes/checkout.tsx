@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { CartLineItem } from "@/components/CartLineItem";
 import { SiteNav } from "@/components/SiteNav";
 import { useShopifyCheckout } from "@/hooks/useShopifyCheckout";
 import { useCart } from "@/lib/cart";
 import { useCustomerAuth } from "@/lib/customer-auth";
-import { formatPrice, productFitImageClass } from "@/lib/products";
+import { formatPrice } from "@/lib/products";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -91,50 +92,14 @@ function Checkout() {
               <p className="label text-foreground/60">Order · {enriched.length} items</p>
               <ul className="space-y-5">
                 {enriched.map(({ item, product }) => (
-                  <li key={`${item.slug}-${item.size}`} className="grid grid-cols-[60px_1fr] gap-4">
-                    <div className="relative aspect-[3/4] overflow-hidden bg-background">
-                      <div className="absolute inset-0 flex items-end justify-center px-1 pt-1">
-                        <img
-                          src={product.model}
-                          alt={product.name}
-                          className={productFitImageClass}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="display text-base leading-tight">{product.name}</p>
-                        <p className="display text-base">{formatPrice(product.price * item.qty)}</p>
-                      </div>
-                      <p className="label mt-1 text-foreground/50">Size {item.size}</p>
-                      <div className="mt-2 flex items-center gap-3">
-                        <div className="inline-flex items-center border border-foreground/15">
-                          <button
-                            type="button"
-                            onClick={() => setQty(item.slug, item.size, item.qty - 1)}
-                            className="label px-2 py-0.5"
-                          >
-                            −
-                          </button>
-                          <span className="label px-2">{item.qty}</span>
-                          <button
-                            type="button"
-                            onClick={() => setQty(item.slug, item.size, item.qty + 1)}
-                            className="label px-2 py-0.5"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => remove(item.slug, item.size)}
-                          className="label text-foreground/50 hover:text-foreground"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </li>
+                  <CartLineItem
+                    key={`${item.slug}-${item.size}`}
+                    item={item}
+                    product={product}
+                    compact
+                    onRemove={() => remove(item.slug, item.size)}
+                    onSetQty={(qty) => setQty(item.slug, item.size, qty)}
+                  />
                 ))}
               </ul>
 

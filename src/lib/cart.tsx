@@ -23,6 +23,14 @@ interface CartContextValue {
 const Ctx = createContext<CartContextValue | null>(null);
 const KEY = "6foot.cart.v1";
 
+function isValidCartItem(item: CartItem) {
+  return products.some((p) => p.slug === item.slug);
+}
+
+function sanitizeCartItems(raw: CartItem[]) {
+  return raw.filter((item) => isValidCartItem(item) && item.qty > 0);
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
@@ -31,7 +39,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) setItems(sanitizeCartItems(JSON.parse(raw)));
     } catch {
       /* ignore */
     }
@@ -81,7 +89,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items],
   );
 
-  const count = useMemo(() => items.reduce((s, i) => s + i.qty, 0), [items]);
+  const count = useMemo(() => enriched.reduce((s, { item }) => s + item.qty, 0), [enriched]);
   const subtotal = useMemo(
     () => enriched.reduce((s, { item, product }) => s + product.price * item.qty, 0),
     [enriched],
