@@ -17,12 +17,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Proportioned streetwear for the tall frame. Shop Drop 001 or join the waitlist for Drop 002.",
+          "The Long Tee — proportioned streetwear for the tall frame. Shop Drop 001.",
       },
       { property: "og:title", content: "6foot | Built for the Tall Frame" },
       {
         property: "og:description",
-        content: "Shop the capsule or explore what's coming next.",
+        content: "Shop The Long Tee from Drop 001.",
       },
     ],
   }),
@@ -363,8 +363,8 @@ const launchSlides = [
     image: launchRight,
     imageAlt: "Young Black man in black proportioned essentials",
     chapter: "Drop 001 / SS26",
-    title: "The Capsule",
-    subtitle: 'Four proportioned staples. Engineered with a strict +2" drop through the torso.',
+    title: "The Long Tee",
+    subtitle: 'Our foundational tee. Engineered with a strict +2" drop through the torso.',
     cta: "Shop Now",
   },
   {
@@ -373,8 +373,8 @@ const launchSlides = [
     image: launchLeft,
     imageAlt: "Model in black proportioned essentials",
     chapter: "Drop 001 / SS26",
-    title: "Shop the Edit",
-    subtitle: "Four proportioned staples with a +2\" block through the torso. Shop the full capsule.",
+    title: "The Long Tee",
+    subtitle: "240gsm cotton, re-blocked for the tall frame. Available now in S–XL.",
     cta: "Shop Now",
   },
 ];

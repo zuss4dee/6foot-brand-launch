@@ -22,16 +22,16 @@ import {
 export const Route = createFileRoute("/shop/")({
   head: () => ({
     meta: [
-      { title: "6foot // capsule '26" },
+      { title: "6foot // Drop 001" },
       {
         name: "description",
         content:
-          "Twelve capsule pieces engineered for the tall frame. Heavyweight cotton, +2 inch hems, considered proportions.",
+          "The Long Tee — proportioned for the tall frame. Heavyweight cotton with a +2 inch hem.",
       },
-      { property: "og:title", content: "6foot // capsule '26" },
+      { property: "og:title", content: "6foot // Drop 001" },
       {
         property: "og:description",
-        content: "Twelve capsule pieces engineered for the tall frame.",
+        content: "The Long Tee — engineered for the tall frame.",
       },
     ],
   }),
@@ -489,7 +489,7 @@ function ShopIndex() {
   );
 
   const pageDescription =
-    "Proportioned essentials for the tall frame. Shop Drop 001 or explore what's coming from AW26.";
+    "The Long Tee from Drop 001 — proportioned essentials for the tall frame.";
 
   return (
     <main className="min-h-screen overflow-x-clip bg-background text-foreground">

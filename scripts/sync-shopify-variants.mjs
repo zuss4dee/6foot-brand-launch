@@ -35,20 +35,7 @@ if (!domain || !token) {
   process.exit(1);
 }
 
-const LOCAL_PRODUCTS = [
-  { slug: "long-tee", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "heavy-hoodie", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "wide-trouser", sizes: ["30", "32", "34", "36", "38"] },
-  { slug: "long-sleeve", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "long-tee-black", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "zip-hoodie", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "tall-tank", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "long-sleeve-black", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "heavyweight-crew", sizes: ["S", "M", "L", "XL", "XXL"] },
-  { slug: "wide-trouser-black", sizes: ["30", "32", "34", "36", "38"] },
-  { slug: "carpenter-pant", sizes: ["30", "32", "34", "36", "38"] },
-  { slug: "coach-jacket", sizes: ["S", "M", "L", "XL", "XXL"] },
-];
+const LOCAL_PRODUCTS = [{ slug: "long-tee", sizes: ["S", "M", "L", "XL", "XXL"] }];
 
 const SIZE_TOKENS = new Set([
   "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL",

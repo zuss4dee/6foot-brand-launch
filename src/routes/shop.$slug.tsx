@@ -720,6 +720,7 @@ function ProductPage() {
       </section>
 
       {/* Shop the look — about:blank */}
+      {shopTheLook.length > 0 ? (
       <section className="mx-auto max-w-[1600px] px-4 pt-12 md:px-6 md:pt-14">
         <p className="mb-6 text-[11px] lowercase text-foreground/45">shop the look</p>
         <div className="grid grid-cols-1 border-l border-t border-foreground sm:grid-cols-2 md:grid-cols-3">
@@ -753,8 +754,10 @@ function ProductPage() {
           ))}
         </div>
       </section>
+      ) : null}
 
       {/* Complete your look — Zara */}
+      {related.length > 0 ? (
       <section className="mx-auto max-w-[1600px] px-4 pt-12 pb-8 md:px-6 md:pt-14">
         <p className="mb-6 text-[11px] lowercase text-foreground/45">complete your look</p>
         <div className="grid grid-cols-1 border-l border-t border-foreground sm:grid-cols-2 md:grid-cols-4">
@@ -778,6 +781,7 @@ function ProductPage() {
           ))}
         </div>
       </section>
+      ) : null}
 
       {/* Member strip — about:blank */}
       <section className="border-t border-foreground bg-foreground px-4 py-10 text-background md:px-6 md:py-12">
