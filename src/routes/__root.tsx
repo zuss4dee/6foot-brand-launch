@@ -132,8 +132,7 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+function StorefrontShell({ children }: { children: ReactNode }) {
   const location = useRouterState({ select: (state) => state.location.href });
 
   useEffect(() => {
@@ -146,18 +145,28 @@ function RootComponent() {
   }, [location]);
 
   return (
+    <CustomerAuthProvider>
+      <CartProvider>
+        {children}
+        <CartDrawer />
+        <DiscountEmailPopup />
+        <CookieBanner />
+      </CartProvider>
+    </CustomerAuthProvider>
+  );
+}
+
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+
+  return (
     <QueryClientProvider client={queryClient}>
-      <CustomerAuthProvider>
-        <CartProvider>
-          <SiteVaultGate>
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-            <CartDrawer />
-            <DiscountEmailPopup />
-            <CookieBanner />
-          </SiteVaultGate>
-        </CartProvider>
-      </CustomerAuthProvider>
+      <SiteVaultGate>
+        <StorefrontShell>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </StorefrontShell>
+      </SiteVaultGate>
     </QueryClientProvider>
   );
 }

@@ -96,17 +96,23 @@ export const getCustomerSession = createServerFn({ method: "GET" }).handler(asyn
     return { authenticated: false as const };
   }
 
-  const customer = await fetchCustomer(token);
+  try {
+    const customer = await fetchCustomer(token);
 
-  if (!customer) {
+    if (!customer) {
+      clearCustomerTokenCookie();
+      return { authenticated: false as const };
+    }
+
+    return {
+      authenticated: true as const,
+      email: customer.email,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+    };
+  } catch (error) {
+    console.error("getCustomerSession failed:", error);
     clearCustomerTokenCookie();
     return { authenticated: false as const };
   }
-
-  return {
-    authenticated: true as const,
-    email: customer.email,
-    firstName: customer.firstName,
-    lastName: customer.lastName,
-  };
 });

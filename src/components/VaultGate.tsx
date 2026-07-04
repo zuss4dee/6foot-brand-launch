@@ -157,7 +157,10 @@ function ChronographDial({
               <span className="text-[8px] tracking-[0.22em] text-white/35 uppercase md:text-[9px]">
                 {segment.label}
               </span>
-              <span className="font-mono text-[13px] tracking-[0.08em] text-white tabular-nums md:text-[15px]">
+              <span
+                className="font-mono text-[13px] tracking-[0.08em] text-white tabular-nums md:text-[15px]"
+                suppressHydrationWarning
+              >
                 {segment.value}
               </span>
             </div>
@@ -383,7 +386,7 @@ export function VaultGate() {
         className="relative z-10 grid w-full max-w-full grid-cols-1 gap-2 border-t border-white/10 px-6 py-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center md:px-10"
       >
         <p className="label text-center text-white/30 sm:text-left">Ref · TV-001 / UK</p>
-        <p className="hidden font-mono text-[9px] tracking-[0.18em] text-white/25 tabular-nums sm:block sm:text-center">
+        <p className="hidden font-mono text-[9px] tracking-[0.18em] text-white/25 tabular-nums sm:block sm:text-center" suppressHydrationWarning>
           {chrono.raw}
         </p>
         <p className="label text-center text-white/30 sm:text-right">Sys · chronograph live</p>
