@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
-import { VaultGate, hasVaultVipAccess } from "@/components/VaultGate";
-import { IS_PRE_LAUNCH_MODE } from "@/lib/pre-launch";
 import fabric from "@/assets/fabric.jpg";
 import launchLeft from "@/assets/launch-left-model.png";
 import launchRight from "@/assets/launch-right-model.png";
@@ -592,23 +590,6 @@ function LaunchMobileCarousel() {
 }
 
 function Launch() {
-  const [gateReady, setGateReady] = useState(!IS_PRE_LAUNCH_MODE);
-  const [vipAccess, setVipAccess] = useState(false);
-
-  useLayoutEffect(() => {
-    if (!IS_PRE_LAUNCH_MODE) return;
-    setVipAccess(hasVaultVipAccess());
-    setGateReady(true);
-  }, []);
-
-  if (IS_PRE_LAUNCH_MODE && gateReady && !vipAccess) {
-    return <VaultGate />;
-  }
-
-  if (IS_PRE_LAUNCH_MODE && !gateReady) {
-    return <div className="min-h-screen bg-background" aria-hidden />;
-  }
-
   return (
     <>
       <main className="relative flex min-h-dvh w-full max-w-full flex-col overflow-x-clip bg-white text-foreground md:h-svh md:overflow-hidden">

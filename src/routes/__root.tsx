@@ -17,6 +17,7 @@ import { CustomerAuthProvider } from "../lib/customer-auth";
 import { CartDrawer } from "../components/CartDrawer";
 import { CookieBanner } from "../components/CookieBanner";
 import { DiscountEmailPopup } from "../components/DiscountEmailPopup";
+import { SiteVaultGate } from "../components/SiteVaultGate";
 import { initAnalytics, trackPageView } from "../lib/analytics";
 
 function NotFoundComponent() {
@@ -148,11 +149,13 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <CustomerAuthProvider>
         <CartProvider>
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-          <CartDrawer />
-          <DiscountEmailPopup />
-          <CookieBanner />
+          <SiteVaultGate>
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+            <CartDrawer />
+            <DiscountEmailPopup />
+            <CookieBanner />
+          </SiteVaultGate>
         </CartProvider>
       </CustomerAuthProvider>
     </QueryClientProvider>
